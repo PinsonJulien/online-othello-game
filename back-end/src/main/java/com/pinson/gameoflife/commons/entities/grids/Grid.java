@@ -2,11 +2,11 @@ package com.pinson.gameoflife.commons.entities.grids;
 
 import com.pinson.gameoflife.commons.entities.cells.ICell;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 
 public class Grid<T extends ICell> implements IGrid<T> {
-    private T[][] cells;
+    private ArrayList<ArrayList<T>> cells;
+
     private int columns;
     private int rows;
 
@@ -15,7 +15,15 @@ public class Grid<T extends ICell> implements IGrid<T> {
         this.rows = rows;
         this.columns = columns;
 
-        this.cells = new T[rows][columns];
+        this.cells = new ArrayList<>();
+        for (int i = 0; i < rows; ++i) {
+            ArrayList<T> row = new ArrayList<>();
+            for (int j = 0; j < columns; ++j) {
+                row.add(null);
+            }
+
+            this.cells.add(row);
+        }
     }
 
     @Override
@@ -37,14 +45,20 @@ public class Grid<T extends ICell> implements IGrid<T> {
     }
 
     @Override
-    public T[][] getCells() {
+    public ArrayList<ArrayList<T>> getCells() {
         // Todo : Return a copy of the tiles
+
         return this.cells;
     }
 
     @Override
     public T getCellAt(int row, int column) {
-        return this.cells[row][column];
+        if (row < 0 || row >= this.rows)
+            throw new GridIndexOutOfBoundsException("Row must be within grid bounds.");
+        if (column < 0 || column >= this.columns)
+            throw new GridIndexOutOfBoundsException("Column must be within grid bounds.");
+
+        return this.tiles.get(row).get(column);
     }
 
     @Override
