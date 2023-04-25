@@ -18,4 +18,9 @@ public class MatrixPosition<T extends Number> extends Position<T> implements IMa
         this.y = y;
         return this;
     }
+
+    public IMatrixPosition<T> set(T x, T y) {
+        this.setX(x);
+        return this.setY(y);
+    }
 }

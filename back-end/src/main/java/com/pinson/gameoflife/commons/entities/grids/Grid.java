@@ -5,7 +5,7 @@ import com.pinson.gameoflife.commons.entities.cells.ICell;
 import java.util.ArrayList;
 
 public class Grid<T extends ICell> implements IGrid<T> {
-    private ArrayList<ArrayList<T>> cells;
+    /*private ArrayList<ArrayList<T>> cells;
 
     private int columns;
     private int rows;
@@ -66,5 +66,7 @@ public class Grid<T extends ICell> implements IGrid<T> {
         this.cells[row][column] = cell;
         return this;
     }
+
+    */
 
 }
