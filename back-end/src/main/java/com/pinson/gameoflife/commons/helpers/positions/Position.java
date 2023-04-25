@@ -19,4 +19,6 @@ public class Position<T extends Number> implements IPosition<T> {
     public IPosition<T> set(T x) {
         return setX(x);
     }
+
+
 }

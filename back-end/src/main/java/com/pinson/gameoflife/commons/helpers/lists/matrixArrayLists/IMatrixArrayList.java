@@ -4,6 +4,9 @@ import com.pinson.gameoflife.commons.exceptions.NotFoundException;
 import com.pinson.gameoflife.commons.helpers.lists.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.gameoflife.commons.helpers.positions.MatrixPositions.IMatrixPosition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @param <T> Any Object
  */
