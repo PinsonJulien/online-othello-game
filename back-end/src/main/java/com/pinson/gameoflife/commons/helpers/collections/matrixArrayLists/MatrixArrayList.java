@@ -1,10 +1,9 @@
-package com.pinson.gameoflife.commons.helpers.lists.matrixArrayLists;
+package com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists;
 
 import com.pinson.gameoflife.commons.exceptions.NonPositiveValueException;
 import com.pinson.gameoflife.commons.exceptions.NotFoundException;
-import com.pinson.gameoflife.commons.helpers.lists.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
+import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.gameoflife.commons.helpers.positions.MatrixPositions.IMatrixPosition;
-import com.pinson.gameoflife.commons.helpers.positions.MatrixPositions.MatrixPosition;
 
 import java.util.ArrayList;
 
@@ -14,13 +13,12 @@ import java.util.ArrayList;
  * @param <T> Any Object
  */
 public class MatrixArrayList<T> implements IMatrixArrayList<T> {
-    private ArrayList<ArrayList<T>> matrix;
+    private final ArrayList<ArrayList<T>> matrix = new ArrayList<ArrayList<T>>();
 
     private int rows;
     private int columns;
 
     public MatrixArrayList() {
-        super();
 
         try {
             this.setRows(0);
@@ -206,25 +204,6 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         }
 
         throw new NotFoundException();
-    }
-
-    /**
-     * Remove an Object from the matrix.
-     *
-     * @param value element to be removed from this list, if present
-     * @return True on success, false on failure.
-     */
-    @Override
-    public boolean remove(Object value) {
-        try {
-            IMatrixPosition<Integer> position = this.find((T) value);
-
-            this.remove(position);
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**

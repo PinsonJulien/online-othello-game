@@ -1,10 +1,8 @@
 package com.pinson.gameoflife.commons.entities.grids;
 
 import com.pinson.gameoflife.commons.entities.cells.ICell;
-import com.pinson.gameoflife.commons.helpers.lists.matrixArrayLists.IMatrixArrayList;
-import com.pinson.gameoflife.commons.helpers.lists.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
-
-import java.util.ArrayList;
+import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.IMatrixArrayList;
+import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
 public interface IGrid<T extends ICell> {
 

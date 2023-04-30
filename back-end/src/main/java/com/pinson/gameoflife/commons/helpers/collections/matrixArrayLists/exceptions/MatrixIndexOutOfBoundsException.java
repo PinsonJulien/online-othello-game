@@ -1,4 +1,4 @@
-package com.pinson.gameoflife.commons.helpers.lists.matrixArrayLists.exceptions;
+package com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.exceptions;
 
 public class MatrixIndexOutOfBoundsException extends Exception {
 
