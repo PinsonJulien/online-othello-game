@@ -1,5 +1,6 @@
 package com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists;
 
+import com.pinson.gameoflife.commons.exceptions.NonPositiveValueException;
 import com.pinson.gameoflife.commons.exceptions.NotFoundException;
 import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.gameoflife.commons.helpers.positions.MatrixPositions.IMatrixPosition;
@@ -9,7 +10,26 @@ import com.pinson.gameoflife.commons.helpers.positions.MatrixPositions.IMatrixPo
  */
 public interface IMatrixArrayList<T> {
 
-    // getters
+    /**
+     * Instantiate a MatrixArrayList without a specific size.
+     *
+     * @return IMatrixArrayList<T> The pointer of the matrix.
+     */
+    static <T> IMatrixArrayList<T> create() {
+        return new MatrixArrayList<>();
+    }
+
+    /**
+     * Instantiate a MatrixArrayList with a default size, values are null by default.
+     *
+     * @param rows int
+     * @param columns int
+     * @return IMatrixArrayList<T> The pointer of the matrix.
+     * @throws NonPositiveValueException When the given rows or columns are not a positive number.
+     */
+    static <T> IMatrixArrayList<T> create(int rows, int columns) throws NonPositiveValueException {
+        return new MatrixArrayList<>(rows, columns);
+    }
 
     /**
      * @return Number of rows of the matrix, as int.
@@ -88,6 +108,8 @@ public interface IMatrixArrayList<T> {
      * @throws NotFoundException When the given object doesn't exist within the matrix.
      */
     IMatrixPosition<Integer> find(T value) throws NotFoundException;
+
+
 
     // Todo: Add missing methods in MatrixArrayList.
     // IMatrixArrayList<T> padColumns();

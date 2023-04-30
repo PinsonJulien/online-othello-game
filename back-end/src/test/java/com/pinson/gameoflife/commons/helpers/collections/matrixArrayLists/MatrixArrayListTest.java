@@ -13,7 +13,7 @@ class MatrixArrayListTest {
 
     @Test
     public void constructor() {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>();
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create();
 
         assertEquals(0, matrix.getRows());
         assertEquals(0, matrix.getColumns());
@@ -21,7 +21,7 @@ class MatrixArrayListTest {
 
     @Test
     public void constructor_RowsColumns() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertEquals(2, matrix.getRows());
         assertEquals(3, matrix.getColumns());
@@ -29,28 +29,28 @@ class MatrixArrayListTest {
 
     @Test
     public void constructor_RowsColumns_NonPositiveValueException() {
-        assertThrowsExactly(NonPositiveValueException.class, () -> new MatrixArrayList<>(-1, 3));
-        assertThrowsExactly(NonPositiveValueException.class, () -> new MatrixArrayList<>(2, -3));
-        assertThrowsExactly(NonPositiveValueException.class, () -> new MatrixArrayList<>(-1, -3));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(-1, 3));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(2, -3));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(-1, -3));
     }
 
     @Test
     void getRows() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertEquals(2, matrix.getRows());
     }
 
     @Test
     void getColumns() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertEquals(3, matrix.getColumns());
     }
 
     @Test
     void get_RowColumn() throws MatrixIndexOutOfBoundsException, NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
 
@@ -63,7 +63,7 @@ class MatrixArrayListTest {
 
     @Test
     void get_RowColumn_MatrixIndexOutOfBoundsException() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(-1, 0));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(0, -1));
@@ -73,7 +73,7 @@ class MatrixArrayListTest {
 
     @Test
     void get_IMatrixPosition() throws MatrixIndexOutOfBoundsException, NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
         IMatrixPosition.create(0, 0);
@@ -86,7 +86,7 @@ class MatrixArrayListTest {
 
     @Test
     void get_IMatrixPosition_MatrixIndexOutOfBoundsException() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(-1, 0)));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(0, -1)));
@@ -96,7 +96,7 @@ class MatrixArrayListTest {
 
     @Test
     void set_RowColumnValue() throws MatrixIndexOutOfBoundsException, NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
 
@@ -109,7 +109,7 @@ class MatrixArrayListTest {
 
     @Test
     void set_RowColumnValue_MatrixIndexOutOfBoundsException() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(-1, 0, 1));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(0, -1, 1));
@@ -119,7 +119,7 @@ class MatrixArrayListTest {
 
     @Test
     void set_IMatrixPositionValue() throws MatrixIndexOutOfBoundsException, NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(IMatrixPosition.create(0, 0), 1);
 
@@ -132,7 +132,7 @@ class MatrixArrayListTest {
 
     @Test
     void set_IMatrixPositionValue_MatrixIndexOutOfBoundsException() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(-1, 0), 1));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(0, -1), 1));
@@ -142,7 +142,7 @@ class MatrixArrayListTest {
 
     @Test
     void remove_RowColumn() throws MatrixIndexOutOfBoundsException, NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
 
@@ -155,7 +155,7 @@ class MatrixArrayListTest {
 
     @Test
     void remove_RowColumn_MatrixIndexOutOfBoundsException() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(-1, 0));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(0, -1));
@@ -165,7 +165,7 @@ class MatrixArrayListTest {
 
     @Test
     void remove_IMatrixPosition() throws MatrixIndexOutOfBoundsException, NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
 
@@ -178,7 +178,7 @@ class MatrixArrayListTest {
 
     @Test
     void remove_IMatrixPosition_MatrixIndexOutOfBoundsException() throws NonPositiveValueException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(-1, 0)));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(0, -1)));
@@ -188,7 +188,7 @@ class MatrixArrayListTest {
 
     @Test
     void find() throws NonPositiveValueException, MatrixIndexOutOfBoundsException, NotFoundException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
         matrix.set(0, 1, 2);
@@ -207,7 +207,7 @@ class MatrixArrayListTest {
 
     @Test
     void find_NotFoundException() throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
-        IMatrixArrayList<Integer> matrix = new MatrixArrayList<>(2, 3);
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
 
         matrix.set(0, 0, 1);
         matrix.set(0, 1, 2);
