@@ -111,7 +111,14 @@ public interface IMatrixArrayList<T> {
 
 
 
-    // Todo: Add missing methods in MatrixArrayList.
-    // IMatrixArrayList<T> padColumns();
-    // IMatrixArrayList<T> resize(int rows, int columns);
+    IMatrixArrayList<T> resize(int rows, int columns) throws NonPositiveValueException;
+    IMatrixArrayList<T> insertRows(int amount) throws NonPositiveValueException;
+    IMatrixArrayList<T> insertRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
+
+    IMatrixArrayList<T> insertColumns(int amount) throws NonPositiveValueException;
+    IMatrixArrayList<T> insertColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
+    IMatrixArrayList<T> removeRows(int amount) throws NonPositiveValueException;
+    IMatrixArrayList<T> removeRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
+    IMatrixArrayList<T> removeColumns(int amount) throws NonPositiveValueException;
+    IMatrixArrayList<T> removeColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
 }

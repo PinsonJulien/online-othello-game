@@ -59,6 +59,9 @@ class MatrixArrayListTest {
         matrix.set(1, 2, 2);
 
         assertEquals(2, matrix.get(1, 2));
+
+        matrix.set(1, 2, 3);
+        assertEquals(3, matrix.get(1, 2));
     }
 
     @Test
@@ -67,8 +70,8 @@ class MatrixArrayListTest {
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(-1, 0));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(0, -1));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(2, 0));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(0, 3));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(3, 0));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(0, 4));
     }
 
     @Test
@@ -90,8 +93,8 @@ class MatrixArrayListTest {
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(-1, 0)));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(0, -1)));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(3, 0)));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(0, 2)));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(4, 0)));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.get(IMatrixPosition.create(0, 3)));
     }
 
     @Test
@@ -113,8 +116,8 @@ class MatrixArrayListTest {
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(-1, 0, 1));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(0, -1, 1));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(2, 0, 1));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(0, 3, 1));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(3, 0, 1));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(0, 4, 1));
     }
 
     @Test
@@ -136,8 +139,8 @@ class MatrixArrayListTest {
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(-1, 0), 1));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(0, -1), 1));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(3, 0), 1));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(0, 2), 1));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(4, 0), 1));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.set(IMatrixPosition.create(0, 3), 1));
     }
 
     @Test
@@ -182,8 +185,8 @@ class MatrixArrayListTest {
 
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(-1, 0)));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(0, -1)));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(3, 0)));
-        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(0, 2)));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(4, 0)));
+        assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.remove(IMatrixPosition.create(0, 3)));
     }
 
     @Test
@@ -217,6 +220,70 @@ class MatrixArrayListTest {
         assertThrowsExactly(NotFoundException.class, () -> matrix.find(5));
     }
 
+    @Test
+    void resize() throws NonPositiveValueException {
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
+
+        matrix.resize(3, 4);
+
+        assertEquals(3, matrix.getRows());
+        assertEquals(4, matrix.getColumns());
+
+        matrix.resize(1, 1);
+
+        assertEquals(1, matrix.getRows());
+        assertEquals(1, matrix.getColumns());
+    }
+
+    @Test
+    void resize_NonPositiveValueException() throws NonPositiveValueException {
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
+
+        assertThrowsExactly(NonPositiveValueException.class, () -> matrix.resize(-1, 1));
+        assertThrowsExactly(NonPositiveValueException.class, () -> matrix.resize(1, -1));
+        assertThrowsExactly(NonPositiveValueException.class, () -> matrix.resize(-1, -1));
+    }
+
+    @Test
+    void insertRows() throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(2, 3);
+
+        // set some values
+        matrix.set(0, 0, 1);
+        matrix.set(0, 1, 2);
+        matrix.set(0, 2, 3);
+        matrix.set(1, 0, 4);
+        matrix.set(1, 1, 5);
+        matrix.set(1, 2, 6);
+
+
+        matrix.insertRows(1);
+        assertEquals(3, matrix.getRows());
+        assertEquals(3, matrix.getColumns());
+
+        // check if values are still there
+        assertEquals(1, matrix.get(0, 0));
+        assertEquals(2, matrix.get(0, 1));
+        assertEquals(3, matrix.get(0, 2));
+        assertEquals(4, matrix.get(2, 0));
+        assertEquals(5, matrix.get(2, 1));
+        assertEquals(6, matrix.get(2, 2));
+
+        // check if new row is empty
+        assertNull(matrix.get(1, 0));
+        assertNull(matrix.get(1, 1));
+        assertNull(matrix.get(1, 2));
+
+        matrix = IMatrixArrayList.create();
+
+        matrix.insertRows(1);
+        assertEquals(0, matrix.getRows());
+        assertEquals(0, matrix.getColumns());
+
+        matrix.insertRows(1);
+        assertEquals(1, matrix.getRows());
+        assertEquals(0, matrix.getColumns());
+    }
 
 
 }

@@ -13,19 +13,10 @@ import java.util.ArrayList;
  * @param <T> Any Object
  */
 public class MatrixArrayList<T> implements IMatrixArrayList<T> {
-    private final ArrayList<ArrayList<T>> matrix = new ArrayList<ArrayList<T>>();
-
-    private int rows;
-    private int columns;
+    private final ArrayList<ArrayList<T>> matrix;
 
     public MatrixArrayList() {
-
-        try {
-            this.setRows(0);
-            this.setColumns(0);
-        } catch(NonPositiveValueException e) {
-            // This should never happen.
-        }
+        this.matrix = new ArrayList<ArrayList<T>>();
     }
 
     /**
@@ -36,8 +27,12 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
      * @throws NonPositiveValueException When the given rows or columns are not a positive number.
      */
     public MatrixArrayList(int rows, int columns) throws NonPositiveValueException {
-        this.setRows(rows);
-        this.setColumns(columns);
+        if (rows <= 0)
+            throw new NonPositiveValueException("Rows must be positive");
+        if (columns <= 0)
+            throw new NonPositiveValueException("Columns must be positive");
+
+        this.matrix = new ArrayList<ArrayList<T>>();
 
         for (int i = 0; i < rows; i++) {
             ArrayList<T> column = new ArrayList<T>();
@@ -55,22 +50,7 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
      */
     @Override
     public int getRows() {
-        return this.rows;
-    }
-
-    /**
-     * Set the value of the matrix rows.
-     *
-     * @param rows the number of rows of the matrix, as int.
-     * @return The pointer of the matrix.
-     * @throws NonPositiveValueException When the given value is not positive.
-     */
-    protected IMatrixArrayList<T> setRows(int rows) throws NonPositiveValueException {
-        if (rows < 1) throw new NonPositiveValueException();
-
-        this.rows = rows;
-
-        return this;
+        return this.matrix.size();
     }
 
     /**
@@ -78,22 +58,10 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
      */
     @Override
     public int getColumns() {
-        return this.columns;
-    }
+        if (this.matrix.size() == 0)
+            return 0;
 
-    /**
-     * Set the value of the matrix columns.
-     *
-     * @param columns the number of columns of the matrix, as int.
-     * @return The pointer of the matrix.
-     * @throws NonPositiveValueException When the given value is not positive.
-     */
-    protected IMatrixArrayList<T> setColumns(int columns) throws NonPositiveValueException {
-        if (columns < 1) throw new NonPositiveValueException();
-
-        this.columns = columns;
-
-        return this;
+        return this.matrix.get(0).size();
     }
 
     /**
@@ -206,6 +174,135 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         throw new NotFoundException();
     }
 
+    @Override
+    public IMatrixArrayList<T> resize(int rows, int columns) throws NonPositiveValueException {
+        if (rows < 0 || columns < 0) throw new NonPositiveValueException();
+
+        if (columns > this.getColumns())
+            this.insertColumns(columns - this.getColumns());
+        else if (columns < this.getColumns())
+            this.removeColumns(this.getColumns() - columns);
+
+
+        if (rows > this.getRows())
+            this.insertRows(rows - this.getRows());
+        else if (rows < this.getRows())
+            this.removeRows(this.getRows() - rows);
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> insertRows(int amount) throws NonPositiveValueException {
+        int index = (this.getRows() > 0) ? this.getRows() - 1 : 0;
+
+        try {
+            this.insertRows(amount, index);
+        } catch (MatrixIndexOutOfBoundsException e) {
+            // this should never happen
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> insertRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        if (amount < 1) throw new NonPositiveValueException();
+        this.checkRowBounds(index);
+
+
+        for (int i = 0; i < amount; ++i) {
+            ArrayList<T> row = new ArrayList<T>();
+
+            for (int j = 0; j < this.getColumns(); ++j) {
+                row.add(null);
+            }
+
+            this.matrix.add(index, row);
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> insertColumns(int amount) throws NonPositiveValueException {
+        try {
+            this.insertColumns(amount, this.getColumns());
+        } catch (MatrixIndexOutOfBoundsException e) {
+            // this should never happen
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> insertColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        if (amount < 1) throw new NonPositiveValueException();
+        this.checkBounds(0, index);
+
+        for (int i = 0; i < this.getRows(); ++i) {
+            ArrayList<T> row = this.matrix.get(i);
+
+            for (int j = 0; j < amount; ++j) {
+                row.add(index + j, null);
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> removeRows(int amount) throws NonPositiveValueException {
+        try {
+            this.removeRows(amount, this.getRows());
+        } catch (MatrixIndexOutOfBoundsException e) {
+            // this should never happen
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> removeRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        if (amount < 1) throw new NonPositiveValueException();
+        this.checkBounds(index, 0);
+
+        for (int i = 0; i < amount; ++i) {
+            this.matrix.remove(index);
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> removeColumns(int amount) throws NonPositiveValueException {
+        try {
+            this.removeColumns(amount, this.getColumns());
+        } catch (MatrixIndexOutOfBoundsException e) {
+            // this should never happen
+        }
+
+        return this;
+    }
+
+    @Override
+    public IMatrixArrayList<T> removeColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        int rowSize = this.getRows();
+
+        if (amount < 1) throw new NonPositiveValueException();
+        this.checkBounds(0, index);
+
+        for (int i = 0; i < rowSize; ++i) {
+            ArrayList<T> row = this.matrix.get(i);
+
+            for (int j = 0; j < amount; ++j) {
+                row.remove(index);
+            }
+        }
+
+        return this;
+    }
+
     /**
      * Checks if the given row and columns are within bounds of the matrix.
      *
@@ -214,12 +311,32 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
      * @throws MatrixIndexOutOfBoundsException When the row and column are not within the bounds of the matrix.
      */
     protected void checkBounds(int row, int column) throws MatrixIndexOutOfBoundsException {
+        this.checkRowBounds(row);
+        this.checkColumnBounds(column);
+    }
+
+    /**
+     * Checks if the given row is within bounds of the matrix.
+     *
+     * @param row int
+     * @throws MatrixIndexOutOfBoundsException When the row is not within the bounds of the matrix.
+     */
+    protected void checkRowBounds(int row) throws MatrixIndexOutOfBoundsException {
         int rowSize = this.matrix.size();
 
         if (row < 0 || row >= rowSize)
             throw new MatrixIndexOutOfBoundsException("The row must be within the matrix bounds.");
+    }
 
-        int colSize = this.matrix.get(row).size();
+    /**
+     * Checks if the given column is within bounds of the matrix.
+     *
+     * @param column int
+     * @throws MatrixIndexOutOfBoundsException When the column is not within the bounds of the matrix.
+     */
+    protected void checkColumnBounds(int column) throws MatrixIndexOutOfBoundsException {
+        int colSize = this.matrix.get(0).size();
+
         if (column < 0 || column >= colSize)
             throw new MatrixIndexOutOfBoundsException("The column must be within the matrix bounds.");
     }
