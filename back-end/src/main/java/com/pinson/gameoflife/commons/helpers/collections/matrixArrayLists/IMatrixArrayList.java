@@ -3,7 +3,7 @@ package com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists;
 import com.pinson.gameoflife.commons.exceptions.NonPositiveValueException;
 import com.pinson.gameoflife.commons.exceptions.NotFoundException;
 import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
-import com.pinson.gameoflife.commons.helpers.positions.MatrixPositions.IMatrixPosition;
+import com.pinson.gameoflife.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
 /**
  * @param <T> Any Object
