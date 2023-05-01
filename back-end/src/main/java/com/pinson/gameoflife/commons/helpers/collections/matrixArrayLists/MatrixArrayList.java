@@ -15,6 +15,9 @@ import java.util.ArrayList;
 public class MatrixArrayList<T> implements IMatrixArrayList<T> {
     private final ArrayList<ArrayList<T>> matrix;
 
+    /**
+     * Instantiate a MatrixArrayList without a specific size.
+     */
     public MatrixArrayList() {
         this.matrix = new ArrayList<ArrayList<T>>();
     }
@@ -174,9 +177,22 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         throw new NotFoundException();
     }
 
+    /**
+     * Resize the matrix to the given size.
+     * If the given size is smaller than the current size, the matrix will be truncated.
+     * If the given size is bigger than the current size, the matrix will be filled with null values.
+     *
+     * @param rows int
+     * @param columns int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given rows or columns sizes are not positive.
+     */
     @Override
     public IMatrixArrayList<T> resize(int rows, int columns) throws NonPositiveValueException {
-        if (rows < 0 || columns < 0) throw new NonPositiveValueException();
+        if (rows < 0)
+            throw new NonPositiveValueException("Rows must be positive");
+        if (columns < 0)
+            throw new NonPositiveValueException("Columns must be positive");
 
         if (columns > this.getColumns())
             this.insertColumns(columns - this.getColumns());
@@ -192,6 +208,14 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Insert a given amount of rows at the end of the matrix.
+     * The inserted rows will be filled with columns of null values.
+     *
+     * @param amount int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     */
     @Override
     public IMatrixArrayList<T> insertRows(int amount) throws NonPositiveValueException {
         try {
@@ -203,6 +227,16 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Insert a given amount of columns at the end of the matrix
+     * The inserted rows will be filled with columns of null values.
+     *
+     * @param amount int
+     * @param index int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     * @throws MatrixIndexOutOfBoundsException When the given index is out of bounds.
+     */
     @Override
     public IMatrixArrayList<T> insertRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
         if (amount < 1) throw new NonPositiveValueException();
@@ -231,6 +265,14 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Insert a given amount of columns at the end of each rows of the matrix
+     * The inserted columns will be filled with null values.
+     *
+     * @param amount int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     */
     @Override
     public IMatrixArrayList<T> insertColumns(int amount) throws NonPositiveValueException {
         try {
@@ -242,6 +284,16 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Insert a given amount of columns at the end of each rows of the matrix
+     * The inserted columns will be filled with null values.
+     *
+     * @param amount int
+     * @param index int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     * @throws MatrixIndexOutOfBoundsException When the given index is out of bounds.
+     */
     @Override
     public IMatrixArrayList<T> insertColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
         if (amount < 1) throw new NonPositiveValueException();
@@ -268,6 +320,13 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Remove a given amount of rows at the end of the matrix.
+     *
+     * @param amount int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     */
     @Override
     public IMatrixArrayList<T> removeRows(int amount) throws NonPositiveValueException {
         try {
@@ -279,6 +338,15 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Remove a given amount of rows at a specified index of the matrix.
+     *
+     * @param amount int
+     * @param index int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     * @throws MatrixIndexOutOfBoundsException When the given index is out of bounds.
+     */
     @Override
     public IMatrixArrayList<T> removeRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
         int rowSize = this.getRows();
@@ -301,6 +369,13 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Remove a given amount of columns at the end of each rows of the matrix.
+     *
+     * @param amount int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     */
     @Override
     public IMatrixArrayList<T> removeColumns(int amount) throws NonPositiveValueException {
         try {
@@ -312,6 +387,15 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         return this;
     }
 
+    /**
+     * Remove a given amount of columns at a specified index of each rows of the matrix.
+     *
+     * @param amount int
+     * @param index int
+     * @return The pointer of the matrix.
+     * @throws NonPositiveValueException When the given amount is not positive.
+     * @throws MatrixIndexOutOfBoundsException When the given index is out of bounds.
+     */
     @Override
     public IMatrixArrayList<T> removeColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
         int rowSize = this.getRows();
