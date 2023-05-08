@@ -1,7 +1,5 @@
 package com.pinson.gameoflife.commons.entities.positions.MatrixPositions;
 
-import com.pinson.gameoflife.commons.entities.positions.MatrixPositions.IMatrixPosition;
-import com.pinson.gameoflife.commons.entities.positions.MatrixPositions.MatrixPosition;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,12 +1,19 @@
 package com.pinson.gameoflife.commons.entities.grids;
 
-import com.pinson.gameoflife.commons.entities.cells.ICell;
+import com.pinson.gameoflife.commons.entities.tiles.ITile;
+import com.pinson.gameoflife.commons.entities.positions.MatrixPositions.IMatrixPosition;
+import com.pinson.gameoflife.commons.exceptions.NonPositiveValueException;
+import com.pinson.gameoflife.commons.exceptions.NotFoundException;
 import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.IMatrixArrayList;
 import com.pinson.gameoflife.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
-public class Grid<T extends ICell> implements IGrid<T> {
+public class Grid<T extends ITile> implements IGrid<T> {
 
-    private IMatrixArrayList<T> cells;
+    private final IMatrixArrayList<T> cells;
+
+    public Grid(int rows, int columns) throws NonPositiveValueException {
+        this.cells = IMatrixArrayList.create(rows, columns);
+    }
 
     @Override
     public int getRows() {
@@ -33,6 +40,11 @@ public class Grid<T extends ICell> implements IGrid<T> {
         this.cells.set(row, column, cell);
 
         return this;
+    }
+
+    @Override
+    public IMatrixPosition<Integer> findCell(T cell) throws NotFoundException {
+        return this.cells.find(cell);
     }
 
     // todo: getCircularNeighbours
