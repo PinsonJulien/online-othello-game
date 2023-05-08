@@ -47,12 +47,4 @@ public class Grid<T extends ITile> implements IGrid<T> {
         return this.cells.find(cell);
     }
 
-    // todo: getCircularNeighbours
-    // todo: getSquaredNeighbours using getRectangularNeighbours
-    // todo: getPerpendicularNeighbours (or better name for typical cross) (+)
-    // todo: getDiagonalNeighbours (X)
-    // todo: getRectangularNeighbours
-    // todo: getTriangularNeighbours
-    // todo: getHexagonalNeighbours
-
 }

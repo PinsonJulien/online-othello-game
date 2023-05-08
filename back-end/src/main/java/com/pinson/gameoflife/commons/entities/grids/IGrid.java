@@ -19,4 +19,13 @@ public interface IGrid<T extends ITile> {
     IGrid<T> setCellAt(int row, int column, T cell) throws MatrixIndexOutOfBoundsException;
 
     IMatrixPosition<Integer> findCell(T cell) throws NotFoundException;
+
+    // todo: getCircularNeighbours
+    // todo: getSquaredNeighbours using getRectangularNeighbours
+    // todo: getPerpendicularNeighbours (or better name for typical cross) (+)
+    // todo: getDiagonalNeighbours (X)
+    // todo: getRectangularNeighbours
+    // todo: getTriangularNeighbours
+    // todo: getHexagonalNeighbours
+
 }
