@@ -7,4 +7,6 @@ cd back-end
 
 docker-compose up -d
 
-
+base account: test / test
+Can be changed in 
+src/main/resources/application.properties
