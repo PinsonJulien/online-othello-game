@@ -5,6 +5,8 @@ import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
+import java.util.List;
+
 /**
  * @param <T> Any Object
  */
@@ -28,7 +30,11 @@ public interface IMatrixArrayList<T> {
      * @throws NonPositiveValueException When the given rows or columns are not a positive number.
      */
     static <T> IMatrixArrayList<T> create(int rows, int columns) throws NonPositiveValueException {
-        return new MatrixArrayList<>(rows, columns);
+        return new MatrixArrayList<T>(rows, columns);
+    }
+
+    static <T> IMatrixArrayList<T> create(int rows, int columns, List<T> elements) throws NonPositiveValueException {
+        return new MatrixArrayList<T>(rows, columns, elements);
     }
 
     /**
@@ -121,4 +127,6 @@ public interface IMatrixArrayList<T> {
     IMatrixArrayList<T> removeRows(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
     IMatrixArrayList<T> removeColumns(int amount) throws NonPositiveValueException;
     IMatrixArrayList<T> removeColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
+
+    List<T> toList();
 }
