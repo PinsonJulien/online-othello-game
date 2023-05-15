@@ -6,6 +6,8 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exception
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ArrayList of ArrayList.
@@ -42,6 +44,38 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
 
             for (int j = 0; j < columns; j++) {
                 column.add(null);
+            }
+
+            this.matrix.add(column);
+        }
+    }
+
+    /**
+     * Instantiate a MatrixArrayList with a default size and a list of elements to insert.
+     * If the list of elements is smaller than the matrix, the remaining elements will be null.
+     *
+     * @param rows int
+     * @param columns int
+     * @param elements List<T> of elements to insert.
+     * @throws NonPositiveValueException When the given rows or columns are not a positive number.
+     */
+    public MatrixArrayList(int rows, int columns, List<T> elements) throws NonPositiveValueException {
+        if (rows <= 0)
+            throw new NonPositiveValueException("Rows must be positive");
+        if (columns <= 0)
+            throw new NonPositiveValueException("Columns must be positive");
+
+        this.matrix = new ArrayList<ArrayList<T>>();
+
+        for (int i = 0; i < rows; i++) {
+            ArrayList<T> column = new ArrayList<T>();
+
+            for (int j = 0; j < columns; j++) {
+                try {
+                    column.add(elements.get(i * columns + j));
+                } catch (IndexOutOfBoundsException e) {
+                    column.add(null);
+                }
             }
 
             this.matrix.add(column);
@@ -423,6 +457,16 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         }
 
         return this;
+    }
+
+    /**
+     * Returns the MatrixArrayList as a List.
+     *
+     * @return List<T> The MatrixArrayList as a List.
+     */
+    @Override
+    public List<T> toList() {
+        return this.matrix.stream().flatMap(List::stream).collect(Collectors.toList());
     }
 
     /**

@@ -6,6 +6,8 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exception
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MatrixArrayListTest {
@@ -32,6 +34,30 @@ class MatrixArrayListTest {
         assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(-1, 3));
         assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(2, -3));
         assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(-1, -3));
+    }
+
+    @Test
+    public void constructor_RowsColumnsElements() throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(3, 3, List.of(1, 2, 3, 4, 5, 6));
+
+        assertEquals(3, matrix.getRows());
+        assertEquals(3, matrix.getColumns());
+        assertEquals(1, matrix.get(0, 0));
+        assertEquals(2, matrix.get(0, 1));
+        assertEquals(3, matrix.get(0, 2));
+        assertEquals(4, matrix.get(1, 0));
+        assertEquals(5, matrix.get(1, 1));
+        assertEquals(6, matrix.get(1, 2));
+        assertNull(matrix.get(2, 0));
+        assertNull(matrix.get(2, 1));
+        assertNull(matrix.get(2, 2));
+    }
+
+    @Test
+    public void constructor_RowsColumnsElements_NonPositiveValueException() {
+        assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(-1, 3, List.of(1, 2, 3, 4, 5, 6)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(2, -3, List.of(1, 2, 3, 4, 5, 6)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IMatrixArrayList.create(-1, -3, List.of(1, 2, 3, 4, 5, 6)));
     }
 
     @Test
@@ -756,5 +782,23 @@ class MatrixArrayListTest {
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.removeColumns(1, -1));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.removeColumns(1, -3));
         assertThrowsExactly(MatrixIndexOutOfBoundsException.class, () -> matrix.removeColumns(1, -99));
+    }
+
+    @Test
+    void toList() throws NonPositiveValueException {
+        IMatrixArrayList<Integer> matrix = IMatrixArrayList.create(3, 3, List.of(1, 2, 3, 4, 5, 6));
+
+        List<Integer> list = matrix.toList();
+
+        assertEquals(9, list.size());
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(3, list.get(2));
+        assertEquals(4, list.get(3));
+        assertEquals(5, list.get(4));
+        assertEquals(6, list.get(5));
+        assertNull(list.get(6));
+        assertNull(list.get(7));
+        assertNull(list.get(8));
     }
 }
