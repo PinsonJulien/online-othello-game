@@ -10,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.util.Set;
 
 @Entity
-@Table(name = "games")
 public class Game implements IGame {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +20,7 @@ public class Game implements IGame {
     private GameStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "winner_id")
+    @JoinColumn(name = "othello_player_id")
     private OthelloPlayer winner;
 
     @OneToMany(mappedBy = "game")

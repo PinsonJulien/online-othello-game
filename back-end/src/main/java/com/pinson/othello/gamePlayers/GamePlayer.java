@@ -1,10 +1,10 @@
 package com.pinson.othello.gamePlayers;
 
 import com.pinson.othello.games.Game;
+import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "game_players")
 public class GamePlayer {
 
     @Id
@@ -16,8 +16,8 @@ public class GamePlayer {
     private Game game;
 
     @ManyToOne
-    @JoinColumn(name = "player_id", nullable = false)
-    private GamePlayer player;
+    @JoinColumn(name = "othello_player_id", nullable = false)
+    private OthelloPlayer player;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "player_color", nullable = false)
@@ -43,11 +43,11 @@ public class GamePlayer {
         this.game = game;
     }
 
-    public GamePlayer getPlayer() {
+    public OthelloPlayer getPlayer() {
         return player;
     }
 
-    public void setPlayer(GamePlayer player) {
+    public void setPlayer(OthelloPlayer player) {
         this.player = player;
     }
 

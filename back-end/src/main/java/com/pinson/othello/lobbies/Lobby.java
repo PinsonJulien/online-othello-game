@@ -9,6 +9,7 @@ import java.util.List;
 public class Lobby implements ILobby {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "lobby")
