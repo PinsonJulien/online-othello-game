@@ -1,6 +1,6 @@
 package com.pinson.othello.gamePlayers;
 
-import com.pinson.othello.games.Game;
+import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 
@@ -13,7 +13,7 @@ public class GamePlayer {
 
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
-    private Game game;
+    private OthelloGame game;
 
     @ManyToOne
     @JoinColumn(name = "othello_player_id", nullable = false)
@@ -35,11 +35,11 @@ public class GamePlayer {
         return id;
     }
 
-    public Game getGame() {
+    public OthelloGame getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(OthelloGame game) {
         this.game = game;
     }
 

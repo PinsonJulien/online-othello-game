@@ -1,6 +1,6 @@
 package com.pinson.othello.games;
 
-public enum GameStatus {
+public enum OthelloGameStatus {
     IN_PROGRESS,
     FINISHED
 }

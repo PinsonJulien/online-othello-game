@@ -1,13 +1,13 @@
 package com.pinson.othello.moves;
 
-import com.pinson.othello.games.Game;
+import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "moves")
-public class Move {
+public class OthelloMove implements IOthelloMove {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +15,7 @@ public class Move {
 
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
-    private Game game;
+    private OthelloGame game;
 
     @ManyToOne
     @JoinColumn(name = "player_id", nullable = false)
@@ -31,7 +31,7 @@ public class Move {
     @Column(name = "created_at", nullable = false)
     private Long createdAt;
 
-    public Move() {
+    public OthelloMove() {
         //
     }
 
@@ -43,11 +43,11 @@ public class Move {
         return id;
     }
 
-    public Game getGame() {
+    public OthelloGame getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(OthelloGame game) {
         this.game = game;
     }
 
