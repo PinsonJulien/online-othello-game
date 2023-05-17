@@ -3,8 +3,8 @@ package com.pinson.othello.commons.entities.tiles;
 import com.pinson.othello.commons.entities.pieces.IPiece;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
-public class Tile implements ITile {
-    private IPiece piece;
+public class Tile<T extends IPiece<ITile<T>>> implements ITile<T> {
+    private T piece;
     private final IMatrixPosition<Integer> position;
 
     public Tile(IMatrixPosition<Integer> position) {
@@ -18,15 +18,15 @@ public class Tile implements ITile {
     }
 
     @Override
-    public IPiece getPiece() {
+    public T getPiece() {
         return this.piece;
     }
 
     @Override
-    public ITile setPiece(IPiece piece) {
+    public ITile<T> setPiece(T piece) {
         this.piece = piece;
-        if (this.piece.getCell() != this)
-            this.piece.setCell(this);
+        if (this.piece.getTile() != this)
+            this.piece.setTile(this);
 
         return this;
     }

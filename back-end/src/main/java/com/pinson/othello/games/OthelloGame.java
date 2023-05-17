@@ -2,6 +2,7 @@ package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.Game;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
+import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.GamePlayer;
 import com.pinson.othello.grids.IOthelloGrid;
@@ -14,6 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Set;
 
 @Entity
@@ -133,13 +135,20 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     // Implemented methods.
 
     @Override
-    public void playMove(int x, int y, IOthelloDisk piece) {
+    public void playMove(int x, int y, IOthelloDisk piece) throws MatrixIndexOutOfBoundsException {
+        ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(y, x);
+
+        for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+            for (IOthelloTile adjacentTile : adjacentTileRow) {
+                if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getPlayer() != piece.getPlayer()) {
+
+                }
 
     }
 
     @Override
-    public void playMove(IMatrixPosition<Integer> position, IOthelloDisk piece) {
-
+    public void playMove(IMatrixPosition<Integer> position, IOthelloDisk piece) throws MatrixIndexOutOfBoundsException {
+        this.playMove(position.getX(), position.getY(), piece);
     }
 
     @Override
@@ -149,6 +158,11 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @Override
     public IOthelloPlayer getCurrentTurnPlayer() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player) {
         return null;
     }
 

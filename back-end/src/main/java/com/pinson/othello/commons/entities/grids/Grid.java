@@ -416,4 +416,45 @@ public class Grid<T extends ITile> implements IGrid<T> {
         return neighbours;
     }
 
+    @Override
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getAdjacentNeighbours(this.findCell(cell));
+    }
+
+    @Override
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException {
+        return this.getAdjacentNeighbours(position.getY(), position.getX());
+    }
+
+    @Override
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException {
+        return this.getAdjacentNeighbours(row, column, Math.min(row, column));
+    }
+
+    @Override
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getAdjacentNeighbours(this.findCell(cell), distance);
+    }
+
+    @Override
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException {
+        return this.getAdjacentNeighbours(position.getY(), position.getX(), distance);
+    }
+
+    @Override
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException {
+        ArrayList<ArrayList<T>> neighbours = new ArrayList<>();
+
+        neighbours.add(this.getNorthNeighbours(row, column, distance));
+        neighbours.add(this.getNorthEastNeighbours(row, column, distance));
+        neighbours.add(this.getEastNeighbours(row, column, distance));
+        neighbours.add(this.getSouthEastNeighbours(row, column, distance));
+        neighbours.add(this.getSouthNeighbours(row, column, distance));
+        neighbours.add(this.getSouthWestNeighbours(row, column, distance));
+        neighbours.add(this.getWestNeighbours(row, column, distance));
+        neighbours.add(this.getNorthWestNeighbours(row, column, distance));
+
+        return neighbours;
+    }
+
 }

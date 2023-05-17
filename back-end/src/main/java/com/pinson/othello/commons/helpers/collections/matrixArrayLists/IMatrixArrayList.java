@@ -5,6 +5,8 @@ import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -129,4 +131,6 @@ public interface IMatrixArrayList<T> {
     IMatrixArrayList<T> removeColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
 
     List<T> toList();
+
+    Iterator<ArrayList<T>> iterator();
 }

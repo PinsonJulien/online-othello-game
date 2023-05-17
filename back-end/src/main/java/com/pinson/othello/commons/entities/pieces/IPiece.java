@@ -2,16 +2,16 @@ package com.pinson.othello.commons.entities.pieces;
 
 import com.pinson.othello.commons.entities.tiles.ITile;
 
-public interface IPiece {
+public interface IPiece<T extends ITile<?>> {
 
-    static IPiece create() {
-        return new Piece();
+    static <T extends ITile<?>> IPiece<T> create() {
+        return new Piece<>();
     }
 
-    static IPiece create(ITile cell) {
-        return new Piece(cell);
+    static <T extends ITile<?>> IPiece<T> create(T cell) {
+        return new Piece<>(cell);
     }
 
-    ITile getCell();
-    IPiece setCell(ITile cell);
+    T getTile();
+    IPiece<T> setTile(T cell);
 }

@@ -6,6 +6,7 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exception
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -505,6 +506,15 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
 
         if (column < 0 || column >= colSize)
             throw new MatrixIndexOutOfBoundsException("The column must be within the matrix bounds.");
+    }
+
+    /**
+     * Allows the MatrixArrayList to be iterated over.
+     *
+     * @return Iterator<ArrayList<T>> The iterator.
+     */
+    public Iterator<ArrayList<T>> iterator() {
+        return this.matrix.iterator();
     }
 
     // Todo: clone method.

@@ -9,12 +9,15 @@ import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.tiles.IOthelloTile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Set;
 
 public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthelloDisk> {
     void skipMove();
 
     IOthelloPlayer getCurrentTurnPlayer();
+
+    ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player);
 
     // Getters and Setters
 

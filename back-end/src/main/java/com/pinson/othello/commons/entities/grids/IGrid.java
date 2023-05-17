@@ -78,7 +78,13 @@ public interface IGrid<T extends ITile> {
     ArrayList<T> getNorthWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
     ArrayList<T> getNorthWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
+    ArrayList<ArrayList<T>> getAdjacentNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
 
+    ArrayList<ArrayList<T>> getAdjacentNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
     // todo: getCircularNeighbours
     // todo: getSquaredNeighbours using getRectangularNeighbours
