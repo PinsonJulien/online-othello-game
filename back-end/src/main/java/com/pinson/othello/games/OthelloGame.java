@@ -4,7 +4,9 @@ import com.pinson.othello.commons.entities.games.Game;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
-import com.pinson.othello.gamePlayers.GamePlayer;
+import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.grids.IOthelloGrid;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
@@ -33,7 +35,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     private OthelloPlayer winner;
 
     @OneToMany(mappedBy = "game")
-    private Set<GamePlayer> gamePlayers;
+    private Set<OthelloGamePlayer> gamePlayers;
 
     @OneToMany(mappedBy = "game")
     private Set<OthelloMove> moves;
@@ -85,12 +87,12 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public Set<GamePlayer> getGamePlayers() {
+    public Set<OthelloGamePlayer> getGamePlayers() {
         return this.gamePlayers;
     }
 
     @Override
-    public IOthelloGame setGamePlayers(Set<GamePlayer> gamePlayers) {
+    public IOthelloGame setGamePlayers(Set<OthelloGamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
 
         return this;
@@ -158,12 +160,29 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloPlayer getCurrentTurnPlayer() {
+    public IOthelloGamePlayer getCurrentTurnPlayer() {
+
+        // calculate the current turn player based on the number of moves played.
+        int numberOfMovesPlayed = this.getMoves().size();
+        int numberOfPlayers = this.getGamePlayers().size();
+
+        if (numberOfMovesPlayed == 0)
+            return this.getGamePlayers().stream().findFirst().orElse(null);
+
+        if (numberOfMovesPlayed % numberOfPlayers == 0)
+            return this.getGamePlayers().stream().findFirst().orElse(null);
+        
+
         return null;
     }
 
     @Override
     public ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player) {
+        IOthelloPlayer currentPlayer = this.getCurrentTurnPlayer();
+        OthelloGamePlayerColor currentPlayerColor = currentPlayer.getColor();
+
+
+
         return null;
     }
 

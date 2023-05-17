@@ -2,7 +2,7 @@ package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.IGame;
 import com.pinson.othello.disks.IOthelloDisk;
-import com.pinson.othello.gamePlayers.GamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.grids.IOthelloGrid;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
@@ -30,8 +30,8 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
     IOthelloPlayer getWinner();
     IOthelloGame setWinner(IOthelloPlayer winner);
 
-    Set<GamePlayer> getGamePlayers();
-    IOthelloGame setGamePlayers(Set<GamePlayer> gamePlayers);
+    Set<OthelloGamePlayer> getGamePlayers();
+    IOthelloGame setGamePlayers(Set<OthelloGamePlayer> gamePlayers);
 
     Set<OthelloMove> getMoves();
     IOthelloGame setMoves(Set<OthelloMove> moves);

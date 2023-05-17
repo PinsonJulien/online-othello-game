@@ -1,6 +1,6 @@
 package com.pinson.othello.gamePlayers;
 
-public enum GamePlayerColor {
+public enum OthelloGamePlayerColor {
     BLACK,
     WHITE
 }

@@ -5,7 +5,7 @@ import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 
 @Entity
-public class GamePlayer {
+public class OthelloGamePlayer implements IOthelloGamePlayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,42 +21,58 @@ public class GamePlayer {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "player_color", nullable = false)
-    private GamePlayerColor playerColor;
+    private OthelloGamePlayerColor playerColor;
 
-    public GamePlayer() {
+    public OthelloGamePlayer() {
         //
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
+    public IOthelloGamePlayer setId(Long id) {
+        this.id = id;
+
+        return this;
+    }
+
+    @Override
     public OthelloGame getGame() {
         return game;
     }
 
-    public void setGame(OthelloGame game) {
+    @Override
+    public IOthelloGamePlayer setGame(OthelloGame game) {
         this.game = game;
+
+        return this;
     }
 
+    @Override
     public OthelloPlayer getPlayer() {
         return player;
     }
 
-    public void setPlayer(OthelloPlayer player) {
+    @Override
+    public IOthelloGamePlayer setPlayer(OthelloPlayer player) {
         this.player = player;
+
+        return this;
     }
 
-    public GamePlayerColor getPlayerColor() {
+    @Override
+    public OthelloGamePlayerColor getPlayerColor() {
         return playerColor;
     }
 
-    public void setPlayerColor(GamePlayerColor playerColor) {
+    @Override
+    public IOthelloGamePlayer setPlayerColor(OthelloGamePlayerColor playerColor) {
         this.playerColor = playerColor;
+
+        return this;
     }
 
 }
