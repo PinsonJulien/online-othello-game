@@ -9,49 +9,49 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exception
 
 import java.util.ArrayList;
 
-public class Grid<T extends ITile> implements IGrid<T> {
+public abstract class Grid<T extends ITile<?, ?>> implements IGrid<T> {
 
-    private final IMatrixArrayList<T> cells;
+    private final IMatrixArrayList<T> tiles;
 
     public Grid(int rows, int columns) throws NonPositiveValueException {
-        this.cells = IMatrixArrayList.create(rows, columns);
+        this.tiles = IMatrixArrayList.create(rows, columns);
     }
 
     @Override
     public int getRows() {
-        return this.cells.getRows();
+        return this.tiles.getRows();
     }
 
     @Override
     public int getColumns() {
-        return this.cells.getColumns();
+        return this.tiles.getColumns();
     }
 
     @Override
-    public IMatrixArrayList<T> getCells() {
-        return this.cells;
+    public IMatrixArrayList<T> getTiles() {
+        return this.tiles;
     }
 
     @Override
-    public T getCellAt(int row, int column) throws MatrixIndexOutOfBoundsException {
-        return this.cells.get(row, column);
+    public T getTileAt(int row, int column) throws MatrixIndexOutOfBoundsException {
+        return this.tiles.get(row, column);
     }
 
     @Override
-    public IGrid<T> setCellAt(int row, int column, T cell) throws MatrixIndexOutOfBoundsException {
-        this.cells.set(row, column, cell);
+    public IGrid<T> setTileAt(int row, int column, T tile) throws MatrixIndexOutOfBoundsException {
+        this.tiles.set(row, column, tile);
 
         return this;
     }
 
     @Override
-    public IMatrixPosition<Integer> findCell(T cell) throws NotFoundException {
-        return this.cells.find(cell);
+    public IMatrixPosition<Integer> findTile(T tile) throws NotFoundException {
+        return this.tiles.find(tile);
     }
 
     @Override
-    public ArrayList<T> getNorthNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getNorthNeighbours(this.findCell(cell));
+    public ArrayList<T> getNorthNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getNorthNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -65,8 +65,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getNorthNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getNorthNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getNorthNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getNorthNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -81,18 +81,18 @@ public class Grid<T extends ITile> implements IGrid<T> {
         if (row <= 0 || distance <= 0)
             return neighbours;
 
-        // get all the neighbours in the north direction of the cell, within the limit and the distance
+        // get all the neighbours in the north direction of the tile, within the limit and the distance
         int len = row - distance;
         for (int i = row - 1; i >= 0 && i >= len; i--) {
-            neighbours.add(this.getCellAt(i, column));
+            neighbours.add(this.getTileAt(i, column));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getEastNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getEastNeighbours(this.findCell(cell));
+    public ArrayList<T> getEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getEastNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -106,8 +106,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getEastNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getEastNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getEastNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -131,15 +131,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
         }
 
         for (int i = column + 1; i <= len; i++) {
-            neighbours.add(this.cells.get(row, i));
+            neighbours.add(this.tiles.get(row, i));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getSouthNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getSouthNeighbours(this.findCell(cell));
+    public ArrayList<T> getSouthNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getSouthNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -153,8 +153,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getSouthNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getSouthNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getSouthNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getSouthNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -177,15 +177,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
         }
 
         for (int i = row + 1; i <= len; i++) {
-            neighbours.add(this.cells.get(i, column));
+            neighbours.add(this.tiles.get(i, column));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getWestNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getWestNeighbours(this.findCell(cell));
+    public ArrayList<T> getWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getWestNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -199,8 +199,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getWestNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getWestNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getWestNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -218,15 +218,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
         int len = column - distance;
 
         for (int i = column - 1; i >= 0 && i >= len; i--) {
-            neighbours.add(this.cells.get(row, i));
+            neighbours.add(this.tiles.get(row, i));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getNorthEastNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getNorthEastNeighbours(this.findCell(cell));
+    public ArrayList<T> getNorthEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getNorthEastNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -240,8 +240,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getNorthEastNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getNorthEastNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getNorthEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getNorthEastNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -266,15 +266,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
             len = Math.min(rows - 1 - row, columns - 1 - column);
 
         for (int i = 1; i <= len; i++) {
-            neighbours.add(this.cells.get(row - i, column + i));
+            neighbours.add(this.tiles.get(row - i, column + i));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getSouthEastNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getSouthEastNeighbours(this.findCell(cell));
+    public ArrayList<T> getSouthEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getSouthEastNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -288,8 +288,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getSouthEastNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getSouthEastNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getSouthEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getSouthEastNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -314,15 +314,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
             len = Math.min(row, column);
 
         for (int i = 1; i <= len; i++) {
-            neighbours.add(this.cells.get(row + i, column + i));
+            neighbours.add(this.tiles.get(row + i, column + i));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getSouthWestNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getSouthWestNeighbours(this.findCell(cell));
+    public ArrayList<T> getSouthWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getSouthWestNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -336,8 +336,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getSouthWestNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getSouthWestNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getSouthWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getSouthWestNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -362,15 +362,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
             len = Math.min(row, columns - column - 1);
 
         for (int i = 1; i <= len; i++) {
-            neighbours.add(this.cells.get(row + i, column - i));
+            neighbours.add(this.tiles.get(row + i, column - i));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<T> getNorthWestNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getNorthWestNeighbours(this.findCell(cell));
+    public ArrayList<T> getNorthWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getNorthWestNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -384,8 +384,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<T> getNorthWestNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getNorthWestNeighbours(this.findCell(cell), distance);
+    public ArrayList<T> getNorthWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getNorthWestNeighbours(this.findTile(tile), distance);
     }
 
     @Override
@@ -410,15 +410,15 @@ public class Grid<T extends ITile> implements IGrid<T> {
             len = Math.min(rows - row - 1, columns - column - 1);
 
         for (int i = 1; i <= len; i++) {
-            neighbours.add(this.cells.get(row - i, column - i));
+            neighbours.add(this.tiles.get(row - i, column - i));
         }
 
         return neighbours;
     }
 
     @Override
-    public ArrayList<ArrayList<T>> getAdjacentNeighbours(T cell) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getAdjacentNeighbours(this.findCell(cell));
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getAdjacentNeighbours(this.findTile(tile));
     }
 
     @Override
@@ -432,8 +432,8 @@ public class Grid<T extends ITile> implements IGrid<T> {
     }
 
     @Override
-    public ArrayList<ArrayList<T>> getAdjacentNeighbours(T cell, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
-        return this.getAdjacentNeighbours(this.findCell(cell), distance);
+    public ArrayList<ArrayList<T>> getAdjacentNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException {
+        return this.getAdjacentNeighbours(this.findTile(tile), distance);
     }
 
     @Override

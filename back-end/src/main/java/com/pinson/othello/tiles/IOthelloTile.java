@@ -4,7 +4,7 @@ import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosi
 import com.pinson.othello.commons.entities.tiles.ITile;
 import com.pinson.othello.disks.IOthelloDisk;
 
-public interface IOthelloTile extends ITile<IOthelloDisk> {
+public interface IOthelloTile extends ITile<IOthelloDisk, IOthelloTile> {
 
     static IOthelloTile create(IMatrixPosition<Integer> position) {
         return new OthelloTile(position);

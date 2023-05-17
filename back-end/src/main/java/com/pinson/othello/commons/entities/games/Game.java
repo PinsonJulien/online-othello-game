@@ -6,7 +6,7 @@ import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosi
 import com.pinson.othello.commons.entities.tiles.ITile;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
-public abstract class Game<T extends ITile,  G extends IGrid<T>, P extends IPiece> implements IGame<T, G, P> {
+public abstract class Game<T extends ITile<?, ?>,  G extends IGrid<T>, P extends IPiece<?, ?>> implements IGame<T, G, P> {
 
     private G grid;
 

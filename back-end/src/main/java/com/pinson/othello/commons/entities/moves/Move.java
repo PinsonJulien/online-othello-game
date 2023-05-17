@@ -1,4 +1,4 @@
 package com.pinson.othello.commons.entities.moves;
 
-public class Move implements IMove {
+public abstract class Move implements IMove {
 }

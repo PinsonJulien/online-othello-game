@@ -1,4 +1,5 @@
 package com.pinson.othello.commons.entities.players;
 
-public class Player implements IPlayer {
+public abstract class Player implements IPlayer {
+
 }

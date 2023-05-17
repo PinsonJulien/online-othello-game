@@ -2,7 +2,7 @@ package com.pinson.othello.commons.entities.pieces;
 
 import com.pinson.othello.commons.entities.tiles.ITile;
 
-public class Piece<T extends ITile<Piece<T>>> implements IPiece<T> {
+public abstract class Piece<T extends ITile<P, T>, P extends IPiece<T, P>> implements IPiece<T, P> {
     private T tile;
 
     public Piece() {
@@ -19,11 +19,16 @@ public class Piece<T extends ITile<Piece<T>>> implements IPiece<T> {
     }
 
     @Override
-    public IPiece<T> setTile(T cell) {
-        this.tile = cell;
+    public P setTile(T tile) {
+        this.tile = tile;
         if (this.tile.getPiece() != this)
-            this.tile.setPiece(this);
+            this.tile.setPiece(this.self());
 
-        return this;
+        return this.self();
+    }
+
+    @SuppressWarnings("unchecked")
+    private P self() {
+        return (P) this;
     }
 }

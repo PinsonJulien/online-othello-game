@@ -140,10 +140,11 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
             for (IOthelloTile adjacentTile : adjacentTileRow) {
-                if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getPlayer() != piece.getPlayer()) {
+                if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getOwner() != piece.getOwner()) {
 
                 }
-
+            }
+        }
     }
 
     @Override

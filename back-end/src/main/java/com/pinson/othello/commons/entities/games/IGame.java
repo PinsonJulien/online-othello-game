@@ -6,7 +6,7 @@ import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosi
 import com.pinson.othello.commons.entities.tiles.ITile;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
-public interface IGame<T extends ITile,  G extends IGrid<T>, P extends IPiece> {
+public interface IGame<T extends ITile<?, ?>,  G extends IGrid<T>, P extends IPiece<?, ?>> {
 
     G getGrid();
 

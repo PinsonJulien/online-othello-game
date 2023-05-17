@@ -4,7 +4,7 @@ import com.pinson.othello.commons.entities.pieces.IPiece;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.tiles.IOthelloTile;
 
-public interface IOthelloDisk extends IPiece<IOthelloTile> {
+public interface IOthelloDisk extends IPiece<IOthelloTile, IOthelloDisk> {
 
     IOthelloPlayer getOwner();
 
@@ -12,6 +12,4 @@ public interface IOthelloDisk extends IPiece<IOthelloTile> {
         return new OthelloDisk(owner);
     }
 
-    @Override
-    IOthelloDisk setTile(IOthelloTile tile);
 }
