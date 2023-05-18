@@ -18,7 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> implements IOthelloGame {
@@ -35,10 +35,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     private OthelloPlayer winner;
 
     @OneToMany(mappedBy = "game")
-    private Set<OthelloGamePlayer> gamePlayers;
+    private List<OthelloGamePlayer> gamePlayers;
 
     @OneToMany(mappedBy = "game")
-    private Set<OthelloMove> moves;
+    private List<OthelloMove> moves;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -87,24 +87,24 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public Set<OthelloGamePlayer> getGamePlayers() {
+    public List<OthelloGamePlayer> getGamePlayers() {
         return this.gamePlayers;
     }
 
     @Override
-    public IOthelloGame setGamePlayers(Set<OthelloGamePlayer> gamePlayers) {
+    public IOthelloGame setGamePlayers(List<OthelloGamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
 
         return this;
     }
 
     @Override
-    public Set<OthelloMove> getMoves() {
+    public List<OthelloMove> getMoves() {
         return this.moves;
     }
 
     @Override
-    public IOthelloGame setMoves(Set<OthelloMove> moves) {
+    public IOthelloGame setMoves(List<OthelloMove> moves) {
         this.moves = moves;
 
         return this;
@@ -171,17 +171,15 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         if (numberOfMovesPlayed % numberOfPlayers == 0)
             return this.getGamePlayers().stream().findFirst().orElse(null);
-        
+
 
         return null;
     }
 
     @Override
     public ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player) {
-        IOthelloPlayer currentPlayer = this.getCurrentTurnPlayer();
+        IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
         OthelloGamePlayerColor currentPlayerColor = currentPlayer.getColor();
-
-
 
         return null;
     }
