@@ -10,6 +10,10 @@ public abstract class Game<T extends ITile<?, ?>,  G extends IGrid<T>, P extends
 
     private G grid;
 
+    public Game() {
+        this.setGrid(null);
+    }
+
     public Game(G grid) {
         this.setGrid(grid);
     }
@@ -19,7 +23,7 @@ public abstract class Game<T extends ITile<?, ?>,  G extends IGrid<T>, P extends
         return grid;
     }
 
-    private void setGrid(G grid) {
+    protected void setGrid(G grid) {
         this.grid = grid;
     }
 
