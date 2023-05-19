@@ -4,10 +4,7 @@ import com.pinson.othello.commons.entities.grids.Grid;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.IMatrixArrayList;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
-import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.tiles.IOthelloTile;
-
-import java.util.List;
 
 public class OthelloGrid extends Grid<IOthelloTile> implements IOthelloGrid {
     public OthelloGrid() throws NonPositiveValueException {
@@ -20,18 +17,6 @@ public class OthelloGrid extends Grid<IOthelloTile> implements IOthelloGrid {
         super(rows, columns);
 
         this.setupTiles();
-    }
-
-    @Override
-    public IOthelloGrid setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException {
-        this.getTileAt(row, column).setPiece(disk);
-
-        return this;
-    }
-
-    @Override
-    public IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException {
-        return this.getTileAt(row, column).getPiece();
     }
 
     protected IOthelloGrid setupTiles() {

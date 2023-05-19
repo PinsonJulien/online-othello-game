@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @param <T> Any Object
  */
-public interface IMatrixArrayList<T> {
+public interface IMatrixArrayList<T> extends Iterable<ArrayList<T>> {
 
     /**
      * Instantiate a MatrixArrayList without a specific size.
@@ -131,6 +131,4 @@ public interface IMatrixArrayList<T> {
     IMatrixArrayList<T> removeColumns(int amount, int index) throws NonPositiveValueException, MatrixIndexOutOfBoundsException;
 
     List<T> toList();
-
-    Iterator<ArrayList<T>> iterator();
 }

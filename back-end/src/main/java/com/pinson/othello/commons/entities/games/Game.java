@@ -6,7 +6,9 @@ import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosi
 import com.pinson.othello.commons.entities.tiles.ITile;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
-public abstract class Game<T extends ITile<?, ?>,  G extends IGrid<T>, P extends IPiece<?, ?>> implements IGame<T, G, P> {
+import java.util.ArrayList;
+
+public abstract class Game<T extends ITile<P, T>,  G extends IGrid<T>, P extends IPiece<T, P>> implements IGame<T, G, P> {
 
     private G grid;
 
@@ -18,9 +20,8 @@ public abstract class Game<T extends ITile<?, ?>,  G extends IGrid<T>, P extends
         this.setGrid(grid);
     }
 
-    @Override
-    public G getGrid() {
-        return grid;
+    protected G getGrid() {
+        return this.grid;
     }
 
     protected void setGrid(G grid) {
@@ -31,4 +32,79 @@ public abstract class Game<T extends ITile<?, ?>,  G extends IGrid<T>, P extends
     abstract public void playMove(int x, int y, P piece) throws MatrixIndexOutOfBoundsException;
     @Override
     abstract public void playMove(IMatrixPosition<Integer> position, P piece) throws MatrixIndexOutOfBoundsException;
+
+    @Override
+    public int getGridWidth() {
+        return this.grid.getRows();
+    }
+
+    @Override
+    public int getGridHeight() {
+        return this.grid.getColumns();
+    }
+
+    @Override
+    public P getPieceAt(int row, int column) throws MatrixIndexOutOfBoundsException {
+        return this.grid.getTileAt(row, column).getPiece();
+    }
+
+    @Override
+    public IGame<T, G, P> setPieceAt(int row, int column, P piece) throws MatrixIndexOutOfBoundsException {
+        this.grid.getTileAt(row, column).setPiece(piece);
+
+        return this;
+    }
+
+    @Override
+    public ArrayList<P> getAllPieces() {
+        ArrayList<P> pieces = new ArrayList<>();
+
+        for (ArrayList<T> row : this.grid.getTiles()) {
+            for (T tile : row) {
+                // if the tile is not empty
+                P piece = tile.getPiece();
+
+                if (piece != null)
+                    pieces.add(piece);
+            }
+        }
+
+        return pieces;
+    }
+    @Override
+    public T getTileAt(int row, int column) throws MatrixIndexOutOfBoundsException {
+        return this.grid.getTileAt(row, column);
+    }
+
+    @Override
+    public ArrayList<T> getAllTiles() {
+        ArrayList<T> tiles = new ArrayList<>();
+
+        for (ArrayList<T> row : this.grid.getTiles()) {
+            tiles.addAll(row);
+        }
+
+        return tiles;
+    }
+
+    @Override
+    public ArrayList<T> getAllEmptyTiles() {
+        ArrayList<T> tiles = new ArrayList<>();
+
+        for (ArrayList<T> row : this.grid.getTiles()) {
+            for (T tile : row) {
+                // if the tile is empty
+                if (tile.getPiece() == null)
+                    tiles.add(tile);
+            }
+        }
+
+        return tiles;
+    }
+
+    @Override
+    public boolean isTileEmpty(int row, int column) throws MatrixIndexOutOfBoundsException {
+        return this.grid.getTileAt(row, column).getPiece() == null;
+    }
+
 }

@@ -85,13 +85,4 @@ public interface IGrid<T extends ITile<?, ?>> {
     ArrayList<ArrayList<T>> getAdjacentNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
     ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
     ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
-
-    // todo: getCircularNeighbours
-    // todo: getSquaredNeighbours using getRectangularNeighbours
-    // todo: getPerpendicularNeighbours (or better name for typical cross) (+)
-    // todo: getDiagonalNeighbours (X)
-    // todo: getRectangularNeighbours
-    // todo: getTriangularNeighbours
-    // todo: getHexagonalNeighbours
-
 }

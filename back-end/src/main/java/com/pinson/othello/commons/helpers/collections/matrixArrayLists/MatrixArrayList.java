@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  *
  * @param <T> Any Object
  */
-public class MatrixArrayList<T> implements IMatrixArrayList<T> {
+public class MatrixArrayList<T> implements IMatrixArrayList<T>, Iterable<ArrayList<T>> {
     private final ArrayList<ArrayList<T>> matrix;
 
     /**

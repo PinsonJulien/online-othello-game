@@ -1,8 +1,6 @@
 package com.pinson.othello.grids;
 
 import com.pinson.othello.commons.entities.grids.IGrid;
-import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
-import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.tiles.IOthelloTile;
 
 public interface IOthelloGrid extends IGrid<IOthelloTile> {
@@ -27,6 +25,4 @@ public interface IOthelloGrid extends IGrid<IOthelloTile> {
         return null;
     }
 
-    IOthelloGrid setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException;
-    IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;
 }

@@ -251,7 +251,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         int gridWidth = grid.getRows();
         int gridHeight = grid.getColumns();
-        
+
         int middleSquareStartX = (gridWidth / 2) - (middleSquareSize / 2);
         int middleSquareStartY = (gridHeight / 2) - (middleSquareSize / 2);
         int middleSquareEndX = middleSquareStartX + middleSquareSize - 1;
@@ -271,54 +271,31 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
                 IOthelloDisk disk = IOthelloDisk.create(gamePlayer);
 
                 try {
-                    grid.setDiskAt(y + middleSquareStartY, x, disk);
+                    this.setDiskAt(y + middleSquareStartY, x, disk);
                 } catch (MatrixIndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
             }
 
         }
-
     }
 
-        // place the disks in the middle square
+    @Override
+    public IOthelloGame setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException {
+        this.getTileAt(row, column).setPiece(disk);
 
+        return this;
+    }
 
+    @Override
+    public IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException {
+        return this.getPieceAt(row, column);
+    }
 
+    @Override
+    public List<IOthelloDisk> getAllDisks() {
+        return super.getAllPieces();
+    }
 
-
-        // deal with any grid size
-        // When the width of the grid is even place two disks of each color in the center of the grid
-        // When the height of the grid is even place two disks of each color in the center of the grid
-        // When the width of the grid is odd place three disks of each color in the center of the grid
-        // When the height of the grid is odd place three disks of each color in the center of the grid
-
-        // gather a set of all player colors
-        // for each player color
-
-
-
-        /*int gridWidth = grid.getWidth();
-        int gridHeight = grid.getHeight();
-
-        int halfGridWidth = gridWidth / 2;
-        int halfGridHeight = gridHeight / 2;
-
-        IOthelloDisk disk1 = IOthelloDisk.create(OthelloGamePlayerColor.BLACK);
-        IOthelloDisk disk2 = IOthelloDisk.create(OthelloGamePlayerColor.WHITE);
-
-        try {
-            IOthelloTile tile1 = grid.getTileAt(halfGridWidth - 1, halfGridHeight - 1);
-            IOthelloTile tile2 = grid.getTileAt(halfGridWidth, halfGridHeight - 1);
-            IOthelloTile tile3 = grid.getTileAt(halfGridWidth - 1, halfGridHeight);
-            IOthelloTile tile4 = grid.getTileAt(halfGridWidth, halfGridHeight);
-
-            tile1.setPiece(disk1);
-            tile2.setPiece(disk2);
-            tile3.setPiece(disk2);
-            tile4.setPiece(disk1);
-        } catch (MatrixIndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }*/
 }
 
