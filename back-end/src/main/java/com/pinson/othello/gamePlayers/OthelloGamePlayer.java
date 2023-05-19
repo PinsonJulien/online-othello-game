@@ -1,6 +1,8 @@
 package com.pinson.othello.gamePlayers;
 
+import com.pinson.othello.games.IOthelloGame;
 import com.pinson.othello.games.OthelloGame;
+import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 
@@ -27,6 +29,17 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
         //
     }
 
+    public OthelloGamePlayer(IOthelloPlayer player, OthelloGamePlayerColor playerColor) {
+        this.setPlayer(player);
+        this.setPlayerColor(playerColor);
+    }
+
+    public OthelloGamePlayer(IOthelloGame game, OthelloPlayer player, OthelloGamePlayerColor playerColor) {
+        this(player, playerColor);
+
+        this.setGame(game);
+    }
+
     @Override
     public Long getId() {
         return id;
@@ -45,20 +58,20 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
     }
 
     @Override
-    public IOthelloGamePlayer setGame(OthelloGame game) {
-        this.game = game;
+    public IOthelloGamePlayer setGame(IOthelloGame game) {
+        this.game = (OthelloGame) game;
 
         return this;
     }
 
     @Override
-    public OthelloPlayer getPlayer() {
+    public IOthelloPlayer getPlayer() {
         return player;
     }
 
     @Override
-    public IOthelloGamePlayer setPlayer(OthelloPlayer player) {
-        this.player = player;
+    public IOthelloGamePlayer setPlayer(IOthelloPlayer player) {
+        this.player = (OthelloPlayer) player;
 
         return this;
     }

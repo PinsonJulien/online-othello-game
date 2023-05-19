@@ -28,4 +28,5 @@ public interface IOthelloGrid extends IGrid<IOthelloTile> {
     }
 
     IOthelloGrid setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException;
+    IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;
 }

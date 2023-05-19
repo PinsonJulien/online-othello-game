@@ -1,6 +1,8 @@
 package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.IGame;
+import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
+import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
 import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
@@ -14,6 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthelloDisk> {
+
+    static IOthelloGame create() {
+        return new OthelloGame();
+    }
+
+    static IOthelloGame create(List<OthelloGamePlayer> gamePlayers, int gridWidth, int gridHeight) throws GridSizeException, InvalidNumberOfPlayersException {
+        return new OthelloGame(gamePlayers, gridWidth, gridHeight);
+    }
+
     void skipMove();
 
     IOthelloGamePlayer getCurrentTurnPlayer();

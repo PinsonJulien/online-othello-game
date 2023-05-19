@@ -456,5 +456,4 @@ public abstract class Grid<T extends ITile<?, ?>> implements IGrid<T> {
 
         return neighbours;
     }
-
 }

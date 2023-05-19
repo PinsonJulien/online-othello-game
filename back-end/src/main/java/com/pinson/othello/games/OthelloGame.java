@@ -63,7 +63,12 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         if (gamePlayers.size() % 2 != 0)
             throw new InvalidNumberOfPlayersException("There must be an even number of players.");
 
-        this.gamePlayers = gamePlayers;
+        // set the game of each game player to this game
+        for (OthelloGamePlayer gamePlayer : gamePlayers) {
+            gamePlayer.setGame(this);
+        }
+
+        this.setGamePlayers(gamePlayers);
 
         this.setupGrid(gridWidth, gridHeight);
 
@@ -78,16 +83,16 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         // Play all the moves of the game.
         List<OthelloMove> moves = this.getMoves();
 
-        if (moves.size() == 0 )
+        if (moves == null || moves.size() == 0 )
             return;
 
-        for (OthelloMove move : moves) {
+        /*for (OthelloMove move : moves) {
             try {
                 this.playMove(move);
             } catch (MatrixIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     @Override
@@ -178,13 +183,13 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     public void playMove(int x, int y, IOthelloDisk piece) throws MatrixIndexOutOfBoundsException {
         ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(y, x);
 
-        for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+        /*for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
             for (IOthelloTile adjacentTile : adjacentTileRow) {
                 if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getOwner() != piece.getOwner()) {
 
                 }
             }
-        }
+        }*/
     }
 
     @Override
@@ -244,68 +249,29 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         List<OthelloGamePlayer> gamePlayers = this.getGamePlayers();
         int middleSquareSize = this.calculateMiddleSquareSize();
 
-        // 2 players = 2x2
-        /**
-         *
-         * B W
-         * W B
-         *
-         */
-
-        // 4 players = 4x4
-        /**
-         *
-         * B W B W
-         * W B W B
-         * B W B W
-         * W B W B
-         *
-         */
-
-        // 6 players = 6x6
-        /**
-         *
-         * B W B W B W
-         * W B W B W B
-         * B W B W B W
-         * W B W B W B
-         * B W B W B W
-         * W B W B W B
-         *
-         */
-
-        // code
-
-        // locate the middle square
-
         int gridWidth = grid.getRows();
         int gridHeight = grid.getColumns();
-
-        int halfGridWidth = gridWidth / 2;
-        int halfGridHeight = gridHeight / 2;
-
-        int middleSquareStartX = halfGridWidth - (middleSquareSize / 2);
-        int middleSquareStartY = halfGridHeight - (middleSquareSize / 2);
-        int middleSquareEndX = middleSquareStartX + middleSquareSize;
-        int middleSquareEndY = middleSquareStartY + middleSquareSize;
+        
+        int middleSquareStartX = (gridWidth / 2) - (middleSquareSize / 2);
+        int middleSquareStartY = (gridHeight / 2) - (middleSquareSize / 2);
+        int middleSquareEndX = middleSquareStartX + middleSquareSize - 1;
 
         // place the disks in the middle square
         for (int i = 0; i < middleSquareSize; i++) {
             IOthelloGamePlayer gamePlayer = gamePlayers.get(i);
-            OthelloGamePlayerColor color = gamePlayer.getPlayerColor();
 
             // Place one disk per row
-            for (int y = middleSquareStartY; y < middleSquareEndY; y++) {
+            for (int y = 0; y < middleSquareSize; y++) {
                 // when the row is even place the disk on the left side
                 // when the row is odd place the disk on the right side
-                int x = (i%2 == 0)
+                int x = (y%2 == 0)
                         ? middleSquareStartX + i
                         : middleSquareEndX - i;
 
                 IOthelloDisk disk = IOthelloDisk.create(gamePlayer);
 
                 try {
-                    grid.setDiskAt(y, x, disk);
+                    grid.setDiskAt(y + middleSquareStartY, x, disk);
                 } catch (MatrixIndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
