@@ -16,7 +16,7 @@ class OthelloGameTest {
 
     @Test
     void constructor() {
-
+        // This will be tested using JPA reflection.
     }
 
     @Test

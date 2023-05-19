@@ -18,10 +18,6 @@ import java.util.List;
 
 public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthelloDisk> {
 
-    static IOthelloGame create() {
-        return new OthelloGame();
-    }
-
     static IOthelloGame create(List<OthelloGamePlayer> gamePlayers, int gridWidth, int gridHeight) throws GridSizeException, InvalidNumberOfPlayersException {
         return new OthelloGame(gamePlayers, gridWidth, gridHeight);
     }
@@ -36,6 +32,8 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
     IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;
 
     List<IOthelloDisk> getAllDisks();
+
+    IOthelloGrid getGrid();
 
     // Getters and Setters
 

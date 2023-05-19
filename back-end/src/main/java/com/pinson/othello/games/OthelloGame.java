@@ -28,6 +28,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int gridWidth;
+    private int gridHeight;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OthelloGameStatus status = OthelloGameStatus.IN_PROGRESS;
@@ -50,7 +53,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public OthelloGame() {
+    protected OthelloGame() {
         super();
     }
 
@@ -70,13 +73,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         this.setGamePlayers(gamePlayers);
 
-        this.setupGrid(gridWidth, gridHeight);
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
 
         this.postLoad();
     }
 
     @PostLoad
-    private void postLoad() {
+    private void postLoad() throws GridSizeException {
+
+        // Generate the grid
+        this.setupGrid(gridWidth, gridHeight);
+
         // Place the initial disks on the grid.
         this.placeInitialDisks();
 
@@ -297,5 +305,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         return super.getAllPieces();
     }
 
+    @Override
+    public IOthelloGrid getGrid() {
+        return super.getGrid();
+    }
 }
 
