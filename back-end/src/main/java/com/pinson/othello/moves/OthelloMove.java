@@ -1,9 +1,13 @@
 package com.pinson.othello.moves;
 
+import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayer;
+import com.pinson.othello.games.IOthelloGame;
 import com.pinson.othello.games.OthelloGame;
-import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "moves")
@@ -18,69 +22,86 @@ public class OthelloMove implements IOthelloMove {
     private OthelloGame game;
 
     @ManyToOne
-    @JoinColumn(name = "player_id", nullable = false)
-    private OthelloPlayer player;
+    @JoinColumn(name = "game_player_id", nullable = false)
+    private OthelloGamePlayer gamePlayer;
 
-    @Column(name = "x", nullable = false)
-    private Integer x;
+    @Column(nullable = false)
+    private Integer row;
 
-    @Column(name = "y", nullable = false)
-    private Integer y;
+    @Column(nullable = false)
+    private Integer column;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private Long createdAt;
+    private LocalDateTime createdAt;
 
     public OthelloMove() {
         //
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Override
     public Long getId() {
-        return id;
+        return this.id;
     }
 
-    public OthelloGame getGame() {
-        return game;
+    @Override
+    public IOthelloGamePlayer getGamePlayer() {
+        return this.gamePlayer;
     }
 
-    public void setGame(OthelloGame game) {
-        this.game = game;
+    @Override
+    public IOthelloMove setGamePlayer(IOthelloGamePlayer gamePlayer) {
+        this.gamePlayer = (OthelloGamePlayer) gamePlayer;
+
+        return this;
     }
 
-    public OthelloPlayer getPlayer() {
-        return player;
+    @Override
+    public IOthelloGame getGame() {
+        return this.game;
     }
 
-    public void setPlayer(OthelloPlayer player) {
-        this.player = player;
+    @Override
+    public IOthelloMove setGame(IOthelloGame game) {
+        this.game = (OthelloGame) game;
+
+        return this;
     }
 
-    public Integer getX() {
-        return x;
+    @Override
+    public Integer getRow() {
+        return this.row;
     }
 
-    public void setX(Integer x) {
-        this.x = x;
+    @Override
+    public IOthelloMove setRow(Integer row) {
+        this.row = row;
+
+        return this;
     }
 
-    public Integer getY() {
-        return y;
+    @Override
+    public Integer getColumn() {
+        return this.column;
     }
 
-    public void setY(Integer y) {
-        this.y = y;
+    @Override
+    public IOthelloMove setColumn(Integer column) {
+        this.column = column;
+
+        return this;
     }
 
-    public Long getCreatedAt() {
-        return createdAt;
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
     }
 
-    public void setCreatedAt(Long createdAt) {
+    @Override
+    public IOthelloMove setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+
+        return this;
     }
 
 }

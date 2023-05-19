@@ -2,9 +2,12 @@ package com.pinson.othello.gamePlayers;
 
 import com.pinson.othello.games.IOthelloGame;
 import com.pinson.othello.games.OthelloGame;
+import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class OthelloGamePlayer implements IOthelloGamePlayer {
@@ -20,6 +23,9 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
     @ManyToOne
     @JoinColumn(name = "othello_player_id", nullable = false)
     private OthelloPlayer player;
+
+    @OneToMany(mappedBy = "gamePlayer")
+    private List<OthelloMove> moves;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "player_color", nullable = false)
