@@ -18,7 +18,7 @@ public interface IOthelloMove {
     Integer getColumn();
     IOthelloMove setColumn(Integer column);
 
-    Boolean hasPassed();
+    Boolean isPassed();
     IOthelloMove setPassed(Boolean passed);
 
     IOthelloGame getGame();

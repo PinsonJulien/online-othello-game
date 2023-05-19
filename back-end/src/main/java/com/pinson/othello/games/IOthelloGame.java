@@ -2,6 +2,7 @@ package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.IGame;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
+import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
@@ -31,7 +32,7 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
 
     boolean isMoveValid(IOthelloMove move);
 
-    IOthelloGame playMove(IOthelloMove move) throws MatrixIndexOutOfBoundsException;
+    IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException;
 
     IOthelloGame setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException;
     IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;

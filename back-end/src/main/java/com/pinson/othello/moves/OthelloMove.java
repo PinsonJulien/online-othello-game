@@ -95,7 +95,7 @@ public class OthelloMove implements IOthelloMove {
     }
 
     @Override
-    public Boolean hasPassed() {
+    public Boolean isPassed() {
         return this.passed;
     }
 

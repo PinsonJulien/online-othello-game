@@ -2,9 +2,8 @@ package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.Game;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
-import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
+import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
-import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
@@ -23,6 +22,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> implements IOthelloGame {
@@ -42,7 +42,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     private OthelloPlayer winner = null;
 
     @OneToMany(mappedBy = "game")
-    private List<OthelloGamePlayer> gamePlayers;
+    private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
 
     @OneToMany(mappedBy = "game")
     private List<OthelloMove> moves;
@@ -96,13 +96,13 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         if (moves == null || moves.size() == 0 )
             return;
 
-        /*for (OthelloMove move : moves) {
+        for (OthelloMove move : moves) {
             try {
-                this.playMove(move);
-            } catch (MatrixIndexOutOfBoundsException e) {
-                e.printStackTrace();
+                this.playMove(move, false);
+            } catch (InvalidMoveException e) {
+                throw new RuntimeException(e);
             }
-        }*/
+        }
     }
 
     @Override
@@ -250,16 +250,76 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame playMove(IOthelloMove move) throws MatrixIndexOutOfBoundsException {
-        //ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(y, x);
+    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException {
+        return this.playMove(move, true);
+    }
 
-        /*for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
-            for (IOthelloTile adjacentTile : adjacentTileRow) {
-                if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getOwner() != piece.getOwner()) {
+    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException {
+        // Check if the player is allowed to play.
+        IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
+        IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
 
+        if (!Objects.equals(currentPlayer.getId(), moveGamePlayer.getId()))
+            throw new InvalidMoveException("The player is not allowed to play.");
+
+        // check if the move is a pass move.
+        if (move.isPassed()) {
+            if (addToMoves) this.getMoves().add((OthelloMove) move);
+
+            return this;
+        }
+
+        // Check if the move is valid.
+        if (!this.isMoveValid(move))
+            throw new InvalidMoveException("The position of the move is not valid.");
+
+        // Place the disk on the tile.
+        IOthelloDisk disk = IOthelloDisk.create(move.getGamePlayer());
+        int row = move.getRow();
+        int column = move.getColumn();
+
+        try {
+            this.setDiskAt(row, column, disk);
+
+            // Flip the aligned disks.
+            OthelloGamePlayerColor currentPlayerColor = moveGamePlayer.getPlayerColor();
+            ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(row, column);
+
+            for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+                // check if the adjacent tile has a piece of the opposite color.
+                IOthelloDisk firstAdjacentDisk = adjacentTileRow.get(0).getPiece();
+                if (firstAdjacentDisk == null || firstAdjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)
+                    continue;
+
+                // look for the first disk of the same color as the placed disk.
+                int lastAdjacentDiskIndex = adjacentTileRow.size() - 1;
+                int firstFoundDiskIndex = -1;
+
+                for (int i = 1; i < lastAdjacentDiskIndex && firstFoundDiskIndex == -1; i++) {
+                    IOthelloDisk adjacentDisk = adjacentTileRow.get(i).getPiece();
+
+                    if (adjacentDisk != null && adjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)
+                        firstFoundDiskIndex = i;
+                }
+
+                // If no disk of the same color was found, continue to the next adjacent tile row.
+                if (firstFoundDiskIndex < 0)
+                    continue;
+
+                // Flip the disks between the placed disk and the first disk of the same color.
+                for (int i = 0; i < firstFoundDiskIndex; i++) {
+                    IOthelloDisk adjacentDisk = adjacentTileRow.get(i).getPiece();
+
+                    if (adjacentDisk != null)
+                        adjacentDisk.setGamePlayer(moveGamePlayer);
                 }
             }
-        }*/
+        } catch (MatrixIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+
+        if (addToMoves)
+            this.getMoves().add((OthelloMove) move);
 
         return this;
     }
