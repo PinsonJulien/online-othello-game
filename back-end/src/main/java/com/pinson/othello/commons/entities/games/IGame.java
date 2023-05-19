@@ -2,16 +2,12 @@ package com.pinson.othello.commons.entities.games;
 
 import com.pinson.othello.commons.entities.grids.IGrid;
 import com.pinson.othello.commons.entities.pieces.IPiece;
-import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import com.pinson.othello.commons.entities.tiles.ITile;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
 import java.util.ArrayList;
 
 public interface IGame<T extends ITile<P, T>,  G extends IGrid<T>, P extends IPiece<T, P>> {
-
-    void playMove(int x, int y, P piece) throws MatrixIndexOutOfBoundsException;
-    void playMove(IMatrixPosition<Integer> position, P piece) throws MatrixIndexOutOfBoundsException;
 
     int getGridWidth();
     int getGridHeight();

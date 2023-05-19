@@ -428,7 +428,7 @@ public abstract class Grid<T extends ITile<?, ?>> implements IGrid<T> {
 
     @Override
     public ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException {
-        return this.getAdjacentNeighbours(row, column, Math.min(row, column));
+        return this.getAdjacentNeighbours(row, column, Math.max(this.getRows(), this.getColumns()));
     }
 
     @Override
@@ -444,7 +444,6 @@ public abstract class Grid<T extends ITile<?, ?>> implements IGrid<T> {
     @Override
     public ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException {
         ArrayList<ArrayList<T>> neighbours = new ArrayList<>();
-
         neighbours.add(this.getNorthNeighbours(row, column, distance));
         neighbours.add(this.getNorthEastNeighbours(row, column, distance));
         neighbours.add(this.getEastNeighbours(row, column, distance));

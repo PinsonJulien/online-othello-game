@@ -8,6 +8,7 @@ import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.grids.IOthelloGrid;
+import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.tiles.IOthelloTile;
@@ -27,6 +28,10 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
     IOthelloGamePlayer getCurrentTurnPlayer();
 
     ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player);
+
+    boolean isMoveValid(IOthelloMove move);
+
+    IOthelloGame playMove(IOthelloMove move) throws MatrixIndexOutOfBoundsException;
 
     IOthelloGame setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException;
     IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;

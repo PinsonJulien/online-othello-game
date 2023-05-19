@@ -618,6 +618,36 @@ class GridTest {
         assertEquals(grid.getTileAt(0, 0), neighbours.get(2));
     }
 
+    @Test
+    void getAdjacentNeighbours_RowColumn() throws NonPositiveValueException, MatrixIndexOutOfBoundsException {
+        IGrid<ConcreteTile> grid = new ConcreteGrid(5, 6);
+        for (int i = 0; i < grid.getRows(); i++) {
+            for (int j = 0; j < grid.getColumns(); j++) {
+                grid.setTileAt(i, j, new ConcreteTile(i, j));
+            }
+        }
+
+        ArrayList<ArrayList<ConcreteTile>> neighbours = grid.getAdjacentNeighbours(1, 4);
+        assertEquals(1, neighbours.get(0).size()); // north
+        assertEquals(1, neighbours.get(1).size()); // north east
+        assertEquals(1, neighbours.get(2).size()); // east
+        assertEquals(1, neighbours.get(3).size()); // south east
+        assertEquals(3, neighbours.get(4).size()); // south
+        assertEquals(3, neighbours.get(5).size()); // south west
+        assertEquals(4, neighbours.get(6).size()); // west
+        assertEquals(1, neighbours.get(7).size()); // north west
+
+        neighbours = grid.getAdjacentNeighbours(2, 2);
+        assertEquals(2, neighbours.get(0).size()); // north
+        assertEquals(2, neighbours.get(1).size()); // north east
+        assertEquals(3, neighbours.get(2).size()); // east
+        assertEquals(2, neighbours.get(3).size()); // south east
+        assertEquals(2, neighbours.get(4).size()); // south
+        assertEquals(2, neighbours.get(5).size()); // south west
+        assertEquals(2, neighbours.get(6).size()); // west
+        assertEquals(2, neighbours.get(7).size()); // north west
+    }
+
     // Concrete classes for test purposes.
     private class ConcreteGrid extends Grid<ConcreteTile> {
         public ConcreteGrid(int rows, int columns) throws NonPositiveValueException {

@@ -4,12 +4,14 @@ import com.pinson.othello.commons.entities.games.Game;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
+import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.grids.IOthelloGrid;
+import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
@@ -188,29 +190,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     // Implemented methods.
 
     @Override
-    public void playMove(int x, int y, IOthelloDisk piece) throws MatrixIndexOutOfBoundsException {
-        ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(y, x);
-
-        /*for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
-            for (IOthelloTile adjacentTile : adjacentTileRow) {
-                if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getOwner() != piece.getOwner()) {
-
-                }
-            }
-        }*/
-    }
-
-    @Override
-    public void playMove(IMatrixPosition<Integer> position, IOthelloDisk piece) throws MatrixIndexOutOfBoundsException {
-        this.playMove(position.getX(), position.getY(), piece);
-    }
-
-    @Override
-    public void skipMove() {
-
-    }
-
-    @Override
     public IOthelloGamePlayer getCurrentTurnPlayer() {
         List<OthelloMove> moves = this.getMoves();
         List<OthelloGamePlayer> gamePlayers = this.getGamePlayers();
@@ -233,6 +212,61 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         OthelloGamePlayerColor currentPlayerColor = currentPlayer.getPlayerColor();
 
         return null;
+    }
+
+    @Override
+    public boolean isMoveValid(IOthelloMove move) {
+        try {
+            IOthelloTile tile = this.getTileAt(move.getRow(), move.getColumn());
+
+            // check if the tile is empty.
+            if (tile.getPiece() != null)
+                return false;
+
+            OthelloGamePlayerColor currentPlayerColor = move.getGamePlayer().getPlayerColor();
+            ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(tile);
+
+            for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+                // check if the adjacent tile has a piece of the opposite color.
+                IOthelloDisk firstAdjacentDisk = adjacentTileRow.get(0).getPiece();
+                if (firstAdjacentDisk == null || firstAdjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)
+                    continue;
+
+                // Look for a piece of the same color on the other side of the adjacent tile.
+                for (IOthelloTile adjacentTile : adjacentTileRow) {
+                    // When we find a piece of the same color, the move is valid.
+                    IOthelloDisk disk = adjacentTile.getPiece();
+
+                    if (disk != null && disk.getGamePlayer().getPlayerColor() == currentPlayerColor)
+                        return true;
+                }
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public IOthelloGame playMove(IOthelloMove move) throws MatrixIndexOutOfBoundsException {
+        //ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(y, x);
+
+        /*for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+            for (IOthelloTile adjacentTile : adjacentTileRow) {
+                if (adjacentTile.getPiece() != null && adjacentTile.getPiece().getOwner() != piece.getOwner()) {
+
+                }
+            }
+        }*/
+
+        return this;
+    }
+
+    @Override
+    public void skipMove() {
+
     }
 
     protected int calculateMiddleSquareSize() {

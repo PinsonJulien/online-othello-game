@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 
 public interface IOthelloMove {
 
+    static IOthelloMove create() {
+        return new OthelloMove();
+    }
+
     Long getId();
     Integer getRow();
     IOthelloMove setRow(Integer row);
