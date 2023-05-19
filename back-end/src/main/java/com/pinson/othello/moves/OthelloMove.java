@@ -31,6 +31,8 @@ public class OthelloMove implements IOthelloMove {
     @Column(nullable = false)
     private Integer column;
 
+    private Boolean passed = false;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -88,6 +90,18 @@ public class OthelloMove implements IOthelloMove {
     @Override
     public IOthelloMove setColumn(Integer column) {
         this.column = column;
+
+        return this;
+    }
+
+    @Override
+    public Boolean hasPassed() {
+        return this.passed;
+    }
+
+    @Override
+    public IOthelloMove setPassed(Boolean passed) {
+        this.passed = passed;
 
         return this;
     }
