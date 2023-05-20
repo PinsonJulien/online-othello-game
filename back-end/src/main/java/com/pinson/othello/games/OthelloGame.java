@@ -45,7 +45,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
 
     @OneToMany(mappedBy = "game")
-    private List<OthelloMove> moves;
+    private List<OthelloMove> moves = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -286,6 +286,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
             ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(row, column);
 
             for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+                // Check if there is at least one neighbor in the list.
+                if (adjacentTileRow.size() == 0)
+                    continue;
+
                 // check if the adjacent tile has a piece of the opposite color.
                 IOthelloDisk firstAdjacentDisk = adjacentTileRow.get(0).getPiece();
                 if (firstAdjacentDisk == null || firstAdjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)

@@ -1,6 +1,7 @@
 package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
+import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
@@ -219,6 +220,226 @@ class OthelloGameTest {
     }
 
     @Test
+    void playMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidMoveException, MatrixIndexOutOfBoundsException {
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x x x x x x x
+         *          2 x x B W B W x x
+         *          3 x x W B W B x x
+         *          4 x x B W B W x x
+         *          5 x x W B W B x x
+         *          6 x x x x x x x x
+         *          7 x x x x x x x x
+         */
+        ArrayList<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(3L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(4L));
+
+        IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
+        IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(3).setColumn(1);
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x x x x x x x
+         *          2 x x B W B W x x
+         *          3 x B B B W B x x
+         *          4 x x B W B W x x
+         *          5 x x W B W B x x
+         *          6 x x x x x x x x
+         *          7 x x x x x x x x
+         */
+        game.playMove(move);
+        assertEquals(1, game.getMoves().size());
+        assertEquals(17, game.getAllDisks().size());
+        // Inserted
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 1).getGamePlayer());
+        // Flipped
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        // Unchanged
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 5).getGamePlayer());
+
+        // Second move
+        move = IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(2).setColumn(1);
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x x x x x x x
+         *          2 x W W W B W x x
+         *          3 x B W B W B x x
+         *          4 x x B W B W x x
+         *          5 x x W B W B x x
+         *          6 x x x x x x x x
+         *          7 x x x x x x x x
+         */
+        game.playMove(move);
+        assertEquals(2, game.getMoves().size());
+        assertEquals(18, game.getAllDisks().size());
+        // Inserted
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 1).getGamePlayer());
+        // Flipped
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 2).getGamePlayer());
+        // Unchanged
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 5).getGamePlayer());
+
+        // Third move
+        move = IOthelloMove.create().setGamePlayer(gamePlayers.get(2)).setRow(2).setColumn(0);
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x x x x x x x
+         *          2 B B B B B W x x
+         *          3 x B W B W B x x
+         *          4 x x B W B W x x
+         *          5 x x W B W B x x
+         *          6 x x x x x x x x
+         *          7 x x x x x x x x
+         */
+        game.playMove(move);
+        assertEquals(3, game.getMoves().size());
+        assertEquals(19, game.getAllDisks().size());
+        // Inserted
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 0).getGamePlayer());
+        // Flipped
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 3).getGamePlayer());
+        // Unchanged
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 5).getGamePlayer());
+
+        // Fourth move
+        move = IOthelloMove.create().setGamePlayer(gamePlayers.get(3)).setRow(1).setColumn(2);
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x W x x x x x
+         *          2 B B W W B W x x
+         *          3 x B W B W B x x
+         *          4 x x B W B W x x
+         *          5 x x W B W B x x
+         *          6 x x x x x x x x
+         *          7 x x x x x x x x
+         */
+        game.playMove(move);
+        assertEquals(4, game.getMoves().size());
+        assertEquals(20, game.getAllDisks().size());
+        // Inserted
+        assertEquals(gamePlayers.get(3), game.getDiskAt(1, 2).getGamePlayer());
+        // Flipped
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 3).getGamePlayer());
+        // Unchanged
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 5).getGamePlayer());
+
+        // Fifth move
+        move = IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(1).setColumn(3);
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x W B x x x x
+         *          2 B B B B B W x x
+         *          3 x B W B W B x x
+         *          4 x x B W B W x x
+         *          5 x x W B W B x x
+         *          6 x x x x x x x x
+         *          7 x x x x x x x x
+         */
+        game.playMove(move);
+        assertEquals(5, game.getMoves().size());
+        assertEquals(21, game.getAllDisks().size());
+        // Inserted
+        assertEquals(gamePlayers.get(0), game.getDiskAt(1, 3).getGamePlayer());
+        // Flipped
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        // Unchanged
+        assertEquals(gamePlayers.get(3), game.getDiskAt(1, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(3), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(2), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 5).getGamePlayer());
+
+        // The complex grid has been tested, now test the simple grid with a few moves till a player has to skip
+        // D3 E3 F3 C5 D6 C3 C4 C7 C6 B6 A7 A6 D7 E8 F5 A8 B3 E6 B8 B7 B5 C8 F7 A5 D8 A4 F8 G8
+        // A = 0
+        // Letter = Column
+        game = IOthelloGame.create(gamePlayers.subList(0, 2), 8, 8);
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(3).setColumn(3));
+        IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(3).setColumn(1);
+
+
+
+    }
+
+    @Test
     void getId() {
     }
 
@@ -273,15 +494,6 @@ class OthelloGameTest {
     @Test
     void setUpdatedAt() {
     }
-
-    @Test
-    void playMove() {
-    }
-
-    @Test
-    void testPlayMove() {
-    }
-
     @Test
     void skipMove() {
     }
