@@ -41,6 +41,11 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
 
     IOthelloGrid getGrid();
 
+    boolean isGameOver();
+
+    List<OthelloGamePlayer> getWinners();
+    List<OthelloGamePlayer> getLosers();
+
     // Getters and Setters
 
     Long getId();
@@ -48,9 +53,6 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
 
     OthelloGameStatus getStatus();
     IOthelloGame setStatus(OthelloGameStatus status);
-
-    IOthelloPlayer getWinner();
-    IOthelloGame setWinner(IOthelloPlayer winner);
 
     List<OthelloGamePlayer> getGamePlayers();
     IOthelloGame setGamePlayers(List<OthelloGamePlayer> gamePlayers);

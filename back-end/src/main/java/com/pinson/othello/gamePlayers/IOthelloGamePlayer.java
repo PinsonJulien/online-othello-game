@@ -27,4 +27,7 @@ public interface IOthelloGamePlayer {
     OthelloGamePlayerColor getPlayerColor();
     IOthelloGamePlayer setPlayerColor(OthelloGamePlayerColor playerColor);
 
+    int getScore();
+    IOthelloGamePlayer setScore(int score);
+
 }

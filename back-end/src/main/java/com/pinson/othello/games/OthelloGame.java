@@ -37,10 +37,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @Column(name = "status", nullable = false)
     private OthelloGameStatus status = OthelloGameStatus.IN_PROGRESS;
 
-    @ManyToOne
-    @JoinColumn(name = "othello_player_id")
-    private OthelloPlayer winner = null;
-
     @OneToMany(mappedBy = "game")
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
 
@@ -124,18 +120,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @Override
     public IOthelloGame setStatus(OthelloGameStatus status) {
         this.status = status;
-        return this;
-    }
-
-    @Override
-    public IOthelloPlayer getWinner() {
-        return this.winner;
-    }
-
-    @Override
-    public IOthelloGame setWinner(IOthelloPlayer winner) {
-        this.winner = (OthelloPlayer) winner;
-
         return this;
     }
 
@@ -227,6 +211,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
             ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(tile);
 
             for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+                // check if the row is empty.
+                if (adjacentTileRow.size() == 0)
+                    continue;
+
                 // check if the adjacent tile has a piece of the opposite color.
                 IOthelloDisk firstAdjacentDisk = adjacentTileRow.get(0).getPiece();
                 if (firstAdjacentDisk == null || firstAdjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)
@@ -296,13 +284,17 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
                     continue;
 
                 // look for the first disk of the same color as the placed disk.
-                int lastAdjacentDiskIndex = adjacentTileRow.size() - 1;
+                int lastAdjacentDiskIndex = adjacentTileRow.size();
                 int firstFoundDiskIndex = -1;
+                boolean foundEmptyTile = false;
 
-                for (int i = 1; i < lastAdjacentDiskIndex && firstFoundDiskIndex == -1; i++) {
+                for (int i = 1; i < lastAdjacentDiskIndex && firstFoundDiskIndex == -1 && !foundEmptyTile; i++) {
                     IOthelloDisk adjacentDisk = adjacentTileRow.get(i).getPiece();
+                    // If an empty tile is found, stop looking for disks of the same color.
 
-                    if (adjacentDisk != null && adjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)
+                    if (adjacentDisk == null)
+                        foundEmptyTile = true;
+                    else if (adjacentDisk.getGamePlayer().getPlayerColor() == currentPlayerColor)
                         firstFoundDiskIndex = i;
                 }
 
@@ -368,9 +360,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
             // Place one disk per row
             for (int y = 0; y < middleSquareSize; y++) {
-                // when the row is even place the disk on the left side
-                // when the row is odd place the disk on the right side
-                int x = (y%2 == 0)
+                // when the row is odd place the disk on the left side
+                // when the row is even place the disk on the right side
+                int x = (y%2 != 0)
                         ? middleSquareStartX + i
                         : middleSquareEndX - i;
 
@@ -407,5 +399,24 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     public IOthelloGrid getGrid() {
         return super.getGrid();
     }
+
+    @Override
+    public boolean isGameOver() {
+        // TODO
+        return false;
+    }
+
+    @Override
+    public List<OthelloGamePlayer> getWinners() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public List<OthelloGamePlayer> getLosers() {
+        // TODO
+        return null;
+    }
+
 }
 

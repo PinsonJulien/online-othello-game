@@ -94,4 +94,16 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
         return this;
     }
 
+    @Override
+    public int getScore() {
+        // Todo
+        return 0;
+    }
+
+    @Override
+    public IOthelloGamePlayer setScore(int score) {
+        // Todo
+        return null;
+    }
+
 }
