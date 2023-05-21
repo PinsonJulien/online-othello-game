@@ -153,11 +153,11 @@ public class OthelloMove implements IOthelloMove {
             return true;
 
         return (
-            this.getId().equals(move.getId())
+            this.getId() == move.getId()
             &&
-            this.getGame().equals(move.getGame())
+            this.getGame() == move.getGame()
             &&
-            this.getGamePlayer().equals(move.getGamePlayer())
+            this.getGamePlayer() == move.getGamePlayer()
             &&
             this.getRow().equals(move.getRow())
             &&
@@ -165,7 +165,7 @@ public class OthelloMove implements IOthelloMove {
             &&
             this.isPassed().equals(move.isPassed())
             &&
-            this.getCreatedAt().equals(move.getCreatedAt())
+            this.getCreatedAt() == move.getCreatedAt()
         );
     }
 

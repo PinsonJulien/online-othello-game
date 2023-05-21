@@ -39,5 +39,21 @@ public abstract class Tile<P extends IPiece<T, P>, T extends ITile<P, T>> implem
     private T self() {
         return (T) this;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ITile<?, ?> tile)) {
+            return false;
+        }
+
+        if (this == tile)
+            return true;
+
+        return (
+            this.getPosition().equals(tile.getPosition())
+            &&
+            this.getPiece() == tile.getPiece()
+        );
+    }
 }
 

@@ -17,4 +17,13 @@ public class OthelloTile extends Tile<IOthelloDisk, IOthelloTile> implements IOt
             return null;
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IOthelloTile tile)) {
+            return false;
+        }
+
+        return super.equals(tile);
+    }
 }

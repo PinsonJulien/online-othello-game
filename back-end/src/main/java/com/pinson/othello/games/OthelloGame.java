@@ -3,10 +3,8 @@ package com.pinson.othello.games;
 import com.pinson.othello.commons.entities.games.Game;
 import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
-import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
-import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
@@ -15,8 +13,7 @@ import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.grids.IOthelloGrid;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
-import com.pinson.othello.players.IOthelloPlayer;
-import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.positions.IOthelloPosition;
 import com.pinson.othello.tiles.IOthelloTile;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,6 +37,22 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @OneToMany(mappedBy = "game")
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "game_winners",
+        joinColumns = @JoinColumn(name = "game_id"),
+        inverseJoinColumns = @JoinColumn(name = "game_player_id")
+    )
+    private List<OthelloGamePlayer> winners;
+
+    @ManyToMany
+    @JoinTable(
+        name = "game_losers",
+        joinColumns = @JoinColumn(name = "game_id"),
+        inverseJoinColumns = @JoinColumn(name = "game_player_id")
+    )
+    private List<OthelloGamePlayer> losers;
 
     @OneToMany(mappedBy = "game")
     private List<OthelloMove> moves = new ArrayList<>();
@@ -140,6 +153,27 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
+    public List<OthelloGamePlayer> getWinners() {
+        return this.winners;
+    }
+
+    protected IOthelloGame setWinners(List<OthelloGamePlayer> winners) {
+        this.winners = winners;
+        return this;
+    }
+
+    @Override
+    public List<OthelloGamePlayer> getLosers() {
+        return this.losers;
+    }
+
+    protected IOthelloGame setLosers(List<OthelloGamePlayer> losers) {
+        this.losers = losers;
+        return this;
+    }
+
+
+    @Override
     public List<OthelloMove> getMoves() {
         return this.moves;
     }
@@ -203,11 +237,12 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     public List<IOthelloMove> getValidMoves(IOthelloGamePlayer gamePlayer) {
         List<IOthelloMove> validMoves = new ArrayList<>();
         // Set to handle duplicate positions and moves, dynamic programming.
-        Set<IMatrixPosition<Integer>> visitedTiles = new HashSet<>();
-        Set<IOthelloMove> visitedMoves = new HashSet<>();
+        Set<IOthelloPosition> visitedTiles = new HashSet<>();
+        Set<IOthelloPosition> visitedMoves = new HashSet<>();
 
         // Search around every disk that are not owned by the given player.
         List<IOthelloDisk> disks = this.getAllDisks();
+
         OthelloGamePlayerColor playerColor = gamePlayer.getPlayerColor();
         IOthelloGrid grid = this.getGrid();
 
@@ -228,7 +263,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
             // check if the neighbouring tiles are valid moves.
             for (List<IOthelloTile> neighbouringTileLine : neighbouringTiles) {
                 for (IOthelloTile neighbouringTile : neighbouringTileLine) {
-                    IMatrixPosition<Integer> position = neighbouringTile.getPosition();
+                    IOthelloPosition position = neighbouringTile.getPosition();
 
                     // check if the tile has already been visited.
                     if (visitedTiles.contains(position))
@@ -241,12 +276,15 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
                         continue;
 
                     // check if the tile is a valid move.
-                    IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayer).setRow(position.getY()).setColumn(position.getX());
-                    System.out.println(move);
-                    if (this.isMoveValid(move)) {
-                        System.out.println("was valid");
+                    IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayer).setPosition(position);
+                    // Don't check already visited moves.
+                    if (visitedMoves.contains(position))
+                        continue;
+
+                    if (this.isMoveValid(move))
                         validMoves.add(move);
-                    }
+
+                    visitedMoves.add(position);
                 }
             }
         }
@@ -281,7 +319,11 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
                     // When we find a piece of the same color, the move is valid.
                     IOthelloDisk disk = adjacentTile.getPiece();
 
-                    if (disk != null && disk.getGamePlayer().getPlayerColor() == currentPlayerColor)
+                    // If we find an empty tile, the move is invalid.
+                    if (disk == null)
+                        break;
+
+                    if (disk.getGamePlayer().getPlayerColor() == currentPlayerColor)
                         return true;
                 }
             }
@@ -295,12 +337,8 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @Override
     public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException {
-        return this.playMove(move, true);
-    }
-
-    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException, GameOverException {
         // Check if the game is still in progress.
-        if (this.getStatus() != OthelloGameStatus.IN_PROGRESS)
+        if (this.isGameOver())
             throw new GameOverException();
 
         // Check if the player is allowed to play.
@@ -310,10 +348,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         if (!Objects.equals(currentPlayer.getId(), moveGamePlayer.getId()))
             throw new InvalidMoveException("The player is not allowed to play.");
 
-        moveGamePlayer.setGame(this);
+        move.setGame(this);
 
         // check if there's available moves, if there's not, skip the turn.
         List<IOthelloMove> validMoves = this.getValidMoves(moveGamePlayer);
+        if (validMoves.size() == 0)
+            move.setPassed(true);
+
+        return this.playMove(move, true);
+    }
+
+    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException {
+        IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
 
         // check if the move is a pass move.
         if (move.isPassed()) {
@@ -381,6 +427,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         if (addToMoves)
             this.getMoves().add((OthelloMove) move);
+
+        if (this.isGameOver())
+            this.endGame();
 
         return this;
     }
@@ -467,21 +516,83 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @Override
     public boolean isGameOver() {
-        // TODO
+        return (
+          this.getStatus() == OthelloGameStatus.FINISHED
+          ||
+          !this.canAnyPlayerPlay()
+        );
+    }
+
+    protected boolean canAnyPlayerPlay() {
+        List<OthelloGamePlayer> gamePlayers = this.getGamePlayers();
+
+        for (IOthelloGamePlayer gamePlayer : gamePlayers) {
+            if (this.canPlayerPlay(gamePlayer))
+                return true;
+        }
+
         return false;
     }
 
-    @Override
-    public List<OthelloGamePlayer> getWinners() {
-        // TODO
-        return null;
+    protected boolean canPlayerPlay(IOthelloGamePlayer gamePlayer) {
+        List<IOthelloMove> possibleMoves = this.getValidMoves(gamePlayer);
+        return (possibleMoves.size() > 0);
     }
 
-    @Override
-    public List<OthelloGamePlayer> getLosers() {
-        // TODO
-        return null;
+    protected int countDisksOfColor(OthelloGamePlayerColor color) {
+        int count = 0;
+
+        for (IOthelloDisk disk : this.getAllDisks()) {
+            if (disk.getGamePlayer().getPlayerColor() == color)
+                count++;
+        }
+
+        return count;
     }
 
+    private void endGame() {
+        this.setStatus(OthelloGameStatus.FINISHED);
+
+        // calculate winners, losers and their scores
+        List<OthelloGamePlayer> gamePlayers = this.getGamePlayers();
+        Set<OthelloGamePlayerColor> teams = new HashSet<>();
+
+        for (OthelloGamePlayer gamePlayer : gamePlayers) {
+            teams.add(gamePlayer.getPlayerColor());
+        }
+
+        // Set the score for all players of the same team
+        for (OthelloGamePlayerColor team : teams) {
+            int teamScore = this.countDisksOfColor(team);
+
+            for (OthelloGamePlayer gamePlayer : gamePlayers) {
+                if (gamePlayer.getPlayerColor() == team)
+                    gamePlayer.setScore(teamScore);
+            }
+        }
+
+        // Set the winner(s) and loser(s)
+        int maxScore = -1;
+        List<OthelloGamePlayer> winners = new ArrayList<>();
+        List<OthelloGamePlayer> losers = new ArrayList<>();
+
+        for (OthelloGamePlayer gamePlayer : gamePlayers) {
+            int playerScore = gamePlayer.getScore();
+
+            if (playerScore > maxScore) {
+                maxScore = playerScore;
+                losers.addAll(winners);
+                winners.clear();
+                winners.add(gamePlayer);
+            } else if (playerScore == maxScore) {
+                winners.add(gamePlayer);
+            } else {
+                losers.add(gamePlayer);
+            }
+        }
+
+        this.setWinners(winners);
+        this.setLosers(losers);
+    }
 }
 

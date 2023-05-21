@@ -5,6 +5,8 @@ import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 
+import java.util.List;
+
 public interface IOthelloGamePlayer {
 
     static IOthelloGamePlayer create(IOthelloPlayer player, OthelloGamePlayerColor playerColor) {
@@ -30,4 +32,9 @@ public interface IOthelloGamePlayer {
     int getScore();
     IOthelloGamePlayer setScore(int score);
 
+    List<OthelloGame> getGamesWon();
+    IOthelloGamePlayer setGamesWon(List<OthelloGame> gamesWon);
+
+    List<OthelloGame> getGamesLost();
+    IOthelloGamePlayer setGamesLost(List<OthelloGame> gamesLost);
 }

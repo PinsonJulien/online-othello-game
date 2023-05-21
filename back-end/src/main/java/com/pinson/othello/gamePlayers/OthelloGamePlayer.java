@@ -31,6 +31,14 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
     @Column(name = "player_color", nullable = false)
     private OthelloGamePlayerColor playerColor;
 
+    @ManyToMany(mappedBy = "winners")
+    private List<OthelloGame> gamesWon;
+
+    @ManyToMany(mappedBy = "losers")
+    private List<OthelloGame> gamesLost;
+
+    private Integer score = 0;
+
     public OthelloGamePlayer() {
         //
     }
@@ -96,14 +104,38 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
 
     @Override
     public int getScore() {
-        // Todo
-        return 0;
+        return this.score;
     }
 
     @Override
     public IOthelloGamePlayer setScore(int score) {
-        // Todo
-        return null;
+        this.score = score;
+
+        return this;
+    }
+
+    @Override
+    public List<OthelloGame> getGamesWon() {
+        return this.gamesWon;
+    }
+
+    @Override
+    public IOthelloGamePlayer setGamesWon(List<OthelloGame> gamesWon) {
+        this.gamesWon = gamesWon;
+
+        return this;
+    }
+
+    @Override
+    public List<OthelloGame> getGamesLost() {
+        return this.gamesLost;
+    }
+
+    @Override
+    public IOthelloGamePlayer setGamesLost(List<OthelloGame> gamesLost) {
+        this.gamesLost = gamesLost;
+
+        return this;
     }
 
 }

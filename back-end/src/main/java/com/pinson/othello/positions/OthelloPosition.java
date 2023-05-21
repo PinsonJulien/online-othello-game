@@ -116,4 +116,24 @@ public class OthelloPosition extends MatrixPosition<Integer> implements IOthello
             this.standardNotation.equals(position.getStandardNotation())
         );
     }
+
+    @Override
+    public String toString() {
+        return (
+            "OthelloPosition{" +
+            "x=" + this.getX() + ", " +
+            "y=" + this.getY() + ", " +
+            "standardNotation='" + this.standardNotation + "'"+
+            "}"
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return (
+            this.getX().hashCode() +
+            this.getY().hashCode() +
+            this.standardNotation.hashCode()
+        );
+    }
 }
