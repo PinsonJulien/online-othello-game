@@ -1,9 +1,12 @@
 package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.Game;
+import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
+import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
+import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
@@ -20,9 +23,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> implements IOthelloGame {
@@ -79,6 +80,8 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @PostLoad
     private void postLoad() throws GridSizeException {
+        // Set the status back to in progress, this will be updated by the replay of the moves.
+        this.status = OthelloGameStatus.IN_PROGRESS;
 
         // Generate the grid
         this.setupGrid(gridWidth, gridHeight);
@@ -95,8 +98,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         for (OthelloMove move : moves) {
             try {
                 this.playMove(move, false);
-            } catch (InvalidMoveException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                // This should never happen.
+                e.printStackTrace();
             }
         }
     }
@@ -191,11 +195,63 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player) {
-        IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
-        OthelloGamePlayerColor currentPlayerColor = currentPlayer.getPlayerColor();
+    public List<IOthelloMove> getValidMoves() {
+        return this.getValidMoves(this.getCurrentTurnPlayer());
+    }
 
-        return null;
+    @Override
+    public List<IOthelloMove> getValidMoves(IOthelloGamePlayer gamePlayer) {
+        List<IOthelloMove> validMoves = new ArrayList<>();
+        // Set to handle duplicate positions and moves, dynamic programming.
+        Set<IMatrixPosition<Integer>> visitedTiles = new HashSet<>();
+        Set<IOthelloMove> visitedMoves = new HashSet<>();
+
+        // Search around every disk that are not owned by the given player.
+        List<IOthelloDisk> disks = this.getAllDisks();
+        OthelloGamePlayerColor playerColor = gamePlayer.getPlayerColor();
+        IOthelloGrid grid = this.getGrid();
+
+        for (IOthelloDisk disk : disks) {
+            // Skip if the disk is owned by the current player.
+            if (disk.getGamePlayer().getPlayerColor() == playerColor)
+                continue;
+
+            // get the neighbouring tiles of the disk.
+            List<List<IOthelloTile>> neighbouringTiles = new ArrayList<>();
+            try {
+                neighbouringTiles = grid.getAdjacentNeighbours(disk.getTile());
+            } catch (Exception e) {
+                // this should never happen.
+                e.printStackTrace();
+            }
+
+            // check if the neighbouring tiles are valid moves.
+            for (List<IOthelloTile> neighbouringTileLine : neighbouringTiles) {
+                for (IOthelloTile neighbouringTile : neighbouringTileLine) {
+                    IMatrixPosition<Integer> position = neighbouringTile.getPosition();
+
+                    // check if the tile has already been visited.
+                    if (visitedTiles.contains(position))
+                        continue;
+
+                    visitedTiles.add(position);
+
+                    // check if the tile is empty.
+                    if (neighbouringTile.getPiece() != null)
+                        continue;
+
+                    // check if the tile is a valid move.
+                    IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayer).setRow(position.getY()).setColumn(position.getX());
+                    System.out.println(move);
+                    if (this.isMoveValid(move)) {
+                        System.out.println("was valid");
+                        validMoves.add(move);
+                    }
+                }
+            }
+        }
+
+        return validMoves;
     }
 
     @Override
@@ -208,9 +264,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
                 return false;
 
             OthelloGamePlayerColor currentPlayerColor = move.getGamePlayer().getPlayerColor();
-            ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(tile);
+            List<List<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(tile);
 
-            for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+            for (List<IOthelloTile> adjacentTileRow : adjacentTiles) {
                 // check if the row is empty.
                 if (adjacentTileRow.size() == 0)
                     continue;
@@ -238,17 +294,26 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException {
+    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException {
         return this.playMove(move, true);
     }
 
-    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException {
+    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException, GameOverException {
+        // Check if the game is still in progress.
+        if (this.getStatus() != OthelloGameStatus.IN_PROGRESS)
+            throw new GameOverException();
+
         // Check if the player is allowed to play.
         IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
         IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
 
         if (!Objects.equals(currentPlayer.getId(), moveGamePlayer.getId()))
             throw new InvalidMoveException("The player is not allowed to play.");
+
+        moveGamePlayer.setGame(this);
+
+        // check if there's available moves, if there's not, skip the turn.
+        List<IOthelloMove> validMoves = this.getValidMoves(moveGamePlayer);
 
         // check if the move is a pass move.
         if (move.isPassed()) {
@@ -271,9 +336,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
             // Flip the aligned disks.
             OthelloGamePlayerColor currentPlayerColor = moveGamePlayer.getPlayerColor();
-            ArrayList<ArrayList<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(row, column);
+            List<List<IOthelloTile>> adjacentTiles = this.getGrid().getAdjacentNeighbours(row, column);
 
-            for (ArrayList<IOthelloTile> adjacentTileRow : adjacentTiles) {
+            for (List<IOthelloTile> adjacentTileRow : adjacentTiles) {
                 // Check if there is at least one neighbor in the list.
                 if (adjacentTileRow.size() == 0)
                     continue;

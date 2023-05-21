@@ -7,6 +7,7 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.IMatrixAr
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface IGrid<T extends ITile<?, ?>> {
 
@@ -22,67 +23,67 @@ public interface IGrid<T extends ITile<?, ?>> {
 
     IMatrixPosition<Integer> findTile(T tile) throws NotFoundException;
 
-    ArrayList<T> getNorthNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getNorthNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getNorthNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getNorthNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getNorthNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getEastNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getEastNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getEastNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getEastNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getEastNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getEastNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getEastNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getEastNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getSouthNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getSouthNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getSouthNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getSouthNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getSouthNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getWestNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getWestNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getWestNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getWestNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getNorthEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getNorthEastNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthEastNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getNorthEastNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthEastNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getNorthEastNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthEastNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getNorthEastNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthEastNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getSouthEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getSouthEastNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthEastNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getSouthEastNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthEastNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthEastNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getSouthEastNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthEastNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthEastNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getSouthEastNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthEastNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getSouthWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getSouthWestNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthWestNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getSouthWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getSouthWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getSouthWestNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthWestNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getSouthWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getSouthWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<T> getNorthWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getNorthWestNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthWestNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<T> getNorthWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<T> getNorthWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthWestNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getNorthWestNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthWestNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthWestNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<T> getNorthWestNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<T> getNorthWestNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<ArrayList<T>> getAdjacentNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
-    ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
+    List<List<T>> getAdjacentNeighbours(T tile) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<List<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position) throws MatrixIndexOutOfBoundsException;
+    List<List<T>> getAdjacentNeighbours(int row, int column) throws MatrixIndexOutOfBoundsException;
 
-    ArrayList<ArrayList<T>> getAdjacentNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
-    ArrayList<ArrayList<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
-    ArrayList<ArrayList<T>> getAdjacentNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
+    List<List<T>> getAdjacentNeighbours(T tile, int distance) throws MatrixIndexOutOfBoundsException, NotFoundException;
+    List<List<T>> getAdjacentNeighbours(IMatrixPosition<Integer> position, int distance) throws MatrixIndexOutOfBoundsException;
+    List<List<T>> getAdjacentNeighbours(int row, int column, int distance) throws MatrixIndexOutOfBoundsException;
 }

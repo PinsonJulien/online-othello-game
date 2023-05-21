@@ -1,6 +1,7 @@
 package com.pinson.othello.games;
 
 import com.pinson.othello.commons.entities.games.IGame;
+import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
 import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
@@ -11,7 +12,6 @@ import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.grids.IOthelloGrid;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
-import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.tiles.IOthelloTile;
 
 import java.time.LocalDateTime;
@@ -28,11 +28,12 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
 
     IOthelloGamePlayer getCurrentTurnPlayer();
 
-    ArrayList<IOthelloTile> getValidMoves(IOthelloPlayer player);
+    List<IOthelloMove> getValidMoves();
+    List<IOthelloMove> getValidMoves(IOthelloGamePlayer player);
 
     boolean isMoveValid(IOthelloMove move);
 
-    IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException;
+    IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException;
 
     IOthelloGame setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException;
     IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;

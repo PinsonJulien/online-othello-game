@@ -6,6 +6,7 @@ import com.pinson.othello.commons.entities.tiles.ITile;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Game<T extends ITile<P, T>,  G extends IGrid<T>, P extends IPiece<T, P>> implements IGame<T, G, P> {
 
@@ -50,10 +51,10 @@ public abstract class Game<T extends ITile<P, T>,  G extends IGrid<T>, P extends
     }
 
     @Override
-    public ArrayList<P> getAllPieces() {
-        ArrayList<P> pieces = new ArrayList<>();
+    public List<P> getAllPieces() {
+        List<P> pieces = new ArrayList<>();
 
-        for (ArrayList<T> row : this.grid.getTiles()) {
+        for (List<T> row : this.grid.getTiles()) {
             for (T tile : row) {
                 // if the tile is not empty
                 P piece = tile.getPiece();
@@ -71,10 +72,10 @@ public abstract class Game<T extends ITile<P, T>,  G extends IGrid<T>, P extends
     }
 
     @Override
-    public ArrayList<T> getAllTiles() {
-        ArrayList<T> tiles = new ArrayList<>();
+    public List<T> getAllTiles() {
+        List<T> tiles = new ArrayList<>();
 
-        for (ArrayList<T> row : this.grid.getTiles()) {
+        for (List<T> row : this.grid.getTiles()) {
             tiles.addAll(row);
         }
 
@@ -82,10 +83,10 @@ public abstract class Game<T extends ITile<P, T>,  G extends IGrid<T>, P extends
     }
 
     @Override
-    public ArrayList<T> getAllEmptyTiles() {
-        ArrayList<T> tiles = new ArrayList<>();
+    public List<T> getAllEmptyTiles() {
+        List<T> tiles = new ArrayList<>();
 
-        for (ArrayList<T> row : this.grid.getTiles()) {
+        for (List<T> row : this.grid.getTiles()) {
             for (T tile : row) {
                 // if the tile is empty
                 if (tile.getPiece() == null)

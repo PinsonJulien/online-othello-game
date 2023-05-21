@@ -6,7 +6,7 @@ import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,7 +63,7 @@ class GridTest {
         assertEquals(3, grid.getNorthNeighbours(3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getNorthNeighbours(3, 0);
+        List<ConcreteTile> neighbours = grid.getNorthNeighbours(3, 0);
         assertEquals(grid.getTileAt(2, 0), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 0), neighbours.get(1));
         assertEquals(grid.getTileAt(0, 0), neighbours.get(2));
@@ -95,7 +95,7 @@ class GridTest {
         assertEquals(2, grid.getNorthNeighbours(3, 1, 2).size());
         assertEquals(2, grid.getNorthNeighbours(3, 2, 2).size());
 
-        ArrayList<ConcreteTile> neighbours = grid.getNorthNeighbours(3, 0, 2);
+        List<ConcreteTile> neighbours = grid.getNorthNeighbours(3, 0, 2);
         assertEquals(grid.getTileAt(2, 0), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 0), neighbours.get(1));
 
@@ -131,7 +131,7 @@ class GridTest {
         assertEquals(0, grid.getEastNeighbours(2, 3).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getEastNeighbours(1, 1);
+        List<ConcreteTile> neighbours = grid.getEastNeighbours(1, 1);
         assertEquals(grid.getTileAt(1, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 3), neighbours.get(1));
     }
@@ -161,7 +161,7 @@ class GridTest {
         assertEquals(1, grid.getEastNeighbours(2, 2, 2).size());
         assertEquals(0, grid.getEastNeighbours(2, 3, 2).size());
 
-        ArrayList<ConcreteTile> neighbours = grid.getEastNeighbours(1, 0, 2);
+        List<ConcreteTile> neighbours = grid.getEastNeighbours(1, 0, 2);
         assertEquals(grid.getTileAt(1, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 2), neighbours.get(1));
 
@@ -198,7 +198,7 @@ class GridTest {
         assertEquals(0, grid.getSouthNeighbours(3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getSouthNeighbours(1, 1);
+        List<ConcreteTile> neighbours = grid.getSouthNeighbours(1, 1);
         assertEquals(grid.getTileAt(2, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(3, 1), neighbours.get(1));
     }
@@ -229,7 +229,7 @@ class GridTest {
         assertEquals(0, grid.getSouthNeighbours(3, 1, 2).size());
         assertEquals(0, grid.getSouthNeighbours(3, 2, 2).size());
 
-        ArrayList<ConcreteTile> neighbours = grid.getSouthNeighbours(0, 1, 2);
+        List<ConcreteTile> neighbours = grid.getSouthNeighbours(0, 1, 2);
         assertEquals(grid.getTileAt(1, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(2, 1), neighbours.get(1));
 
@@ -266,7 +266,7 @@ class GridTest {
         assertEquals(3, grid.getWestNeighbours(2, 3).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getWestNeighbours(1, 3);
+        List<ConcreteTile> neighbours = grid.getWestNeighbours(1, 3);
         assertEquals(grid.getTileAt(1, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 1), neighbours.get(1));
         assertEquals(grid.getTileAt(1, 0), neighbours.get(2));
@@ -298,7 +298,7 @@ class GridTest {
         assertEquals(2, grid.getWestNeighbours(2, 3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getWestNeighbours(1, 3, 2);
+        List<ConcreteTile> neighbours = grid.getWestNeighbours(1, 3, 2);
         assertEquals(grid.getTileAt(1, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 1), neighbours.get(1));
 
@@ -339,7 +339,7 @@ class GridTest {
         assertEquals(0, grid.getNorthEastNeighbours(3, 3).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getNorthEastNeighbours(3, 0);
+        List<ConcreteTile> neighbours = grid.getNorthEastNeighbours(3, 0);
         assertEquals(grid.getTileAt(2, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 2), neighbours.get(1));
         assertEquals(grid.getTileAt(0, 3), neighbours.get(2));
@@ -376,7 +376,7 @@ class GridTest {
         assertEquals(0, grid.getNorthEastNeighbours(3, 3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getNorthEastNeighbours(3, 0, 2);
+        List<ConcreteTile> neighbours = grid.getNorthEastNeighbours(3, 0, 2);
         assertEquals(grid.getTileAt(2, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 2), neighbours.get(1));
 
@@ -417,7 +417,7 @@ class GridTest {
         assertEquals(0, grid.getSouthEastNeighbours(3, 3).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getSouthEastNeighbours(0, 0);
+        List<ConcreteTile> neighbours = grid.getSouthEastNeighbours(0, 0);
         assertEquals(grid.getTileAt(1, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(2, 2), neighbours.get(1));
         assertEquals(grid.getTileAt(3, 3), neighbours.get(2));
@@ -454,7 +454,7 @@ class GridTest {
         assertEquals(0, grid.getSouthEastNeighbours(3, 3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getSouthEastNeighbours(0, 0, 2);
+        List<ConcreteTile> neighbours = grid.getSouthEastNeighbours(0, 0, 2);
         assertEquals(grid.getTileAt(1, 1), neighbours.get(0));
         assertEquals(grid.getTileAt(2, 2), neighbours.get(1));
 
@@ -494,7 +494,7 @@ class GridTest {
         assertEquals(0, grid.getSouthWestNeighbours(3, 3).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getSouthWestNeighbours(0, 3);
+        List<ConcreteTile> neighbours = grid.getSouthWestNeighbours(0, 3);
         assertEquals(grid.getTileAt(1, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(2, 1), neighbours.get(1));
         assertEquals(grid.getTileAt(3, 0), neighbours.get(2));
@@ -531,7 +531,7 @@ class GridTest {
         assertEquals(0, grid.getSouthWestNeighbours(3, 3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getSouthWestNeighbours(0, 3, 2);
+        List<ConcreteTile> neighbours = grid.getSouthWestNeighbours(0, 3, 2);
         assertEquals(grid.getTileAt(1, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(2, 1), neighbours.get(1));
 
@@ -571,7 +571,7 @@ class GridTest {
         assertEquals(3, grid.getNorthWestNeighbours(3, 3).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getNorthWestNeighbours(3, 3);
+        List<ConcreteTile> neighbours = grid.getNorthWestNeighbours(3, 3);
         assertEquals(grid.getTileAt(2, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 1), neighbours.get(1));
         assertEquals(grid.getTileAt(0, 0), neighbours.get(2));
@@ -608,7 +608,7 @@ class GridTest {
         assertEquals(2, grid.getNorthWestNeighbours(3, 3, 2).size());
 
         // checks if the neighbours are the right ones
-        ArrayList<ConcreteTile> neighbours = grid.getNorthWestNeighbours(3, 3, 2);
+        List<ConcreteTile> neighbours = grid.getNorthWestNeighbours(3, 3, 2);
         assertEquals(grid.getTileAt(2, 2), neighbours.get(0));
         assertEquals(grid.getTileAt(1, 1), neighbours.get(1));
 
@@ -627,7 +627,7 @@ class GridTest {
             }
         }
 
-        ArrayList<ArrayList<ConcreteTile>> neighbours = grid.getAdjacentNeighbours(1, 4);
+        List<List<ConcreteTile>> neighbours = grid.getAdjacentNeighbours(1, 4);
         assertEquals(1, neighbours.get(0).size()); // north
         assertEquals(1, neighbours.get(1).size()); // north east
         assertEquals(1, neighbours.get(2).size()); // east

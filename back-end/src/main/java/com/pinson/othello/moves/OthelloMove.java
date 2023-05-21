@@ -4,6 +4,7 @@ import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.games.IOthelloGame;
 import com.pinson.othello.games.OthelloGame;
+import com.pinson.othello.positions.IOthelloPosition;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -26,10 +27,10 @@ public class OthelloMove implements IOthelloMove {
     private OthelloGamePlayer gamePlayer;
 
     @Column(nullable = false)
-    private Integer row;
+    private Integer row = 0;
 
     @Column(nullable = false)
-    private Integer column;
+    private Integer column = 0;
 
     private Boolean passed = false;
 
@@ -118,4 +119,69 @@ public class OthelloMove implements IOthelloMove {
         return this;
     }
 
+    @Override
+    public IOthelloPosition getPosition() {
+        try {
+            return IOthelloPosition.create(this.row, this.column);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public IOthelloMove setPosition(IOthelloPosition position) {
+        int row = 0;
+        int column = 0;
+
+        if (position != null) {
+            row = position.getRow();
+            column = position.getColumn();
+        }
+
+        this.row = row;
+        this.column = column;
+
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OthelloMove move))
+            return false;
+
+        if (this == move)
+            return true;
+
+        return (
+            this.getId().equals(move.getId())
+            &&
+            this.getGame().equals(move.getGame())
+            &&
+            this.getGamePlayer().equals(move.getGamePlayer())
+            &&
+            this.getRow().equals(move.getRow())
+            &&
+            this.getColumn().equals(move.getColumn())
+            &&
+            this.isPassed().equals(move.isPassed())
+            &&
+            this.getCreatedAt().equals(move.getCreatedAt())
+        );
+    }
+
+    @Override
+    public String toString() {
+
+        return (
+            "OthelloMove {" +
+            "id: " + this.getId() + ", " +
+            "game: " + this.getGame() + ", " +
+            "gamePlayer: " + this.getGamePlayer() + ", " +
+            "row: " + this.getRow() + ", " +
+            "column: " + this.getColumn() + ", " +
+            "passed: " + this.isPassed() + ", " +
+            "createdAt: " + this.getCreatedAt() +
+            "}"
+        );
+    }
 }

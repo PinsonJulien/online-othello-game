@@ -14,4 +14,6 @@ public interface IMatrixPosition<T extends Number> {
 
     IMatrixPosition<T> set(T x, T y);
 
+    @Override
+    boolean equals(Object obj);
 }

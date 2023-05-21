@@ -2,6 +2,7 @@ package com.pinson.othello.moves;
 
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.games.IOthelloGame;
+import com.pinson.othello.positions.IOthelloPosition;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,11 @@ public interface IOthelloMove {
     static IOthelloMove create() {
         return new OthelloMove();
     }
+
+    IOthelloPosition getPosition();
+    IOthelloMove setPosition(IOthelloPosition position);
+
+    // getters and setters
 
     Long getId();
     Integer getRow();

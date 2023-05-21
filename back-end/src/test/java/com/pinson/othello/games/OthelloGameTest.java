@@ -1,5 +1,6 @@
 package com.pinson.othello.games;
 
+import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
 import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
@@ -11,6 +12,7 @@ import com.pinson.othello.moves.IOthelloMove;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -220,7 +222,7 @@ class OthelloGameTest {
     }
 
     @Test
-    void playMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidMoveException, MatrixIndexOutOfBoundsException {
+    void playMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidMoveException, MatrixIndexOutOfBoundsException, GameOverException {
         /*            0 1 2 3 4 5 6 7
          *          0 x x x x x x x x
          *          1 x x x x x x x x
@@ -1258,6 +1260,736 @@ class OthelloGameTest {
     }
 
     @Test
+    void getValidMoves() throws GridSizeException, InvalidNumberOfPlayersException, GameOverException, InvalidMoveException, MatrixIndexOutOfBoundsException {
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
+
+        // The complex grid has been tested, now test the simple grid with a few moves till a player has to skip
+        // Final grid
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x x x x x x x
+         *          2 x B B B B B x x
+         *          3 W x B B B x x x
+         *          4 W W B B B B x x
+         *          5 W W W B B x x x
+         *          6 W W W B x B x x
+         *          7 W W W W W W W x
+         */
+        // moves: D3 E3 F3 C5 D6 C3 C4 C7 C6 B6 A7 A6 D7 E8 F5 A8 B3 E6 B8 B7 B5 C8 F7 A5 D8 A4 F8 G8
+
+        IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
+        List<IOthelloMove> moves = game.getValidMoves();
+        assertEquals(4, moves.size());
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 2 && m.getColumn() == 3).findAny().orElse(null)); // D3
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 3 && m.getColumn() == 2).findAny().orElse(null)); // C4
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 4 && m.getColumn() == 5).findAny().orElse(null)); // F5
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 4).findAny().orElse(null)); // E6
+
+        // D3
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(2).setColumn(3));
+        moves = game.getValidMoves();
+        assertEquals(3, moves.size());
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 2 && m.getColumn() == 2).findAny().orElse(null)); // C3
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 4 && m.getColumn() == 2).findAny().orElse(null)); // C5
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 2 && m.getColumn() == 4).findAny().orElse(null)); // E3
+
+        // E3
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(2).setColumn(4));
+        moves = game.getValidMoves();
+        assertEquals(5, moves.size());
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 1 && m.getColumn() == 5).findAny().orElse(null)); // F2
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 2 && m.getColumn() == 5).findAny().orElse(null)); // F3
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 3 && m.getColumn() == 5).findAny().orElse(null)); // F4
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 4 && m.getColumn() == 5).findAny().orElse(null)); // F5
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 5).findAny().orElse(null)); // F6
+
+        // F3
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(2).setColumn(5));
+        System.out.println("§§§§§§§§§§§§§§§§§§§§§§§§§§§§ HERE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§");
+        System.out.println("§§§§§§§§§§§§§§§§§§§§§§§§§§§§ HERE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§");
+        System.out.println("§§§§§§§§§§§§§§§§§§§§§§§§§§§§ HERE §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§");
+        moves = game.getValidMoves();
+
+        assertEquals(3, moves.size());
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 2 && m.getColumn() == 2).findAny().orElse(null)); // C3
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 4 && m.getColumn() == 2).findAny().orElse(null)); // C5
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 1 && m.getColumn() == 4).findAny().orElse(null)); // E2
+
+        // C5
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(4).setColumn(2));
+        moves = game.getValidMoves();
+        assertEquals(5, moves.size());
+        // B6 C6 D6 E6 F6
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 1).findAny().orElse(null)); // B6
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 2).findAny().orElse(null)); // C6
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 3).findAny().orElse(null)); // D6
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 4).findAny().orElse(null)); // E6
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 5 && m.getColumn() == 5).findAny().orElse(null)); // F6
+
+        // D6
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(5).setColumn(3));
+        moves = game.getValidMoves();
+        assertEquals(5, moves.size());
+        // E2 F2 C3 C7 E7
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 1 && m.getColumn() == 4).findAny().orElse(null)); // E2
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 1 && m.getColumn() == 5).findAny().orElse(null)); // F2
+        assertNotNull(moves.stream().filter(m -> m.getRow() == 2 && m.getColumn() == 2).findAny().orElse(null)); // C3
+
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+
+        // C3
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(2).setColumn(2));
+        assertEquals(6, game.getMoves().size());
+        assertEquals(10, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+
+        // C4
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(3).setColumn(2));
+        assertEquals(7, game.getMoves().size());
+        assertEquals(11, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+
+        // C7
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(6).setColumn(2));
+        assertEquals(8, game.getMoves().size());
+        assertEquals(12, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+
+        // C6
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(5).setColumn(2));
+        assertEquals(9, game.getMoves().size());
+        assertEquals(13, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 2).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+
+        // B6
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(5).setColumn(1));
+        assertEquals(10, game.getMoves().size());
+        assertEquals(14, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+
+        // A7
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(6).setColumn(0));
+        assertEquals(11, game.getMoves().size());
+        assertEquals(15, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 0).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+
+        // A6
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(5).setColumn(0));
+        assertEquals(12, game.getMoves().size());
+        assertEquals(16, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 0).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+
+        // D7
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(6).setColumn(3));
+        assertEquals(13, game.getMoves().size());
+        assertEquals(17, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+
+        // E8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(7).setColumn(4));
+        assertEquals(14, game.getMoves().size());
+        assertEquals(18, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 0).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // F5
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(4).setColumn(5));
+        assertEquals(15, game.getMoves().size());
+        assertEquals(19, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 0).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // A8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(7).setColumn(0));
+        assertEquals(16, game.getMoves().size());
+        assertEquals(20, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // B3
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(2).setColumn(1));
+        assertEquals(17, game.getMoves().size());
+        assertEquals(21, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // E6
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(5).setColumn(4));
+        assertEquals(18, game.getMoves().size());
+        assertEquals(22, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // B8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(7).setColumn(1));
+        assertEquals(19, game.getMoves().size());
+        assertEquals(23, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 1).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // B7
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(6).setColumn(1));
+        assertEquals(20, game.getMoves().size());
+        assertEquals(24, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 1).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // B5
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(4).setColumn(1));
+        assertEquals(21, game.getMoves().size());
+        assertEquals(25, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 1).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // C8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(7).setColumn(2));
+        assertEquals(22, game.getMoves().size());
+        assertEquals(26, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // F7
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(6).setColumn(5));
+        assertEquals(23, game.getMoves().size());
+        assertEquals(27, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 5).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // A5
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(4).setColumn(0));
+        assertEquals(24, game.getMoves().size());
+        assertEquals(28, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 5).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // D8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(7).setColumn(3));
+        assertEquals(25, game.getMoves().size());
+        assertEquals(29, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // A4
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(3).setColumn(0));
+        assertEquals(26, game.getMoves().size());
+        assertEquals(30, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 3).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+
+        // F8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(7).setColumn(5));
+        assertEquals(27, game.getMoves().size());
+        assertEquals(31, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(7, 5).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+
+        // G8
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(7).setColumn(6));
+        assertEquals(28, game.getMoves().size());
+        assertEquals(32, game.getAllDisks().size());
+        // Black
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(2, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(3, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(4, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(5, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(0), game.getDiskAt(6, 5).getGamePlayer());
+        // White
+        assertEquals(gamePlayers.get(1), game.getDiskAt(3, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(4, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(5, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(6, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 0).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 1).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 2).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 3).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 4).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 5).getGamePlayer());
+        assertEquals(gamePlayers.get(1), game.getDiskAt(7, 6).getGamePlayer());
+
+        // the next move is a skip because black has no valid moves.
+    }
+
+    @Test
     void getId() {
     }
 
@@ -1318,9 +2050,5 @@ class OthelloGameTest {
 
     @Test
     void getCurrentTurnPlayer() {
-    }
-
-    @Test
-    void getValidMoves() {
     }
 }

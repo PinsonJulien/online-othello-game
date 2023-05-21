@@ -3,6 +3,7 @@ package com.pinson.othello.disks;
 import com.pinson.othello.commons.entities.pieces.Piece;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
+import com.pinson.othello.positions.IOthelloPosition;
 import com.pinson.othello.tiles.IOthelloTile;
 
 public class OthelloDisk extends Piece<IOthelloTile, IOthelloDisk> implements IOthelloDisk {
@@ -29,6 +30,11 @@ public class OthelloDisk extends Piece<IOthelloTile, IOthelloDisk> implements IO
     @Override
     public OthelloGamePlayerColor getColor() {
         return this.getGamePlayer().getPlayerColor();
+    }
+
+    @Override
+    public IOthelloPosition getPosition() {
+        return this.getTile().getPosition();
     }
 
 }

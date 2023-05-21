@@ -28,7 +28,7 @@ public class OthelloGrid extends Grid<IOthelloTile> implements IOthelloGrid {
             for (int column = 0; column < columns; column++) {
                 try {
                     tiles.set(row, column, IOthelloTile.create(row, column));
-                } catch (MatrixIndexOutOfBoundsException e) {
+                } catch (MatrixIndexOutOfBoundsException | NonPositiveValueException e) {
                     e.printStackTrace();
                 }
             }
