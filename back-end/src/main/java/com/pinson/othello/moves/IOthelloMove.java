@@ -13,6 +13,7 @@ public interface IOthelloMove {
     }
 
     IOthelloPosition getPosition();
+    IOthelloMove setPosition(Integer row, Integer column);
     IOthelloMove setPosition(IOthelloPosition position);
 
     // getters and setters

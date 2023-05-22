@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/online-game-of-life.iml" filepath="$PROJECT_DIR$/.idea/online-game-of-life.iml" />
+      <module fileurl="file://$PROJECT_DIR$/back-end/online-othello-backend.iml" filepath="$PROJECT_DIR$/back-end/online-othello-backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/back-end/othello.iml" filepath="$PROJECT_DIR$/back-end/othello.iml" />
     </modules>
   </component>

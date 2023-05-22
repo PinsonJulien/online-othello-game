@@ -24,8 +24,6 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
         return new OthelloGame(gamePlayers, gridWidth, gridHeight);
     }
 
-    void skipMove();
-
     IOthelloGamePlayer getCurrentTurnPlayer();
 
     List<IOthelloMove> getValidMoves();
@@ -34,6 +32,7 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
     boolean isMoveValid(IOthelloMove move);
 
     IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException;
+    IOthelloGame skipMove() throws InvalidMoveException, GameOverException;
 
     IOthelloGame setDiskAt(int row, int column, IOthelloDisk disk) throws MatrixIndexOutOfBoundsException;
     IOthelloDisk getDiskAt(int row, int column) throws MatrixIndexOutOfBoundsException;

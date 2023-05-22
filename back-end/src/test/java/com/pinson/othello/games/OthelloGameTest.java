@@ -9,6 +9,7 @@ import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.moves.IOthelloMove;
+import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.positions.IOthelloPosition;
 import com.pinson.othello.positions.exceptions.InvalidStandardNotationException;
 import org.junit.jupiter.api.Test;
@@ -1301,7 +1302,6 @@ class OthelloGameTest {
         gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
         gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
 
-        // The complex grid has been tested, now test the simple grid with a few moves till a player has to skip
         // Final grid
         /*            0 1 2 3 4 5 6 7
          *          0 x x x x x x x x
@@ -1803,7 +1803,75 @@ class OthelloGameTest {
     void setUpdatedAt() {
     }
     @Test
-    void skipMove() {
+    void skipMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidStandardNotationException, GameOverException, InvalidMoveException {
+        // Play moves until a pass must be done.
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
+        // The complex grid has been tested, now test the simple grid with a few moves till a player has to skip
+        // Final grid
+        /*            0 1 2 3 4 5 6 7
+         *          0 x x x x x x x x
+         *          1 x x x x x x x x
+         *          2 x B B B B B x x
+         *          3 W x B B B x x x
+         *          4 W W B B B B x x
+         *          5 W W W B B x x x
+         *          6 W W W B x B x x
+         *          7 W W W W W W W x
+         */
+        // moves: D3 E3 F3 C5 D6 C3 C4 C7 C6 B6 A7 A6 D7 E8 F5 A8 B3 E6 B8 B7 B5 C8 F7 A5 D8 A4 F8 G8
+        IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
+
+        assertThrows(GameOverException.class, () -> {
+            finalGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("H8")));
+        });
+
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D3")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(2).setColumn(4));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F3")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C5")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D6")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C3")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C4")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C7")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C6")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B6")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("A7")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A6")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D7")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E8")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A8")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E6")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B8")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B7")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B5")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C8")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F7")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A5")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A4")));
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F8")));
+
+        // Black cannot play after this move.
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G8")));
+
+        assertEquals(4 + 28, game.getAllDisks().size());
+        assertEquals(28, game.getMoves().size());
+        // the next move is a skip because black has no valid moves.
+        game.skipMove();
+        // we check if the last move was indeed, skipped.
+        List<OthelloMove> moves = game.getMoves();
+        assertTrue(moves.get(moves.size() - 1).isPassed());
+        assertEquals(29, game.getMoves().size());
+        assertEquals(4 + 28, game.getAllDisks().size());
+
+        // A move by white can be played.
+        game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A2")));
+        assertEquals(30, game.getMoves().size());
+        assertEquals(4 + 29, game.getAllDisks().size());
     }
 
     @Test

@@ -129,6 +129,14 @@ public class OthelloMove implements IOthelloMove {
     }
 
     @Override
+    public IOthelloMove setPosition(Integer row, Integer column) {
+        this.setRow(row);
+        this.setColumn(column);
+
+        return this;
+    }
+
+    @Override
     public IOthelloMove setPosition(IOthelloPosition position) {
         int row = 0;
         int column = 0;

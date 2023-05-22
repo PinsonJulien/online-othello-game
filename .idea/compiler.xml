@@ -6,15 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="online-othello-backend" />
         <module name="othello" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="online-othello-backend" target="17" />
       <module name="othello" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="online-othello-backend" options="-parameters" />
       <module name="othello" options="-parameters" />
     </option>
   </component>
