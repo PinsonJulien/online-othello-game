@@ -8,6 +8,8 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exception
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
+import com.pinson.othello.games.exceptions.CannotPassTurnException;
+import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.positions.IOthelloPosition;
@@ -1297,7 +1299,7 @@ class OthelloGameTest {
     }
 
     @Test
-    void getValidMoves() throws GridSizeException, InvalidNumberOfPlayersException, GameOverException, InvalidMoveException, MatrixIndexOutOfBoundsException, InvalidStandardNotationException {
+    void getValidMoves() throws GridSizeException, InvalidNumberOfPlayersException, GameOverException, InvalidMoveException, MatrixIndexOutOfBoundsException, InvalidStandardNotationException, UnknownGamePlayerException, CannotPassTurnException {
         List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
         gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
         gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
@@ -1803,7 +1805,7 @@ class OthelloGameTest {
     void setUpdatedAt() {
     }
     @Test
-    void skipMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidStandardNotationException, GameOverException, InvalidMoveException {
+    void skipMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidStandardNotationException, GameOverException, InvalidMoveException, CannotPassTurnException, UnknownGamePlayerException {
         // Play moves until a pass must be done.
         List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
         gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
@@ -1824,7 +1826,7 @@ class OthelloGameTest {
         IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
 
         assertThrows(GameOverException.class, () -> {
-            finalGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("H8")));
+            game.skipMove();
         });
 
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D3")));
@@ -1872,6 +1874,10 @@ class OthelloGameTest {
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A2")));
         assertEquals(30, game.getMoves().size());
         assertEquals(4 + 29, game.getAllDisks().size());
+
+        assertThrows(GameOverException.class, () -> {
+            game.skipMove();
+        });
     }
 
     @Test

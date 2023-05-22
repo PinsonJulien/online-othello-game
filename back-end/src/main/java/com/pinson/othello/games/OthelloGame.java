@@ -10,6 +10,8 @@ import com.pinson.othello.disks.IOthelloDisk;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
+import com.pinson.othello.games.exceptions.CannotPassTurnException;
+import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.grids.IOthelloGrid;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
@@ -336,14 +338,17 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException {
+    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException, CannotPassTurnException, UnknownGamePlayerException {
         // Check if the game is still in progress.
         if (this.isGameOver())
             throw new GameOverException();
 
+        IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
+        if (!this.gamePlayers.contains((OthelloGamePlayer) moveGamePlayer))
+            throw new UnknownGamePlayerException("The GamePlayer set in the Move does not exist in this game scope.");
+
         // Check if the player is allowed to play.
         IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
-        IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
 
         if (!Objects.equals(currentPlayer.getId(), moveGamePlayer.getId()))
             throw new InvalidMoveException("The player is not allowed to play.");
@@ -354,6 +359,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         List<IOthelloMove> validMoves = this.getValidMoves(moveGamePlayer);
         if (validMoves.size() == 0)
             move.setPassed(true);
+        else if (move.isPassed()) {
+            // if there's possible moves, and the given move was passed, we return an error.
+            throw new CannotPassTurnException("The move of the player cannot be passed because there's possible moves available.");
+        }
 
         return this.playMove(move, true);
     }
@@ -435,9 +444,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame skipMove() throws GameOverException, InvalidMoveException {
+    public IOthelloGame skipMove() throws GameOverException, InvalidMoveException, CannotPassTurnException, UnknownGamePlayerException {
         IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
-        IOthelloMove skipMove = IOthelloMove.create().setGamePlayer(currentPlayer).setPosition(0, 0);
+        IOthelloMove skipMove = IOthelloMove.create().setGamePlayer(currentPlayer).setPassed(true);
 
         return this.playMove(skipMove);
     }
