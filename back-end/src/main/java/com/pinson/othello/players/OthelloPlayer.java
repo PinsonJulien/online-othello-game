@@ -1,13 +1,16 @@
 package com.pinson.othello.players;
 
 import com.pinson.othello.commons.entities.players.Player;
+import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
+import com.pinson.othello.lobbies.IOthelloLobby;
 import com.pinson.othello.lobbies.OthelloLobby;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class OthelloPlayer extends Player implements IOthelloPlayer {
@@ -23,7 +26,7 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
     private String password;
 
     @OneToMany(mappedBy = "player")
-    private Set<OthelloGamePlayer> gamePlayers;
+    private List<OthelloGamePlayer> gamePlayers;
 
     @ManyToOne
     @JoinColumn(name = "lobby_id")
@@ -31,71 +34,112 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private Long createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private Long updatedAt;
+    private LocalDateTime updatedAt;
 
     public OthelloPlayer() {
         //
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    protected OthelloPlayer(IOthelloPlayer player) {
+        super();
+        this.id = player.getId();
+        this.username = player.getUsername();
+        this.password = player.getPassword();
+        this.createdAt = player.getCreatedAt();
+        this.updatedAt = player.getUpdatedAt();
     }
 
+    @Override
     public Long getId() {
-        return id;
+        return this.id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @Override
+    public IOthelloPlayer setId(Long id) {
+        this.id = id;
+
+        return this;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public IOthelloPlayer setUsername(String username) {
+        this.username = username;
+
+        return this;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
-    public Set<OthelloGamePlayer> getGamePlayers() {
-        return gamePlayers;
+    @Override
+    public IOthelloPlayer setPassword(String password) {
+        this.password = password;
+
+        return this;
     }
 
-    public void setGamePlayers(Set<OthelloGamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
+    @Override
+    public List<IOthelloGamePlayer> getGamePlayers() {
+        return this.gamePlayers.stream().map(gamePlayer -> (IOthelloGamePlayer) gamePlayer).toList();
     }
 
-    public Long getCreatedAt() {
-        return createdAt;
+    @Override
+    public IOthelloPlayer setGamePlayers(List<IOthelloGamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers.stream().map(gamePlayer -> (OthelloGamePlayer) gamePlayer).toList();
+
+        return this;
     }
 
-    public void setCreatedAt(Long createdAt) {
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
+    @Override
+    public IOthelloPlayer setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+
+        return this;
     }
 
-    public Long getUpdatedAt() {
+    @Override
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Long updatedAt) {
+    @Override
+    public IOthelloPlayer setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+
+        return this;
     }
 
-    public IOthelloPlayer clone() {
-        return new OthelloPlayer()
-                .setId(this.getId())
-                .setUsername(this.getUsername())
-                .setPassword(this.getPassword())
-                .setCreatedAt(this.getCreatedAt())
-                .setUpdatedAt(this.getUpdatedAt());
+    @Override
+    public IOthelloLobby getLobby() {
+        return this.lobby;
+    }
+
+    @Override
+    public IOthelloPlayer setLobby(IOthelloLobby lobby) {
+        this.lobby = (OthelloLobby) lobby;
+
+        return this;
+    }
+
+    @Override
+    public IOthelloPlayer copy() {
+        return new OthelloPlayer(this);
     }
 
 }

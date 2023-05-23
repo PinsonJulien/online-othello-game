@@ -1,6 +1,7 @@
 package com.pinson.othello.commons.entities.players;
 
-public interface IPlayer {
+import com.pinson.othello.commons.interfaces.Copyable;
 
-    IPlayer clone();
+public interface IPlayer extends Copyable<IPlayer> {
+
 }
