@@ -227,7 +227,7 @@ class OthelloGameTest {
     }
 
     @Test
-    void playMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidMoveException, MatrixIndexOutOfBoundsException, GameOverException, InvalidStandardNotationException {
+    void playMove() throws GridSizeException, InvalidNumberOfPlayersException, InvalidMoveException, MatrixIndexOutOfBoundsException, GameOverException, InvalidStandardNotationException, UnknownGamePlayerException, CannotPassTurnException {
         /*            0 1 2 3 4 5 6 7
          *          0 x x x x x x x x
          *          1 x x x x x x x x
@@ -245,6 +245,21 @@ class OthelloGameTest {
         gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(4L));
 
         IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
+
+        // First try to play a move with a player that isn't in the game.
+        IOthelloGamePlayer unknownPlayer = IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(5L);
+
+        IOthelloGame thrownGame = game;
+        assertThrows(UnknownGamePlayerException.class, () -> {
+            thrownGame.playMove(IOthelloMove.create().setGamePlayer(unknownPlayer).setPosition(IOthelloPosition.create("A1")));
+        });
+
+        // We try to pass by setting the isPassed value of the move, this will throw an error.
+        IOthelloGame thrownGame2 = game;
+        assertThrows(CannotPassTurnException.class, () -> {
+            thrownGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(3, 6).setPassed(true));
+        });
+
         IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setRow(3).setColumn(6);
         /*            0 1 2 3 4 5 6 7
          *          0 x x x x x x x x
@@ -1825,9 +1840,7 @@ class OthelloGameTest {
         // moves: D3 E3 F3 C5 D6 C3 C4 C7 C6 B6 A7 A6 D7 E8 F5 A8 B3 E6 B8 B7 B5 C8 F7 A5 D8 A4 F8 G8
         IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
 
-        assertThrows(GameOverException.class, () -> {
-            game.skipMove();
-        });
+        assertThrows(CannotPassTurnException.class, game::skipMove);
 
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D3")));
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(2).setColumn(4));
@@ -1875,7 +1888,7 @@ class OthelloGameTest {
         assertEquals(30, game.getMoves().size());
         assertEquals(4 + 29, game.getAllDisks().size());
 
-        assertThrows(GameOverException.class, () -> {
+        assertThrows(CannotPassTurnException.class, () -> {
             game.skipMove();
         });
     }
