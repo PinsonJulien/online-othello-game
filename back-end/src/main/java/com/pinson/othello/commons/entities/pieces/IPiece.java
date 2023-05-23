@@ -2,16 +2,8 @@ package com.pinson.othello.commons.entities.pieces;
 
 import com.pinson.othello.commons.entities.tiles.ITile;
 
-public interface IPiece {
+public interface IPiece<T extends ITile<P, T>, P extends IPiece<T, P>> {
 
-    static IPiece create() {
-        return new Piece();
-    }
-
-    static IPiece create(ITile cell) {
-        return new Piece(cell);
-    }
-
-    ITile getCell();
-    IPiece setCell(ITile cell);
+    T getTile();
+    P setTile(T tile);
 }

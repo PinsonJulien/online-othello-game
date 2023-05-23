@@ -1,13 +1,12 @@
 package com.pinson.othello.players;
 
 import com.pinson.othello.commons.entities.players.Player;
-import com.pinson.othello.gamePlayers.GamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.lobbies.Lobby;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,7 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
     private String password;
 
     @OneToMany(mappedBy = "player")
-    private Set<GamePlayer> gamePlayers;
+    private Set<OthelloGamePlayer> gamePlayers;
 
     @ManyToOne
     @JoinColumn(name = "lobby_id")
@@ -66,11 +65,11 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
         return password;
     }
 
-    public Set<GamePlayer> getGamePlayers() {
+    public Set<OthelloGamePlayer> getGamePlayers() {
         return gamePlayers;
     }
 
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+    public void setGamePlayers(Set<OthelloGamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
 

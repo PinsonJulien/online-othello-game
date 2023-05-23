@@ -5,12 +5,14 @@ import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * @param <T> Any Object
  */
-public interface IMatrixArrayList<T> {
+public interface IMatrixArrayList<T> extends Iterable<List<T>> {
 
     /**
      * Instantiate a MatrixArrayList without a specific size.
@@ -114,8 +116,6 @@ public interface IMatrixArrayList<T> {
      * @throws NotFoundException When the given object doesn't exist within the matrix.
      */
     IMatrixPosition<Integer> find(T value) throws NotFoundException;
-
-
 
     IMatrixArrayList<T> resize(int rows, int columns) throws NonPositiveValueException;
     IMatrixArrayList<T> insertRows(int amount) throws NonPositiveValueException;

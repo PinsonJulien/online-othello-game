@@ -6,6 +6,7 @@ import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exception
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,14 +15,14 @@ import java.util.stream.Collectors;
  *
  * @param <T> Any Object
  */
-public class MatrixArrayList<T> implements IMatrixArrayList<T> {
-    private final ArrayList<ArrayList<T>> matrix;
+public class MatrixArrayList<T> implements IMatrixArrayList<T>, Iterable<List<T>> {
+    private final List<List<T>> matrix;
 
     /**
      * Instantiate a MatrixArrayList without a specific size.
      */
     public MatrixArrayList() {
-        this.matrix = new ArrayList<ArrayList<T>>();
+        this.matrix = new ArrayList<>();
     }
 
     /**
@@ -37,10 +38,10 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         if (columns <= 0)
             throw new NonPositiveValueException("Columns must be positive");
 
-        this.matrix = new ArrayList<ArrayList<T>>();
+        this.matrix = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
-            ArrayList<T> column = new ArrayList<T>();
+            List<T> column = new ArrayList<>();
 
             for (int j = 0; j < columns; j++) {
                 column.add(null);
@@ -65,10 +66,10 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
         if (columns <= 0)
             throw new NonPositiveValueException("Columns must be positive");
 
-        this.matrix = new ArrayList<ArrayList<T>>();
+        this.matrix = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
-            ArrayList<T> column = new ArrayList<T>();
+            List<T> column = new ArrayList<>();
 
             for (int j = 0; j < columns; j++) {
                 try {
@@ -197,13 +198,12 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
     public IMatrixPosition<Integer> find(T value) throws NotFoundException {
         int rowSize = this.matrix.size();
         for (int i = 0; i < rowSize; ++i) {
-            ArrayList<T> column = this.matrix.get(i);
+            List<T> column = this.matrix.get(i);
             int colSize = column.size();
 
             for (int j = 0; j < colSize; ++j) {
                 if (column.get(j) == value) {
-                    IMatrixPosition<Integer> position =  IMatrixPosition.create(j, i);
-                    return position;
+                    return IMatrixPosition.create(j, i);
                 }
             }
         }
@@ -284,7 +284,7 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
             this.checkRowBounds(index);
 
         for (int i = 0; i < amount; ++i) {
-            ArrayList<T> row = new ArrayList<T>();
+            List<T> row = new ArrayList<>();
 
             for (int j = 0; j < colSize; ++j) {
                 row.add(null);
@@ -341,7 +341,7 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
             this.checkColumnBounds(index);
 
         for (int i = 0; i < rowSize; ++i) {
-            ArrayList<T> row = this.matrix.get(i);
+            List<T> row = this.matrix.get(i);
 
             for (int j = 0; j < amount; ++j) {
                 if (index < colSize)
@@ -443,7 +443,7 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
             this.checkColumnBounds(index);
 
         for (int i = 0; i < rowSize; ++i) {
-            ArrayList<T> row = this.matrix.get(i);
+            List<T> row = this.matrix.get(i);
             int size = row.size();
 
             for (int j = 0; j < amount && size != 0; ++j) {
@@ -505,6 +505,15 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T> {
 
         if (column < 0 || column >= colSize)
             throw new MatrixIndexOutOfBoundsException("The column must be within the matrix bounds.");
+    }
+
+    /**
+     * Allows the MatrixArrayList to be iterated over.
+     *
+     * @return Iterator<ArrayList<T>> The iterator.
+     */
+    public Iterator<List<T>> iterator() {
+        return this.matrix.iterator();
     }
 
     // Todo: clone method.

@@ -14,4 +14,15 @@ public interface IOthelloGrid extends IGrid<IOthelloTile> {
 
         return null;
     }
+
+    static IOthelloGrid create(int rows, int columns) {
+        try {
+            return new OthelloGrid(rows, columns);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

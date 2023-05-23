@@ -2,28 +2,33 @@ package com.pinson.othello.commons.entities.pieces;
 
 import com.pinson.othello.commons.entities.tiles.ITile;
 
-public class Piece implements IPiece {
-    private ITile cell;
+public abstract class Piece<T extends ITile<P, T>, P extends IPiece<T, P>> implements IPiece<T, P> {
+    private T tile;
 
     public Piece() {
-        this.cell = null;
+        this.tile = null;
     }
 
-    public Piece(ITile cell) {
-        this.cell = cell;
-    }
-
-    @Override
-    public ITile getCell() {
-        return this.cell;
+    public Piece(T cell) {
+        this.tile = cell;
     }
 
     @Override
-    public IPiece setCell(ITile cell) {
-        this.cell = cell;
-        if (this.cell.getPiece() != this)
-            this.cell.setPiece(this);
+    public T getTile() {
+        return this.tile;
+    }
 
-        return this;
+    @Override
+    public P setTile(T tile) {
+        this.tile = tile;
+        if (this.tile.getPiece() != this)
+            this.tile.setPiece(this.self());
+
+        return this.self();
+    }
+
+    @SuppressWarnings("unchecked")
+    private P self() {
+        return (P) this;
     }
 }

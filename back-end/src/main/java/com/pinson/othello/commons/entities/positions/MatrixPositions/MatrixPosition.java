@@ -66,4 +66,26 @@ public class MatrixPosition<T extends Number> implements IMatrixPosition<T> {
     public IMatrixPosition<T> set(T x, T y) {
         return this.setX(x).setY(y);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IMatrixPosition<?> position))
+            return false;
+
+        if (obj == this)
+            return true;
+
+        return (
+            this.x.equals(position.getX())
+            &&
+            this.y.equals(position.getY())
+        );
+    }
+
+    @Override public String toString() {
+        return "MatrixPosition{" +
+            "x=" + x +
+            ", y=" + y +
+            '}';
+    }
 }

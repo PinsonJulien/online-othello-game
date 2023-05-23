@@ -1,26 +1,40 @@
 package com.pinson.othello.disks;
 
 import com.pinson.othello.commons.entities.pieces.Piece;
-import com.pinson.othello.players.IOthelloPlayer;
+import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
+import com.pinson.othello.positions.IOthelloPosition;
+import com.pinson.othello.tiles.IOthelloTile;
 
-public class OthelloDisk extends Piece implements IOthelloDisk {
+public class OthelloDisk extends Piece<IOthelloTile, IOthelloDisk> implements IOthelloDisk {
+    private IOthelloGamePlayer gamePlayer;
 
-    private Long id;
+    public OthelloDisk(IOthelloGamePlayer gamePlayer) {
+        super();
 
-    private IOthelloPlayer owner;
-
-    public OthelloDisk(IOthelloPlayer owner) {
-        this.setOwner(owner);
+        this.setGamePlayer(gamePlayer);
     }
 
     @Override
-    public IOthelloPlayer getOwner() {
-        return this.owner;
+    public IOthelloGamePlayer getGamePlayer() {
+        return this.gamePlayer;
     }
 
-    protected IOthelloDisk setOwner(IOthelloPlayer owner) {
-        this.owner = owner;
+    @Override
+    public IOthelloDisk setGamePlayer(IOthelloGamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
 
         return this;
     }
+
+    @Override
+    public OthelloGamePlayerColor getColor() {
+        return this.getGamePlayer().getPlayerColor();
+    }
+
+    @Override
+    public IOthelloPosition getPosition() {
+        return this.getTile().getPosition();
+    }
+
 }
