@@ -2,7 +2,7 @@ package com.pinson.othello.players;
 
 import com.pinson.othello.commons.entities.players.Player;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
-import com.pinson.othello.lobbies.Lobby;
+import com.pinson.othello.lobbies.OthelloLobby;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,7 +27,7 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
 
     @ManyToOne
     @JoinColumn(name = "lobby_id")
-    private Lobby lobby;
+    private OthelloLobby lobby;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -87,6 +87,15 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
 
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public IOthelloPlayer clone() {
+        return new OthelloPlayer()
+                .setId(this.getId())
+                .setUsername(this.getUsername())
+                .setPassword(this.getPassword())
+                .setCreatedAt(this.getCreatedAt())
+                .setUpdatedAt(this.getUpdatedAt());
     }
 
 }
