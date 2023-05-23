@@ -12,6 +12,8 @@ public interface IOthelloPlayer extends IPlayer {
         return new OthelloPlayer();
     }
 
+    IOthelloPlayer copy();
+
     Long getId();
     IOthelloPlayer setId(Long id);
 

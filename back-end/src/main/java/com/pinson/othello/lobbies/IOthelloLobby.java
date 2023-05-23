@@ -1,6 +1,7 @@
 package com.pinson.othello.lobbies;
 
 
+import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
@@ -15,11 +16,14 @@ public interface IOthelloLobby {
         return new OthelloLobby();
     }
 
-    static IOthelloLobby create(IOthelloPlayer player) {
-        IOthelloLobby lobby = new OthelloLobby();
-        lobby.addPlayer(player);
-
-        return lobby;
+    static IOthelloLobby create(Integer maxPlayers, IOthelloPlayer player) throws FullLobbyException, NonPositiveValueException {
+        try {
+            return new OthelloLobby()
+                    .setMaxPlayers(maxPlayers)
+                    .addPlayer(player);
+        } catch (PlayerAlreadyInLobbyException exception) {
+            return new OthelloLobby();
+        }
     }
 
     IOthelloLobby addPlayer(IOthelloPlayer player) throws PlayerAlreadyInLobbyException, FullLobbyException;
@@ -33,9 +37,9 @@ public interface IOthelloLobby {
 
     Long getId();
     List<IOthelloPlayer> getPlayers();
-    IOthelloLobby setPlayers(List<IOthelloPlayer> players);
+    IOthelloLobby setPlayers(List<IOthelloPlayer> players) throws PlayerAlreadyInLobbyException, FullLobbyException;
     LocalDateTime getCreatedAt();
-    IOthelloLobby setCreatedAt();
+    IOthelloLobby setCreatedAt(LocalDateTime createdAt);
     Integer getMaxPlayers();
-    IOthelloLobby setMaxPlayers();
+    IOthelloLobby setMaxPlayers(Integer maxPlayers) throws NonPositiveValueException;
 }

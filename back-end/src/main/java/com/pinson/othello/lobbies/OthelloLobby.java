@@ -1,5 +1,6 @@
 package com.pinson.othello.lobbies;
 
+import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
@@ -25,7 +26,7 @@ public class OthelloLobby implements IOthelloLobby {
     private Integer maxPlayers;
 
     @Column(name = "created_at", nullable = false)
-    private Long createdAt;
+    private LocalDateTime createdAt;
 
     public OthelloLobby() {
         //
@@ -71,33 +72,65 @@ public class OthelloLobby implements IOthelloLobby {
 
     @Override
     public List<IOthelloPlayer> getPlayers() {
-        List<OthelloPlayer> players = new ArrayList<>();
+        List<IOthelloPlayer> players = new ArrayList<>();
 
         for (IOthelloPlayer player : this.players) {
-            players.add(players.clone());
-            players.add(player);
+            players.add(player.copy());
         }
 
-        return this.players;
+        return players;
+    }
+
+    @Override
+    public IOthelloLobby setPlayers(List<IOthelloPlayer> players) {
+
+        this.players = new ArrayList<>();
+
+        return this;
     }
 
     @Override
     public LocalDateTime getCreatedAt() {
-        return null;
+        return this.createdAt;
     }
 
     @Override
-    public IOthelloLobby setCreatedAt() {
-        return null;
+    public IOthelloLobby setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+
+        return this;
     }
 
     @Override
     public Integer getMaxPlayers() {
-        return null;
+        return this.maxPlayers;
     }
 
     @Override
-    public IOthelloLobby setMaxPlayers() {
-        return null;
+    public IOthelloLobby setMaxPlayers(Integer maxPlayers) throws NonPositiveValueException {
+        if (maxPlayers <= 0)
+            throw new NonPositiveValueException("The maximum number of players must be positive.");
+
+        if (maxPlayers.equals(this.maxPlayers))
+            return this;
+
+        // When we size down we kick the last players of the list.
+        int playerSize = this.players.size();
+        if (playerSize > maxPlayers) {
+            int playersToRemove = playerSize - maxPlayers;
+
+            for (int i = 0; i < playersToRemove; i++) {
+                try {
+                    this.removePlayer(this.players.get(playerSize - 1));
+                } catch (PlayerNotFoundException exception) {
+                    // This should never happen.
+                    exception.printStackTrace();
+                }
+            }
+        }
+
+        this.maxPlayers = maxPlayers;
+
+        return this;
     }
 }
