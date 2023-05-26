@@ -1,6 +1,7 @@
 package com.pinson.othello.lobbies;
 
 
+import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
@@ -11,19 +12,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IOthelloLobby {
-
-    static IOthelloLobby create() {
-        return new OthelloLobby();
+    static IOthelloLobby create(Integer maxPlayers) throws NonPositiveValueException {
+        return new OthelloLobby()
+                .setMaxPlayers(maxPlayers);
     }
 
-    static IOthelloLobby create(Integer maxPlayers, IOthelloPlayer player) throws FullLobbyException, NonPositiveValueException {
+    static IOthelloLobby create(Integer maxPlayers, IOthelloPlayer player) throws NonPositiveValueException {
         try {
-            return new OthelloLobby()
-                    .setMaxPlayers(maxPlayers)
-                    .addPlayer(player);
-        } catch (PlayerAlreadyInLobbyException exception) {
+            return IOthelloLobby.create(maxPlayers).addPlayer(player);
+        } catch (PlayerAlreadyInLobbyException | FullLobbyException exception) {
+            // this should never happen.
+            exception.printStackTrace();
+
             return new OthelloLobby();
         }
+    }
+
+    static IOthelloLobby create(Integer maxPlayers, List<IOthelloPlayer> players) throws NonPositiveValueException, PlayerAlreadyInLobbyException, FullLobbyException {
+        return IOthelloLobby.create(maxPlayers).setPlayers(players);
     }
 
     IOthelloLobby addPlayer(IOthelloPlayer player) throws PlayerAlreadyInLobbyException, FullLobbyException;
@@ -41,5 +47,5 @@ public interface IOthelloLobby {
     LocalDateTime getCreatedAt();
     IOthelloLobby setCreatedAt(LocalDateTime createdAt);
     Integer getMaxPlayers();
-    IOthelloLobby setMaxPlayers(Integer maxPlayers) throws NonPositiveValueException;
+    IOthelloLobby setMaxPlayers(Integer maxPlayers) throws NonPositiveValueException, NonEvenNumberException;
 }

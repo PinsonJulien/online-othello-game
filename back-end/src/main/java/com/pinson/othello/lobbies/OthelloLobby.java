@@ -1,5 +1,6 @@
 package com.pinson.othello.lobbies;
 
+import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
@@ -28,7 +29,7 @@ public class OthelloLobby implements IOthelloLobby {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    public OthelloLobby() {
+    protected OthelloLobby() {
         //
     }
 
@@ -82,9 +83,12 @@ public class OthelloLobby implements IOthelloLobby {
     }
 
     @Override
-    public IOthelloLobby setPlayers(List<IOthelloPlayer> players) {
-
+    public IOthelloLobby setPlayers(List<IOthelloPlayer> players) throws FullLobbyException, PlayerAlreadyInLobbyException {
         this.players = new ArrayList<>();
+
+        for (IOthelloPlayer player: players) {
+            this.addPlayer(player);
+        }
 
         return this;
     }
@@ -107,9 +111,12 @@ public class OthelloLobby implements IOthelloLobby {
     }
 
     @Override
-    public IOthelloLobby setMaxPlayers(Integer maxPlayers) throws NonPositiveValueException {
+    public IOthelloLobby setMaxPlayers(Integer maxPlayers) throws NonPositiveValueException, NonEvenNumberException {
         if (maxPlayers <= 0)
             throw new NonPositiveValueException("The maximum number of players must be positive.");
+
+        if (maxPlayers%2 != 0 )
+            throw new NonEvenNumberException("The maximum number of players must be an even number.");
 
         if (maxPlayers.equals(this.maxPlayers))
             return this;
