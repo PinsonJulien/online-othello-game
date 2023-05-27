@@ -118,16 +118,7 @@ public class OthelloLobby implements IOthelloLobby {
         // When we size down we kick the last players of the list.
         int playerSize = this.players.size();
         if (playerSize > maxPlayers) {
-            int playersToRemove = playerSize - maxPlayers;
-
-            for (int i = 0; i < playersToRemove; i++) {
-                try {
-                    this.removePlayer(this.players.get(playerSize - 1));
-                } catch (PlayerNotFoundException exception) {
-                    // This should never happen.
-                    exception.printStackTrace();
-                }
-            }
+            this.players = this.players.subList(0, maxPlayers);
         }
 
         this.maxPlayers = maxPlayers;
