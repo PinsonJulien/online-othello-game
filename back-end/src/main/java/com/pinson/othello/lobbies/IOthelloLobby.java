@@ -7,20 +7,21 @@ import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
 import com.pinson.othello.players.IOthelloPlayer;
+import com.pinson.othello.players.OthelloPlayer;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IOthelloLobby {
-    static IOthelloLobby create(Integer maxPlayers) throws NonPositiveValueException {
+    static IOthelloLobby create(Integer maxPlayers) throws NonPositiveValueException, NonEvenNumberException {
         return new OthelloLobby()
                 .setMaxPlayers(maxPlayers);
     }
 
-    static IOthelloLobby create(Integer maxPlayers, IOthelloPlayer player) throws NonPositiveValueException {
+    static IOthelloLobby create(Integer maxPlayers, IOthelloPlayer player) throws NonPositiveValueException, NonEvenNumberException {
         try {
             return IOthelloLobby.create(maxPlayers).addPlayer(player);
-        } catch (PlayerAlreadyInLobbyException | FullLobbyException exception) {
+        } catch (PlayerAlreadyInLobbyException | FullLobbyException  exception) {
             // this should never happen.
             exception.printStackTrace();
 
@@ -28,7 +29,7 @@ public interface IOthelloLobby {
         }
     }
 
-    static IOthelloLobby create(Integer maxPlayers, List<IOthelloPlayer> players) throws NonPositiveValueException, PlayerAlreadyInLobbyException, FullLobbyException {
+    static IOthelloLobby create(Integer maxPlayers, List<IOthelloPlayer> players) throws NonPositiveValueException, NonEvenNumberException, PlayerAlreadyInLobbyException, FullLobbyException {
         return IOthelloLobby.create(maxPlayers).setPlayers(players);
     }
 
@@ -42,7 +43,7 @@ public interface IOthelloLobby {
     // getters / setters
 
     Long getId();
-    List<IOthelloPlayer> getPlayers();
+    List<OthelloPlayer> getPlayers();
     IOthelloLobby setPlayers(List<IOthelloPlayer> players) throws PlayerAlreadyInLobbyException, FullLobbyException;
     LocalDateTime getCreatedAt();
     IOthelloLobby setCreatedAt(LocalDateTime createdAt);

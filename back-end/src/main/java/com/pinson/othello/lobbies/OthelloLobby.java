@@ -21,7 +21,7 @@ public class OthelloLobby implements IOthelloLobby {
     private Long id;
 
     @OneToMany(mappedBy = "lobby")
-    private List<OthelloPlayer> players;
+    private List<OthelloPlayer> players = new ArrayList<>();
 
     @Column(name = "max_players", nullable = false)
     private Integer maxPlayers;
@@ -72,14 +72,8 @@ public class OthelloLobby implements IOthelloLobby {
     }
 
     @Override
-    public List<IOthelloPlayer> getPlayers() {
-        List<IOthelloPlayer> players = new ArrayList<>();
-
-        for (IOthelloPlayer player : this.players) {
-            players.add(player.copy());
-        }
-
-        return players;
+    public List<OthelloPlayer> getPlayers() {
+        return this.players;
     }
 
     @Override

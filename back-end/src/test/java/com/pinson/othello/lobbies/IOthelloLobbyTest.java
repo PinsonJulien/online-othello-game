@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class IOthelloLobbyTest {
 
     @Test
-    void create__MaxPlayers() throws NonPositiveValueException {
+    void create__MaxPlayers() throws NonPositiveValueException, NonEvenNumberException {
         IOthelloLobby lobby = IOthelloLobby.create(2);
         assertEquals(2, lobby.getMaxPlayers());
 
@@ -42,7 +42,7 @@ class IOthelloLobbyTest {
     }
 
     @Test
-    void create__MaxPlayers_Player() throws NonPositiveValueException {
+    void create__MaxPlayers_Player() throws NonPositiveValueException, NonEvenNumberException {
         List<IOthelloPlayer> players = new ArrayList<>();
         players.add(IOthelloPlayer.create().setId(1L));
         players.add(IOthelloPlayer.create().setId(2L));
@@ -59,7 +59,7 @@ class IOthelloLobbyTest {
         assertEquals(4, lobby.getMaxPlayers());
         assertFalse(lobby.isFull());
         assertEquals(1, lobby.getPlayers().size());
-        assertEquals(players.get(1).getId(), lobby.getPlayers().get(1).getId());
+        assertEquals(players.get(1).getId(), lobby.getPlayers().get(0).getId());
     }
 
     @Test
@@ -71,13 +71,27 @@ class IOthelloLobbyTest {
         players.add(IOthelloPlayer.create().setId(4L));
 
         assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(0, players.get(0)));
-        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(1, players.get(1));
-        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(3, players.get(2)));
-        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(567, players.get(3)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(-1, players.get(1)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(-3, players.get(2)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(-567, players.get(3)));
     }
 
     @Test
-    void create__MaxPlayers_Players() throws NonPositiveValueException, FullLobbyException, PlayerAlreadyInLobbyException {
+    void create__MaxPlayers_Player__NonEvenNumberException() {
+        List<IOthelloPlayer> players = new ArrayList<>();
+        players.add(IOthelloPlayer.create().setId(1L));
+        players.add(IOthelloPlayer.create().setId(2L));
+        players.add(IOthelloPlayer.create().setId(3L));
+        players.add(IOthelloPlayer.create().setId(4L));
+
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(3, players.get(0)));
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(5, players.get(1)));
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(7, players.get(2)));
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(533, players.get(3)));
+    }
+
+    @Test
+    void create__MaxPlayers_Players() throws NonPositiveValueException, FullLobbyException, PlayerAlreadyInLobbyException, NonEvenNumberException {
         List<IOthelloPlayer> players = new ArrayList<>();
         players.add(IOthelloPlayer.create().setId(1L));
         players.add(IOthelloPlayer.create().setId(2L));
@@ -95,8 +109,8 @@ class IOthelloLobbyTest {
         assertEquals(4, lobby.getMaxPlayers());
         assertFalse(lobby.isFull());
         assertEquals(2, lobby.getPlayers().size());
-        assertEquals(players.get(2).getId(), lobby.getPlayers().get(2).getId());
-        assertEquals(players.get(3).getId(), lobby.getPlayers().get(3).getId());
+        assertEquals(players.get(2).getId(), lobby.getPlayers().get(0).getId());
+        assertEquals(players.get(3).getId(), lobby.getPlayers().get(1).getId());
 
         lobby = IOthelloLobby.create(4, players);
         assertEquals(4, lobby.getMaxPlayers());
@@ -106,5 +120,57 @@ class IOthelloLobbyTest {
         assertEquals(players.get(1).getId(), lobby.getPlayers().get(1).getId());
         assertEquals(players.get(2).getId(), lobby.getPlayers().get(2).getId());
         assertEquals(players.get(3).getId(), lobby.getPlayers().get(3).getId());
+    }
+
+    @Test
+    void create__MaxPlayers_Players__NonPositiveValueException() {
+        List<IOthelloPlayer> players = new ArrayList<>();
+        players.add(IOthelloPlayer.create().setId(1L));
+        players.add(IOthelloPlayer.create().setId(2L));
+        players.add(IOthelloPlayer.create().setId(3L));
+        players.add(IOthelloPlayer.create().setId(4L));
+
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(0, players.subList(0, 2)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(-1, players.subList(1, 3)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(-3, players.subList(2, 4)));
+        assertThrowsExactly(NonPositiveValueException.class, () -> IOthelloLobby.create(-567, players));
+    }
+
+    @Test
+    void create__MaxPlayers_Players__NonEvenNumberException() {
+        List<IOthelloPlayer> players = new ArrayList<>();
+        players.add(IOthelloPlayer.create().setId(1L));
+        players.add(IOthelloPlayer.create().setId(2L));
+        players.add(IOthelloPlayer.create().setId(3L));
+        players.add(IOthelloPlayer.create().setId(4L));
+
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(3, players.subList(0, 2)));
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(5, players.subList(1, 3)));
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(7, players.subList(2, 4)));
+        assertThrowsExactly(NonEvenNumberException.class, () -> IOthelloLobby.create(533, players));
+    }
+
+    @Test
+    void create__MaxPlayers_Players__FullLobbyException() {
+        List<IOthelloPlayer> players = new ArrayList<>();
+        players.add(IOthelloPlayer.create().setId(1L));
+        players.add(IOthelloPlayer.create().setId(2L));
+        players.add(IOthelloPlayer.create().setId(3L));
+        players.add(IOthelloPlayer.create().setId(4L));
+
+        assertThrowsExactly(FullLobbyException.class, () -> IOthelloLobby.create(2, players));
+    }
+
+    @Test
+    void create__MaxPlayers_Players__PlayerAlreadyInLobbyException() {
+        List<IOthelloPlayer> players = new ArrayList<>();
+        IOthelloPlayer player = IOthelloPlayer.create().setId(1L);
+        players.add(player);
+        players.add(player);
+        players.add(IOthelloPlayer.create().setId(2L));
+        players.add(IOthelloPlayer.create().setId(3L));
+        players.add(IOthelloPlayer.create().setId(4L));
+
+        assertThrowsExactly(PlayerAlreadyInLobbyException.class, () -> IOthelloLobby.create(4, players));
     }
 }

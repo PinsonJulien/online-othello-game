@@ -1,5 +1,6 @@
 package com.pinson.othello.lobbies;
 
+import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OthelloLobbyTest {
 
     @Test
-    void addPlayer() throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException {
+    void addPlayer() throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
         List<IOthelloPlayer> players = new ArrayList<>();
         players.add(IOthelloPlayer.create());
         players.add(IOthelloPlayer.create());
