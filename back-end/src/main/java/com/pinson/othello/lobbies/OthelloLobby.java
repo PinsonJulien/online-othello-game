@@ -72,6 +72,13 @@ public class OthelloLobby implements IOthelloLobby {
     }
 
     @Override
+    public IOthelloLobby setId(Long id) {
+        this.id = id;
+
+        return this;
+    }
+
+    @Override
     public List<OthelloPlayer> getPlayers() {
         return new ArrayList<>(this.players);
     }

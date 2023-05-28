@@ -13,6 +13,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IOthelloLobby {
+
+    static IOthelloLobby create() {
+        return new OthelloLobby();
+    }
+
     static IOthelloLobby create(Integer maxPlayers) throws NonPositiveValueException, NonEvenNumberException {
         return new OthelloLobby()
                 .setMaxPlayers(maxPlayers);
@@ -43,6 +48,7 @@ public interface IOthelloLobby {
     // getters / setters
 
     Long getId();
+    IOthelloLobby setId(Long id);
     List<OthelloPlayer> getPlayers();
     IOthelloLobby setPlayers(List<IOthelloPlayer> players) throws PlayerAlreadyInLobbyException, FullLobbyException;
     LocalDateTime getCreatedAt();

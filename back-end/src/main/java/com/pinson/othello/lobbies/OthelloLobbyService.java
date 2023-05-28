@@ -1,5 +1,6 @@
 package com.pinson.othello.lobbies;
 
+import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +19,7 @@ public class OthelloLobbyService {
         return this.othelloLobbyRepository.findAll();
     }
 
+    public OthelloLobby getLobbyById(Long id) throws LobbyNotFoundException {
+        return this.othelloLobbyRepository.findById(id).orElseThrow(() -> new LobbyNotFoundException(id));
+    }
 }
