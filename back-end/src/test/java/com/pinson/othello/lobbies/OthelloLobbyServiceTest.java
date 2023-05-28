@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OthelloLobbyServiceTest {
@@ -53,4 +53,25 @@ class OthelloLobbyServiceTest {
 
         assertThrowsExactly(LobbyNotFoundException.class, () -> lobbyService.getLobbyById(1L));
     }
+
+    @Test
+    public void testDeleteLobbyById() {
+        OthelloLobby lobby = new OthelloLobby();
+        lobby.setId(1L);
+
+        doNothing().when(lobbyRepository).deleteById(1L);
+
+        lobbyService.deleteLobbyById(1L);
+
+        verify(lobbyRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    public void testDeleteLobbyById__LobbyNotFoundException() {
+        doThrow(new LobbyNotFoundException(1L)).when(lobbyRepository).deleteById(1L);
+
+        assertThrowsExactly(LobbyNotFoundException.class, () -> lobbyService.deleteLobbyById(1L));
+    }
+
+
 }

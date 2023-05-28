@@ -22,4 +22,9 @@ public class OthelloLobbyService {
     public OthelloLobby getLobbyById(Long id) throws LobbyNotFoundException {
         return this.othelloLobbyRepository.findById(id).orElseThrow(() -> new LobbyNotFoundException(id));
     }
+
+    public void deleteLobbyById(Long id) throws LobbyNotFoundException {
+        this.othelloLobbyRepository.deleteById(id);
+    }
+
 }
