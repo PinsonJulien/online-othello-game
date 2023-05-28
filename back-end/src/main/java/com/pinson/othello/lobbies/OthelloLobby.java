@@ -73,7 +73,7 @@ public class OthelloLobby implements IOthelloLobby {
 
     @Override
     public List<OthelloPlayer> getPlayers() {
-        return this.players;
+        return new ArrayList<>(this.players);
     }
 
     @Override
