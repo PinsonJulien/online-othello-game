@@ -42,17 +42,17 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @ManyToMany
     @JoinTable(
-        name = "game_winners",
-        joinColumns = @JoinColumn(name = "game_id"),
-        inverseJoinColumns = @JoinColumn(name = "game_player_id")
+        name = "othello_game_winners",
+        joinColumns = @JoinColumn(name = "othello_game_id"),
+        inverseJoinColumns = @JoinColumn(name = "othello_game_player_id")
     )
     private List<OthelloGamePlayer> winners;
 
     @ManyToMany
     @JoinTable(
-        name = "game_losers",
-        joinColumns = @JoinColumn(name = "game_id"),
-        inverseJoinColumns = @JoinColumn(name = "game_player_id")
+        name = "othello_game_losers",
+        joinColumns = @JoinColumn(name = "othello_game_id"),
+        inverseJoinColumns = @JoinColumn(name = "othello_game_player_id")
     )
     private List<OthelloGamePlayer> losers;
 

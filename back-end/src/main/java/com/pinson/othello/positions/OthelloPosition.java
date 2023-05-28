@@ -1,6 +1,5 @@
 package com.pinson.othello.positions;
 
-import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.MatrixPosition;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.positions.exceptions.InvalidStandardNotationException;

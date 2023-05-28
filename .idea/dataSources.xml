@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="othello-mysql" uuid="97c4c653-5b17-4d12-bdd0-b2193a3f8102">
+    <data-source source="LOCAL" name="othello@localhost" uuid="83aca8ef-94dc-4363-8759-4f6950d59723">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

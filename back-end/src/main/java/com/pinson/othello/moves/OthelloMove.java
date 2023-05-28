@@ -11,7 +11,6 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "moves")
 public class OthelloMove implements IOthelloMove {
 
     @Id
@@ -19,17 +18,17 @@ public class OthelloMove implements IOthelloMove {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "game_id", nullable = false)
+    @JoinColumn(name = "othello_game_id", nullable = false)
     private OthelloGame game;
 
     @ManyToOne
-    @JoinColumn(name = "game_player_id", nullable = false)
+    @JoinColumn(name = "othello_game_player_id", nullable = false)
     private OthelloGamePlayer gamePlayer;
 
-    @Column(nullable = false)
+    @Column(name = "row_move", nullable = false)
     private Integer row = 0;
 
-    @Column(nullable = false)
+    @Column(name = "column_move", nullable = false)
     private Integer column = 0;
 
     private Boolean passed = false;
