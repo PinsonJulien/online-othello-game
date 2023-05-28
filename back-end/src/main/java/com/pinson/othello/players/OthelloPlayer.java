@@ -29,7 +29,7 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
     private List<OthelloGamePlayer> gamePlayers;
 
     @ManyToOne
-    @JoinColumn(name = "lobby_id")
+    @JoinColumn(name = "othello_lobby_id")
     private OthelloLobby lobby;
 
     @CreatedDate
