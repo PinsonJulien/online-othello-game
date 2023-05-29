@@ -23,11 +23,11 @@ public class OthelloLobby implements IOthelloLobby {
     @OneToMany(mappedBy = "lobby")
     private List<OthelloPlayer> players = new ArrayList<>();
 
-    @Column(name = "max_players", nullable = false)
-    private Integer maxPlayers;
+    @Column(nullable = false)
+    private Integer maxPlayers = 0;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     protected OthelloLobby() {
         //
@@ -41,6 +41,7 @@ public class OthelloLobby implements IOthelloLobby {
         if (this.hasPlayer(player))
             throw new PlayerAlreadyInLobbyException();
 
+        player.setLobby(this);
         this.players.add((OthelloPlayer) player);
 
         return this;

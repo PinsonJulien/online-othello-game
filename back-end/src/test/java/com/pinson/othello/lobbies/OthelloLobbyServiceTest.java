@@ -1,6 +1,11 @@
 package com.pinson.othello.lobbies;
 
+import com.pinson.othello.commons.exceptions.NonEvenNumberException;
+import com.pinson.othello.commons.exceptions.NonPositiveValueException;
+import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
+import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
+import com.pinson.othello.players.IOthelloPlayer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -71,6 +76,54 @@ class OthelloLobbyServiceTest {
         doThrow(new LobbyNotFoundException(1L)).when(lobbyRepository).deleteById(1L);
 
         assertThrowsExactly(LobbyNotFoundException.class, () -> lobbyService.deleteLobbyById(1L));
+    }
+
+    @Test
+    public void testAddPlayerToRandomLobby() throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
+        IOthelloPlayer player = IOthelloPlayer.create();
+        OthelloLobby lobby = new OthelloLobby();
+        lobby.setMaxPlayers(2);
+        List<OthelloLobby> lobbies = new ArrayList<>();
+        lobbies.add(lobby);
+
+        when(lobbyRepository.findAll()).thenReturn(lobbies);
+        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(lobby);
+
+        OthelloLobby result = lobbyService.addPlayerToRandomLobby(player, 2);
+
+        assertNotNull(result);
+        assertEquals(lobby, result);
+        assertEquals(1, lobby.getPlayers().size());
+        assertTrue(lobby.hasPlayer(player));
+    }
+
+    @Test
+    public void testAddPlayerToNewLobby() throws FullLobbyException, PlayerAlreadyInLobbyException {
+        IOthelloPlayer player = IOthelloPlayer.create().setId(1L);
+        List<OthelloLobby> lobbies = new ArrayList<>();
+
+        when(lobbyRepository.findAll()).thenReturn(lobbies);
+        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(new OthelloLobby());
+
+        OthelloLobby result = lobbyService.addPlayerToRandomLobby(player, 2);
+
+        assertNotNull(result);
+        assertEquals(1, result.getPlayers().size());
+        assertTrue(result.hasPlayer(player));
+    }
+
+    @Test
+    public void testAddPlayerToFullLobby() throws FullLobbyException, PlayerAlreadyInLobbyException {
+        /*OthelloPlayer player = new OthelloPlayer();
+        OthelloLobby lobby = new OthelloLobby();
+        lobby.setMaxPlayers(1);
+        lobby.addPlayer(player);
+        List<OthelloLobby> lobbies = new ArrayList<>();
+        lobbies.add(lobby);
+
+        when(lobbyRepository.findAll()).thenReturn(lobbies);
+
+        assertThrows(FullLobbyException.class, () -> lobbyService.addPlayerToRandomLobby(player));*/
     }
 
 
