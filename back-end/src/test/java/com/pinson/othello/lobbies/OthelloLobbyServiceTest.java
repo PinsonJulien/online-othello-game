@@ -6,6 +6,8 @@ import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.players.IOthelloPlayer;
+import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.players.OthelloPlayerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,8 @@ class OthelloLobbyServiceTest {
 
     @Mock
     private OthelloLobbyRepository lobbyRepository;
+    @Mock
+    private OthelloPlayerRepository playerRepository;
 
     @InjectMocks
     private OthelloLobbyService lobbyService;
@@ -80,24 +84,24 @@ class OthelloLobbyServiceTest {
 
     @Test
     public void addPlayerToRandomLobby() throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
-        List<IOthelloPlayer> existingPlayers = new ArrayList<>();
+        List<OthelloPlayer> existingPlayers = new ArrayList<>();
 
         int nbPlayers = 3;
         for (int i = 0; i < nbPlayers; i++) {
-            existingPlayers.add(IOthelloPlayer.create().setUsername("player" + i).setPassword("password" + i));
+            existingPlayers.add((OthelloPlayer) IOthelloPlayer.create().setUsername("player" + i).setPassword("password" + i));
         }
 
         // two new players
         int nbNewPlayers = 5;
-        List<IOthelloPlayer> newPlayers = new ArrayList<>();
+        List<OthelloPlayer> newPlayers = new ArrayList<>();
         for (int i = 0; i < nbNewPlayers; i++) {
-            newPlayers.add(IOthelloPlayer.create().setUsername("player" + i + nbPlayers).setPassword("password" + i + nbPlayers));
+            newPlayers.add((OthelloPlayer) IOthelloPlayer.create().setUsername("player" + i + nbPlayers).setPassword("password" + i + nbPlayers));
         }
 
         // two existing lobbies with 1/2 and 2/4 players
         List<OthelloLobby> lobbies = new ArrayList<>();
         lobbies.add((OthelloLobby) IOthelloLobby.create(2, existingPlayers.get(0))); // 1/2
-        lobbies.add((OthelloLobby) IOthelloLobby.create(4, existingPlayers.subList(1, 3))); // 2/4
+        lobbies.add((OthelloLobby) IOthelloLobby.create(4, existingPlayers.get(1)).addPlayer(existingPlayers.get(2))); // 2/4
 
         when(lobbyRepository.findLobbiesByMaxPlayersAndNotFull(2)).thenReturn(lobbies.subList(0, 1));
         when(lobbyRepository.findLobbiesByMaxPlayersAndNotFull(4)).thenReturn(lobbies.subList(1, 2));

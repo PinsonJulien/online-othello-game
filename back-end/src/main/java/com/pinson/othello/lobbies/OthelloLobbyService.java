@@ -7,6 +7,7 @@ import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.players.OthelloPlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,12 @@ import java.util.List;
 @Service
 public class OthelloLobbyService {
     private final OthelloLobbyRepository othelloLobbyRepository;
+    private final OthelloPlayerRepository othelloPlayerRepository;
 
     @Autowired
-    public OthelloLobbyService(OthelloLobbyRepository othelloLobbyRepository) {
+    public OthelloLobbyService(OthelloLobbyRepository othelloLobbyRepository, OthelloPlayerRepository othelloPlayerRepository) {
         this.othelloLobbyRepository = othelloLobbyRepository;
+        this.othelloPlayerRepository = othelloPlayerRepository;
     }
 
     public List<OthelloLobby> getAllLobbies() {
@@ -33,7 +36,7 @@ public class OthelloLobbyService {
         this.othelloLobbyRepository.deleteById(id);
     }
 
-    public OthelloLobby addPlayerToRandomLobby(IOthelloPlayer player, int maxPlayers) throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
+    public OthelloLobby addPlayerToRandomLobby(OthelloPlayer player, int maxPlayers) throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
         if (maxPlayers <= 0)
             throw new NonPositiveValueException("Max players must be positive");
         if (maxPlayers % 2 != 0)
@@ -56,6 +59,7 @@ public class OthelloLobbyService {
                 });
 
         lobby.addPlayer(player);
+        this.othelloPlayerRepository.save(player);
         return othelloLobbyRepository.save(lobby);
     }
 }
