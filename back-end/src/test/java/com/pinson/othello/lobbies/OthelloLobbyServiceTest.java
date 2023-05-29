@@ -79,52 +79,72 @@ class OthelloLobbyServiceTest {
     }
 
     @Test
-    public void testAddPlayerToRandomLobby() throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
-        IOthelloPlayer player = IOthelloPlayer.create();
-        OthelloLobby lobby = new OthelloLobby();
-        lobby.setMaxPlayers(2);
+    public void addPlayerToRandomLobby() throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
+        List<IOthelloPlayer> existingPlayers = new ArrayList<>();
+
+        int nbPlayers = 3;
+        for (int i = 0; i < nbPlayers; i++) {
+            existingPlayers.add(IOthelloPlayer.create().setUsername("player" + i).setPassword("password" + i));
+        }
+
+        // two new players
+        int nbNewPlayers = 5;
+        List<IOthelloPlayer> newPlayers = new ArrayList<>();
+        for (int i = 0; i < nbNewPlayers; i++) {
+            newPlayers.add(IOthelloPlayer.create().setUsername("player" + i + nbPlayers).setPassword("password" + i + nbPlayers));
+        }
+
+        // two existing lobbies with 1/2 and 2/4 players
         List<OthelloLobby> lobbies = new ArrayList<>();
-        lobbies.add(lobby);
+        lobbies.add((OthelloLobby) IOthelloLobby.create(2, existingPlayers.get(0))); // 1/2
+        lobbies.add((OthelloLobby) IOthelloLobby.create(4, existingPlayers.subList(1, 3))); // 2/4
 
-        when(lobbyRepository.findAll()).thenReturn(lobbies);
-        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(lobby);
+        when(lobbyRepository.findLobbiesByMaxPlayersAndNotFull(2)).thenReturn(lobbies.subList(0, 1));
+        when(lobbyRepository.findLobbiesByMaxPlayersAndNotFull(4)).thenReturn(lobbies.subList(1, 2));
 
-        OthelloLobby result = lobbyService.addPlayerToRandomLobby(player, 2);
+        // Try to add a player to the first lobby, this will make it full.
+        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(lobbies.get(0));
+        OthelloLobby result = lobbyService.addPlayerToRandomLobby(newPlayers.get(0), 2);
+        assertEquals(2, result.getPlayers().size());
+        assertEquals(lobbies.get(0), result);
+        assertTrue(result.hasPlayer(newPlayers.get(0)));
+        assertTrue(result.isFull());
 
-        assertNotNull(result);
-        assertEquals(lobby, result);
-        assertEquals(1, lobby.getPlayers().size());
-        assertTrue(lobby.hasPlayer(player));
-    }
+        // Try to add a player to another max 2 lobby, this will create a new one.
+        when(lobbyRepository.findLobbiesByMaxPlayersAndNotFull(2)).thenReturn(new ArrayList<>());
+        OthelloLobby newLobby = (OthelloLobby) IOthelloLobby.create(2, newPlayers.get(1));
+        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(newLobby);
 
-    @Test
-    public void testAddPlayerToNewLobby() throws FullLobbyException, PlayerAlreadyInLobbyException {
-        IOthelloPlayer player = IOthelloPlayer.create().setId(1L);
-        List<OthelloLobby> lobbies = new ArrayList<>();
-
-        when(lobbyRepository.findAll()).thenReturn(lobbies);
-        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(new OthelloLobby());
-
-        OthelloLobby result = lobbyService.addPlayerToRandomLobby(player, 2);
-
-        assertNotNull(result);
+        result = lobbyService.addPlayerToRandomLobby(newPlayers.get(1), 2);
         assertEquals(1, result.getPlayers().size());
-        assertTrue(result.hasPlayer(player));
+        assertFalse(lobbies.contains(result));
+        assertTrue(result.hasPlayer(newPlayers.get(1)));
+        assertFalse(result.isFull());
+
+        // Try to add a player to another max 4 lobby, this will make it almost full.
+        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(lobbies.get(1));
+        result = lobbyService.addPlayerToRandomLobby(newPlayers.get(2), 4);
+        assertEquals(lobbies.get(1), result);
+        assertEquals(3, result.getPlayers().size());
+        assertTrue(result.hasPlayer(newPlayers.get(2)));
+        assertFalse(result.isFull());
+
+        // Try to add a player to another max 4 lobby, this will make it full.
+        result = lobbyService.addPlayerToRandomLobby(newPlayers.get(3), 4);
+        assertEquals(lobbies.get(1), result);
+        assertEquals(4, result.getPlayers().size());
+        assertTrue(result.hasPlayer(newPlayers.get(3)));
+        assertTrue(result.isFull());
+
+        // Try to add a player to another max 4 lobby, this will create a new one.
+        when(lobbyRepository.findLobbiesByMaxPlayersAndNotFull(4)).thenReturn(new ArrayList<>());
+        newLobby = (OthelloLobby) IOthelloLobby.create(4, newPlayers.get(4));
+        when(lobbyRepository.save(any(OthelloLobby.class))).thenReturn(newLobby);
+        result = lobbyService.addPlayerToRandomLobby(newPlayers.get(4), 4);
+        assertFalse(lobbies.contains(result));
+        assertEquals(1, result.getPlayers().size());
+        assertTrue(result.hasPlayer(newPlayers.get(4)));
+        assertFalse(result.isFull());
     }
-
-    @Test
-    public void testAddPlayerToFullLobby() throws FullLobbyException, PlayerAlreadyInLobbyException {
-        /*OthelloPlayer player = new OthelloPlayer();
-        OthelloLobby lobby = new OthelloLobby();
-        lobby.setMaxPlayers(1);
-        lobby.addPlayer(player);
-        List<OthelloLobby> lobbies = new ArrayList<>();
-        lobbies.add(lobby);
-
-        when(lobbyRepository.findAll()).thenReturn(lobbies);
-
-        assertThrows(FullLobbyException.class, () -> lobbyService.addPlayerToRandomLobby(player));*/
-    }
-
 
 }
