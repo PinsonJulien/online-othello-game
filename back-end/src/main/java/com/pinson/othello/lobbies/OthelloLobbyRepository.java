@@ -10,6 +10,7 @@ public interface OthelloLobbyRepository extends JpaRepository<OthelloLobby, Long
     @Query("""
         SELECT l
         FROM OthelloLobby l
+        JOIN FETCH l.players
         WHERE
             (l.maxPlayers = :maxPlayers)
             AND

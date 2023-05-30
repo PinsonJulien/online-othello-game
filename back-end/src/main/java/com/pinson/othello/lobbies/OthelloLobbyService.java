@@ -5,9 +5,7 @@ import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
-import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
-import com.pinson.othello.players.OthelloPlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +14,10 @@ import java.util.List;
 @Service
 public class OthelloLobbyService {
     private final OthelloLobbyRepository othelloLobbyRepository;
-    private final OthelloPlayerRepository othelloPlayerRepository;
 
     @Autowired
-    public OthelloLobbyService(OthelloLobbyRepository othelloLobbyRepository, OthelloPlayerRepository othelloPlayerRepository) {
+    public OthelloLobbyService(OthelloLobbyRepository othelloLobbyRepository) {
         this.othelloLobbyRepository = othelloLobbyRepository;
-        this.othelloPlayerRepository = othelloPlayerRepository;
     }
 
     public List<OthelloLobby> getAllLobbies() {
@@ -48,6 +44,9 @@ public class OthelloLobbyService {
                 .findFirst()
                 .orElseGet(() -> {
                     OthelloLobby newLobby;
+                    System.out.println("ENTERED HERE");
+                    System.out.println(maxPlayers);
+                    System.out.println("penis");
 
                     try {
                         newLobby = (OthelloLobby) IOthelloLobby.create(maxPlayers);
@@ -57,9 +56,13 @@ public class OthelloLobbyService {
 
                     return newLobby;
                 });
+        System.out.println("before");
+        System.out.println(lobby.getPlayers().size());
 
         lobby.addPlayer(player);
-        this.othelloPlayerRepository.save(player);
+
+        System.out.println("after");
+        System.out.println(lobby.getPlayers().size());
         return othelloLobbyRepository.save(lobby);
     }
 }

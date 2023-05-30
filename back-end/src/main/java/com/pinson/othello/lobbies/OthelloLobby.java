@@ -20,7 +20,7 @@ public class OthelloLobby implements IOthelloLobby {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "lobby")
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
     private List<OthelloPlayer> players = new ArrayList<>();
 
     @Column(nullable = false)
@@ -31,6 +31,13 @@ public class OthelloLobby implements IOthelloLobby {
 
     protected OthelloLobby() {
         //
+    }
+
+    @PreRemove
+    private void removeLobbyFromPlayers() {
+        for (IOthelloPlayer player : players) {
+            player.setLobby(null);
+        }
     }
 
     @Override
