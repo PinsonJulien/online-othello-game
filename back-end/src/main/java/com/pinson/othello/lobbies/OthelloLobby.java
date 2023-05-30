@@ -20,17 +20,24 @@ public class OthelloLobby implements IOthelloLobby {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "lobby")
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
     private List<OthelloPlayer> players = new ArrayList<>();
 
-    @Column(name = "max_players", nullable = false)
-    private Integer maxPlayers;
+    @Column(nullable = false)
+    private Integer maxPlayers = 0;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     protected OthelloLobby() {
         //
+    }
+
+    @PreRemove
+    private void removeLobbyFromPlayers() {
+        for (IOthelloPlayer player : players) {
+            player.setLobby(null);
+        }
     }
 
     @Override
@@ -41,6 +48,7 @@ public class OthelloLobby implements IOthelloLobby {
         if (this.hasPlayer(player))
             throw new PlayerAlreadyInLobbyException();
 
+        player.setLobby(this);
         this.players.add((OthelloPlayer) player);
 
         return this;
@@ -69,6 +77,13 @@ public class OthelloLobby implements IOthelloLobby {
     @Override
     public Long getId() {
         return this.id;
+    }
+
+    @Override
+    public IOthelloLobby setId(Long id) {
+        this.id = id;
+
+        return this;
     }
 
     @Override
