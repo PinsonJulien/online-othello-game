@@ -57,7 +57,7 @@ public class OthelloLobbyServiceTest {
         lobbies.get(5).setPlayers(players.subList(9, 13)); // 4/6 players
         lobbies.get(6).addPlayer(players.get(13)); // 1/6
 
-        lobbyRepository.saveAll(lobbies);
+        lobbies = lobbyRepository.saveAll(lobbies);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class OthelloLobbyServiceTest {
         lobbyService.deleteLobbyById(lobbies.get(1).getId());
         assertEquals(lobbies.size() - 2, lobbyService.getAllLobbies().size());
     }
-    
+
     @Test
     void addPlayerToRandomLobby() throws NonPositiveValueException, NonEvenNumberException, FullLobbyException, PlayerAlreadyInLobbyException {
         // Try to add a player to the first lobby, this will make it full.
@@ -152,6 +152,43 @@ public class OthelloLobbyServiceTest {
         }
         assertEquals(players.get(20).getUsername(), result.getPlayers().get(0).getUsername());
         assertFalse(result.isFull());
+    }
+
+    @Test
+    public void removePlayerFromLobby() {
+        OthelloLobby result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(29));
+        assertNull(result);
+
+        result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(0));
+        assertEquals(this.lobbies.get(0).getId(), result.getId());
+        assertEquals(1, result.getPlayers().size());
+        for (OthelloPlayer player : result.getPlayers()) {
+            assertNotEquals(player.getId(), this.players.get(0).getId());
+        }
+
+        result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(1));
+        assertEquals(this.lobbies.get(0).getId(), result.getId());
+        assertEquals(0, result.getPlayers().size());
+
+        //lobbies.get(5).setPlayers(players.subList(9, 13));
+        result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(11));
+        assertEquals(this.lobbies.get(5).getId(), result.getId());
+        assertEquals(3, result.getPlayers().size());
+        for (OthelloPlayer player : result.getPlayers()) {
+            assertNotEquals(player.getId(), this.players.get(11).getId());
+        }
+    }
+
+    @Test
+    public void removePlayerFromLobby__LobbyNotFoundException() throws NonPositiveValueException, NonEvenNumberException {
+        this.lobbyRepository.deleteById(100L);
+        OthelloPlayer player = (OthelloPlayer) IOthelloPlayer.create().setLobby(IOthelloLobby.create(8).setId(100L));
+
+        assertThrows(LobbyNotFoundException.class, () -> this.lobbyService.removePlayerFromLobby(player));
+
+        this.lobbyRepository.deleteById(151L);
+        OthelloPlayer player2 = (OthelloPlayer) IOthelloPlayer.create().setLobby(IOthelloLobby.create(4).setId(151L));
+        assertThrows(LobbyNotFoundException.class, () -> this.lobbyService.removePlayerFromLobby(player2));
     }
 
 }

@@ -5,6 +5,7 @@ import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
+import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
 import com.pinson.othello.players.OthelloPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,5 +64,24 @@ public class OthelloLobbyService {
 
     public List<OthelloLobby> getAllLobbiesByMaxPlayers(Integer maxPlayers) {
         return this.othelloLobbyRepository.findAllByMaxPlayers(maxPlayers);
+    }
+
+    public OthelloLobby removePlayerFromLobby(OthelloPlayer player) throws LobbyNotFoundException {
+        IOthelloLobby playerLobby = player.getLobby();
+        if (playerLobby == null)
+            return null;
+
+        Long lobbyId = playerLobby.getId();
+
+        OthelloLobby lobby = this.getLobbyById(lobbyId);
+
+        try {
+            lobby.removePlayer(player);
+        } catch (PlayerNotFoundException e) {
+            // This should never happen because the player helped to find that lobby.
+            e.printStackTrace();
+        }
+
+        return this.othelloLobbyRepository.save(lobby);
     }
 }
