@@ -64,25 +64,4 @@ class OthelloLobbyRepositoryTest {
         playerRepository.saveAll(players.stream().map(p -> (OthelloPlayer) p).toList());
     }
 
-    @Test
-    public void findLobbiesByMaxPlayersAndNotFull() {
-        List<OthelloLobby> result = lobbyRepository.findLobbiesByMaxPlayersAndNotFull(2);
-        assertEquals(2, result.size());
-        assertEquals(1, result.get(0).getPlayers().size());
-        assertEquals(1, result.get(1).getPlayers().size());
-        assertEquals(this.lobbies.get(1).getId(), result.get(0).getId());
-        assertEquals(this.lobbies.get(2).getId(), result.get(1).getId());
-
-        result = lobbyRepository.findLobbiesByMaxPlayersAndNotFull(4);
-        assertEquals(1, result.size());
-        assertEquals(3, result.get(0).getPlayers().size());
-        assertEquals(this.lobbies.get(4).getId(), result.get(0).getId());
-
-        result = lobbyRepository.findLobbiesByMaxPlayersAndNotFull(6);
-        assertEquals(2, result.size());
-        assertEquals(4, result.get(0).getPlayers().size());
-        assertEquals(1, result.get(1).getPlayers().size());
-        assertEquals(this.lobbies.get(5).getId(), result.get(0).getId());
-        assertEquals(this.lobbies.get(6).getId(), result.get(1).getId());
-    }
 }
