@@ -28,7 +28,7 @@ public class OthelloLobbyService {
         return this.othelloLobbyRepository.findById(id).orElseThrow(() -> new LobbyNotFoundException(id));
     }
 
-    public void deleteLobbyById(Long id) throws LobbyNotFoundException {
+    public void deleteLobbyById(Long id) {
         this.othelloLobbyRepository.deleteById(id);
     }
 
@@ -39,30 +39,29 @@ public class OthelloLobbyService {
             throw new NonEvenNumberException("Max players must be even");
 
         // Try to find a lobby that is not full, if not found, create a new one.
-        OthelloLobby lobby = this.othelloLobbyRepository.findLobbiesByMaxPlayersAndNotFull(maxPlayers)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> {
-                    OthelloLobby newLobby;
-                    System.out.println("ENTERED HERE");
-                    System.out.println(maxPlayers);
-                    System.out.println("penis");
+        // Note : The filter could be removed if there was a working option using the repository, alas none seems to work accurately.
+        OthelloLobby lobby = this.getAllLobbiesByMaxPlayers(maxPlayers)
+            .stream()
+            .filter((OthelloLobby l) -> l.getPlayers().size() < maxPlayers)
+            .findFirst()
+            .orElseGet(() -> {
+                OthelloLobby newLobby;
 
-                    try {
-                        newLobby = (OthelloLobby) IOthelloLobby.create(maxPlayers);
-                    } catch (NonPositiveValueException | NonEvenNumberException e) {
-                        throw new RuntimeException(e);
-                    }
+                try {
+                    newLobby = (OthelloLobby) IOthelloLobby.create(maxPlayers);
+                } catch (NonPositiveValueException | NonEvenNumberException e) {
+                    throw new RuntimeException(e);
+                }
 
-                    return newLobby;
-                });
-        System.out.println("before");
-        System.out.println(lobby.getPlayers().size());
+                return newLobby;
+            });
 
         lobby.addPlayer(player);
 
-        System.out.println("after");
-        System.out.println(lobby.getPlayers().size());
         return othelloLobbyRepository.save(lobby);
+    }
+
+    public List<OthelloLobby> getAllLobbiesByMaxPlayers(Integer maxPlayers) {
+        return this.othelloLobbyRepository.findAllByMaxPlayers(maxPlayers);
     }
 }
