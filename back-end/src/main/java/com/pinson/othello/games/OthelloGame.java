@@ -295,6 +295,16 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
+    public IOthelloMove getRandomValidMove() {
+        List<IOthelloMove> validMoves = this.getValidMoves();
+        if (validMoves.size() == 0)
+            return null;
+
+        Collections.shuffle(validMoves);
+        return validMoves.get(0);
+    }
+
+    @Override
     public boolean isMoveValid(IOthelloMove move) {
         try {
             IOthelloTile tile = this.getTileAt(move.getRow(), move.getColumn());
@@ -606,5 +616,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         this.setWinners(winners);
         this.setLosers(losers);
     }
+
 }
 

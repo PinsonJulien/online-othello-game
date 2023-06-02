@@ -31,6 +31,8 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
     List<IOthelloMove> getValidMoves();
     List<IOthelloMove> getValidMoves(IOthelloGamePlayer player);
 
+    IOthelloMove getRandomValidMove();
+
     boolean isMoveValid(IOthelloMove move);
 
     IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException, CannotPassTurnException, UnknownGamePlayerException;

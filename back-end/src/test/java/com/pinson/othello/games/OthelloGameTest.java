@@ -1765,6 +1765,36 @@ class OthelloGameTest {
     }
 
     @Test
+    void getRandomValidMove() throws GridSizeException, InvalidNumberOfPlayersException {
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
+
+        IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
+
+        // D3 C4 F5 E6
+        int D3 = 0;
+        int C4 = 0;
+        int F5 = 0;
+        int E6 = 0;
+
+        for (int i = 0; i < 100; i++) {
+            String standardNotation = game.getRandomValidMove().getPosition().getStandardNotation();
+            switch (standardNotation) {
+                case "D3" -> D3++;
+                case "C4" -> C4++;
+                case "F5" -> F5++;
+                case "E6" -> E6++;
+            }
+        }
+
+        assertTrue(D3 >= 15);
+        assertTrue(C4 >= 15);
+        assertTrue(F5 >= 15);
+        assertTrue(E6 >= 15);
+    }
+
+    @Test
     void getId() {
     }
 

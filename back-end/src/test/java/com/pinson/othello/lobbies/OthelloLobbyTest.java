@@ -4,7 +4,7 @@ import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
-import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
+import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 import org.junit.jupiter.api.Test;
@@ -74,7 +74,7 @@ class OthelloLobbyTest {
     }
 
     @Test
-    void removePlayer() throws NonPositiveValueException, NonEvenNumberException, FullLobbyException, PlayerAlreadyInLobbyException, PlayerNotFoundException {
+    void removePlayer() throws NonPositiveValueException, NonEvenNumberException, FullLobbyException, PlayerAlreadyInLobbyException, PlayerNotFoundInLobbyException {
         List<IOthelloPlayer> players = new ArrayList<>();
         players.add(IOthelloPlayer.create());
         players.add(IOthelloPlayer.create());
@@ -113,7 +113,7 @@ class OthelloLobbyTest {
 
         IOthelloLobby lobby = IOthelloLobby.create(4, players);
 
-        assertThrows(PlayerNotFoundException.class, () -> lobby.removePlayer(IOthelloPlayer.create()));
+        assertThrows(PlayerNotFoundInLobbyException.class, () -> lobby.removePlayer(IOthelloPlayer.create()));
     }
 
     @Test

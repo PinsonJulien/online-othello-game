@@ -5,7 +5,7 @@ import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
-import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
+import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 
@@ -39,7 +39,7 @@ public interface IOthelloLobby {
     }
 
     IOthelloLobby addPlayer(IOthelloPlayer player) throws PlayerAlreadyInLobbyException, FullLobbyException;
-    IOthelloLobby removePlayer(IOthelloPlayer player) throws PlayerNotFoundException;
+    IOthelloLobby removePlayer(IOthelloPlayer player) throws PlayerNotFoundInLobbyException;
 
     boolean hasPlayer(IOthelloPlayer player);
 
