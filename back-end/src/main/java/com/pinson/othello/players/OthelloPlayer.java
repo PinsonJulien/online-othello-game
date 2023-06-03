@@ -140,4 +140,17 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
         return new OthelloPlayer(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OthelloPlayer player))
+            return false;
+
+        return this.id.equals(player.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
+
 }

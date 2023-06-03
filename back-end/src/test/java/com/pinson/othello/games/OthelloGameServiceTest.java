@@ -12,6 +12,7 @@ import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
+import com.pinson.othello.players.OthelloPlayer;
 import com.pinson.othello.positions.IOthelloPosition;
 import com.pinson.othello.positions.exceptions.InvalidStandardNotationException;
 import jakarta.transaction.Transactional;
@@ -22,8 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,6 +39,7 @@ class OthelloGameServiceTest {
 
     private List<OthelloGame> games = new ArrayList<>();
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+    private List<OthelloPlayer> players = new ArrayList<>();
 
     private OthelloGame startedGame;
     private OthelloGame advancedGame;
@@ -47,11 +48,16 @@ class OthelloGameServiceTest {
 
     @BeforeEach
     void setUp() throws GridSizeException, InvalidNumberOfPlayersException, InvalidStandardNotationException, UnknownGamePlayerException, CannotPassTurnException, GameOverException, InvalidMoveException {
-        // Generate players
-        for (long i = 0L; i < 30; i++) {
+        // Generate game players
+        for (long i = 0L; i < 30L; i++) {
             IOthelloPlayer player = IOthelloPlayer.create().setId(i).setUsername("player"+i);
             OthelloGamePlayerColor color = (i%2 == 0) ? OthelloGamePlayerColor.BLACK : OthelloGamePlayerColor.WHITE;
             this.gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
+        }
+
+        // Generate players
+        for (long i = 30L; i < 40L; i++) {
+            this.players.add((OthelloPlayer) IOthelloPlayer.create().setId(i).setUsername("player"+i));
         }
 
         // Generate games at different states
@@ -111,12 +117,131 @@ class OthelloGameServiceTest {
 
     @Test
     void getAllGames() {
-
+        List<OthelloGame> games = this.gameService.getAllGames();
+        assertEquals(4, games.size());
+        assertEquals(this.games.get(0).getId(), games.get(0).getId());
+        assertEquals(this.games.get(1).getId(), games.get(1).getId());
+        assertEquals(this.games.get(2).getId(), games.get(2).getId());
+        assertEquals(this.games.get(3).getId(), games.get(3).getId());
     }
 
     @Test
     void getGameById() {
+        OthelloGame game = this.gameService.getGameById(this.startedGame.getId());
+        assertEquals(this.startedGame.getId(), game.getId());
+
+        game = this.gameService.getGameById(this.advancedGame.getId());
+        assertEquals(this.advancedGame.getId(), game.getId());
+
+        game = this.gameService.getGameById(this.playerSkipGame.getId());
+        assertEquals(this.playerSkipGame.getId(), game.getId());
+
+        game = this.gameService.getGameById(this.finishedGame.getId());
+        assertEquals(this.finishedGame.getId(), game.getId());
+    }
+
+    @Test
+    void startClassicGame() throws InvalidNumberOfPlayersException {
+        Set<IOthelloPlayer> players = new HashSet<>(this.players.subList(0, 2));
+        OthelloGame game = this.gameService.startClassicGame(players);
+        assertEquals(8, game.getGridWidth());
+        assertEquals(8, game.getGridHeight());
+        assertEquals(2, game.getGamePlayers().size());
+
+        // check if the correct players are in the game, considering they're shuffled.
+        assertTrue(
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
+        );
+        assertTrue(
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
+        );
+
+        // check if the game is in the repository.
+        game = this.gameRepository.findById(game.getId()).orElse(null);
+        assertNotNull(game);
+        assertEquals(8, game.getGridWidth());
+        assertEquals(8, game.getGridHeight());
+        assertEquals(2, game.getGamePlayers().size());
+
+        // check if the correct players are in the game, considering they're shuffled.
+        assertTrue(
+                game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
+        );
+        assertTrue(
+                game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
+        );
+    }
+
+    @Test
+    void startClassicGame__InvalidNumberOfPlayersException() {
+        Set<IOthelloPlayer> players = new HashSet<>(this.players.subList(0, 1));
+        assertThrowsExactly(InvalidNumberOfPlayersException.class, () -> this.gameService.startClassicGame(new HashSet<>(this.players.subList(0, 1))));
+        assertThrowsExactly(InvalidNumberOfPlayersException.class, () -> this.gameService.startClassicGame(new HashSet<>(this.players.subList(0, 3))));
+        assertThrowsExactly(InvalidNumberOfPlayersException.class, () -> this.gameService.startClassicGame(new HashSet<>(this.players.subList(0, 10))));
+
+        // when there's a given set with two duplicates, it should throw an exception because the set handled the duplication.
+        assertThrowsExactly(InvalidNumberOfPlayersException.class, () -> this.gameService.startClassicGame(new HashSet<>(Arrays.asList(this.players.get(0), this.players.get(0)))));
+    }
+
+    @Test
+    void getGameById__GameNotFoundException() {
+        //assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.getGameById(0L));
+    }
+
+    @Test
+    void playMove__GameNotFoundException() {
+        //assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.playMove(0L, IOthelloMove.create().setGamePlayer(this.gamePlayers.get(0)).setPosition(IOthelloPosition.create("A1"))));
+    }
+
+    @Test
+    void playMoves__GameOverException() {
+        //assertThrowsExactly(GameOverException.class, () -> this.gameService.playMove(this.finishedGame.getId(), IOthelloMove.create().setGamePlayer(this.gamePlayers.get(24)).setPosition(IOthelloPosition.create("A1"))));
+    }
+
+    @Test
+    void playMove__InvalidMoveException() {
+        // Players cannot play if it's not their turn
+
+        // Players cannot play if the move isn't possible.
+        //assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.startedGame.getId(), IOthelloMove.create().setGamePlayer(this.gamePlayers.get(0)).setPosition(IOthelloPosition.create("A1"))));
+    }
+
+    @Test
+    void playMove__UnknownGamePlayerException() {
+        // The player must be part of the game.
+        //        assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.startedGame.getId(), IOthelloMove.create().setGamePlayer(IOthelloGamePlayer.create().setId(0L)).setPosition(IOthelloPosition.create("A1"))));
+    }
+
+    @Test
+    void skipMove() {
 
     }
 
+    @Test
+    void skipMove__GameNotFoundException() {
+        // Players cannot skip if the game doesn't exist.
+        //assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.skipMove(0L));
+    }
+
+    @Test
+    void skipMove__GameOverException() {
+        // Players cannot skip if the game is over.
+        //assertThrowsExactly(GameOverException.class, () -> this.gameService.skipMove(this.finishedGame.getId()));
+    }
+
+    @Test
+    void skipMove__CannotPassTurnException() {
+        // Players cannot skip if they can play.
+    //    assertThrowsExactly(CannotPassTurnException.class, () -> this.gameService.skipMove(this.playerSkipGame.getId()));
+    }
+
+    @Test
+    void skipMove__InvalidMoveException() {
+        // Players cannot play if it's not their turn
+    }
+
+    @Test
+    void skipMove__UnknownGamePlayerException() {
+        // The player must be part of the game.
+    }
 }
