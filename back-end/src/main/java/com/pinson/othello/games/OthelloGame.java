@@ -60,11 +60,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     private List<OthelloMove> moves = new ArrayList<>();
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     protected OthelloGame() {

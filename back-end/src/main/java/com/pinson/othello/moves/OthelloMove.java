@@ -7,6 +7,7 @@ import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.positions.IOthelloPosition;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -34,7 +35,6 @@ public class OthelloMove implements IOthelloMove {
     private Boolean passed = false;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     public OthelloMove() {
