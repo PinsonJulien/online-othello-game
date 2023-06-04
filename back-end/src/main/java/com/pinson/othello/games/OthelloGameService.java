@@ -71,10 +71,16 @@ public class OthelloGameService {
         }
     }
 
-    public OthelloGame playMove(IOthelloGamePlayer gamePlayer, IOthelloPosition position) throws UnknownGamePlayerException, CannotPassTurnException, GameOverException, InvalidMoveException {
+    public OthelloGame playMove(IOthelloGamePlayer gamePlayer, IOthelloPosition position) throws UnknownGamePlayerException, InvalidMoveException, GameOverException {
         OthelloGame game = (OthelloGame) gamePlayer.getGame();
         IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayer).setPosition(position);
-        game.playMove(move);
+
+        try {
+            game.playMove(move);
+        } catch (CannotPassTurnException e) {
+            // Should not happen.
+            e.printStackTrace();
+        }
 
         return this.gameRepository.save(game);
     }

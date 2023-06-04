@@ -315,27 +315,25 @@ class OthelloGameServiceTest {
     }
 
     @Test
-    void playMove__GameNotFoundException() {
-        //assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.playMove(0L, IOthelloMove.create().setGamePlayer(this.gamePlayers.get(0)).setPosition(IOthelloPosition.create("A1"))));
-    }
-
-    @Test
-    void playMoves__GameOverException() {
-        //assertThrowsExactly(GameOverException.class, () -> this.gameService.playMove(this.finishedGame.getId(), IOthelloMove.create().setGamePlayer(this.gamePlayers.get(24)).setPosition(IOthelloPosition.create("A1"))));
-    }
-
-    @Test
     void playMove__InvalidMoveException() {
-        // Players cannot play if it's not their turn
+        // Players cannot play an invalid move.
+        assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.startedGame.getGamePlayers().get(0), IOthelloPosition.create("A1")));
+        assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.startedGame.getGamePlayers().get(0), IOthelloPosition.create("D4")));
+        assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.advancedGame.getGamePlayers().get(0), IOthelloPosition.create("A3")));
+    }
 
-        // Players cannot play if the move isn't possible.
-        //assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.startedGame.getId(), IOthelloMove.create().setGamePlayer(this.gamePlayers.get(0)).setPosition(IOthelloPosition.create("A1"))));
+    @Test
+    void playMove__GameOverException() {
+        // Players cannot play if the game is over.
+        assertThrowsExactly(GameOverException.class, () -> this.gameService.playMove(this.finishedGame.getGamePlayers().get(0), IOthelloPosition.create("A1")));
     }
 
     @Test
     void playMove__UnknownGamePlayerException() {
-        // The player must be part of the game.
-        //        assertThrowsExactly(InvalidMoveException.class, () -> this.gameService.playMove(this.startedGame.getId(), IOthelloMove.create().setGamePlayer(IOthelloGamePlayer.create().setId(0L)).setPosition(IOthelloPosition.create("A1"))));
+        // Players cannot play if they are not part of the game.
+        IOthelloGamePlayer unknownGamePlayer = new OthelloGamePlayer();
+        unknownGamePlayer.setId(684968L).setGame(this.startedGame);
+        assertThrowsExactly(UnknownGamePlayerException.class, () -> this.gameService.playMove(unknownGamePlayer, IOthelloPosition.create("A1")));
     }
 
     @Test

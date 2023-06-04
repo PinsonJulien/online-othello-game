@@ -347,7 +347,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException, CannotPassTurnException, UnknownGamePlayerException {
+    public IOthelloGame playMove(IOthelloMove move) throws UnknownGamePlayerException, InvalidMoveException, GameOverException, CannotPassTurnException {
         // Check if the game is still in progress.
         if (this.isGameOver())
             throw new GameOverException();
@@ -368,15 +368,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         List<IOthelloMove> validMoves = this.getValidMoves(moveGamePlayer);
         if (validMoves.size() == 0)
             move.setPassed(true);
+        // if there's possible moves, and the given move was passed, we return an error.
         else if (move.isPassed()) {
-            // if there's possible moves, and the given move was passed, we return an error.
             throw new CannotPassTurnException("The move of the player cannot be passed because there's possible moves available.");
         }
+        // Check if the move is valid.
+        else if (!this.isMoveValid(move))
+            throw new InvalidMoveException("The position of the move is not valid.");
 
         return this.playMove(move, true);
     }
 
-    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException {
+    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) {
         IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
 
         // check if the move is a pass move.
@@ -385,10 +388,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
             return this;
         }
-
-        // Check if the move is valid.
-        if (!this.isMoveValid(move))
-            throw new InvalidMoveException("The position of the move is not valid.");
 
         // Place the disk on the tile.
         IOthelloDisk disk = IOthelloDisk.create(move.getGamePlayer());
