@@ -138,4 +138,26 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
         return this;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OthelloGamePlayer gamePlayer)) {
+            System.out.println("ERROR HERE !!!!!!!!!!");
+            return false;
+        }
+
+        System.out.println("id check !");
+        System.out.println(this.id);
+        System.out.println(gamePlayer.getId());
+
+        return
+            this == gamePlayer
+            ||
+            this.id.equals(gamePlayer.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
+
 }

@@ -8,6 +8,7 @@ import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
+import com.pinson.othello.gamePlayers.OthelloGamePlayerRepository;
 import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
@@ -75,15 +76,15 @@ class OthelloGameServiceTest {
 
         // game of 4 players, 10x10, two turned passed, have 8 moves in.
         this.advancedGame = (OthelloGame) IOthelloGame.create(gamePlayers.subList(2, 6), 10, 10);
+        this.advancedGame = this.gameRepository.save(this.advancedGame);
         // moves : C6 D8 F3 E3 H5 H4
         // additional moves for testing : H3 I3 C7 G8 C5
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(2)).setPosition(IOthelloPosition.create("C6")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(3)).setPosition(IOthelloPosition.create("D8")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(4)).setPosition(IOthelloPosition.create("F3")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(5)).setPosition(IOthelloPosition.create("E3")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(2)).setPosition(IOthelloPosition.create("H5")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(3)).setPosition(IOthelloPosition.create("H4")));
-
+        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(this.advancedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("C6")));
+        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(this.advancedGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("D8")));
+        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(this.advancedGame.getGamePlayers().get(2)).setPosition(IOthelloPosition.create("F3")));
+        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(this.advancedGame.getGamePlayers().get(3)).setPosition(IOthelloPosition.create("E3")));
+        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(this.advancedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("H5")));
+        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(this.advancedGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("H4")));
 
         IOthelloGame save = this.gameRepository.save(this.advancedGame);
         this.advancedGame.setId(save.getId());
@@ -92,29 +93,31 @@ class OthelloGameServiceTest {
         // game of 2 players, 8x8, one player must pass turn.
         // moves : C4 C3 E6 B4 A4 A5 C2 A3
         this.playerSkipGame = (OthelloGame) IOthelloGame.create(gamePlayers.subList(6, 8), 8, 8);
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(6)).setPosition(IOthelloPosition.create("C4")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(7)).setPosition(IOthelloPosition.create("C3")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(6)).setPosition(IOthelloPosition.create("E6")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(7)).setPosition(IOthelloPosition.create("B4")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(6)).setPosition(IOthelloPosition.create("A4")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(7)).setPosition(IOthelloPosition.create("A5")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(6)).setPosition(IOthelloPosition.create("C2")));
-        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(7)).setPosition(IOthelloPosition.create("A3")));
+        this.playerSkipGame = this.gameRepository.save(this.playerSkipGame);
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("C4")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("C3")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("E6")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("B4")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("A4")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("A5")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("C2")));
+        this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(this.playerSkipGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("A3")));
         this.playerSkipGame = this.gameRepository.save(this.playerSkipGame);
         this.games.add(this.playerSkipGame);
 
         // game of 2 players, 8x8, finished.
         this.finishedGame = (OthelloGame) IOthelloGame.create(gamePlayers.subList(24, 26), 8, 8);
+        this.finishedGame = this.gameRepository.save(this.finishedGame);
         // moves: F5 F6 F7 F4 F3 E3 D3 C5 B5
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("F5")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(25)).setPosition(IOthelloPosition.create("F6")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("F7")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(25)).setPosition(IOthelloPosition.create("F4")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("F3")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(25)).setPosition(IOthelloPosition.create("E3")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("D3")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(25)).setPosition(IOthelloPosition.create("C5")));
-        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("B5")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("F5")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("F6")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("F7")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("F4")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("F3")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("E3")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("D3")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(1)).setPosition(IOthelloPosition.create("C5")));
+        this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(this.finishedGame.getGamePlayers().get(0)).setPosition(IOthelloPosition.create("B5")));
         this.finishedGame = this.gameRepository.save(this.finishedGame);
         this.games.add(this.finishedGame);
 
@@ -337,35 +340,40 @@ class OthelloGameServiceTest {
     }
 
     @Test
-    void skipMove() {
+    void skipMove() throws UnknownGamePlayerException, GameOverException, CannotPassTurnException {
+        IOthelloGamePlayer gamePlayer = this.playerSkipGame.getGamePlayers().get(0);
+        this.gameService.skipMove(gamePlayer);
 
-    }
+        assertEquals(9, this.playerSkipGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.playerSkipGame.getMoves().get(8).getGamePlayer().getId());
+        assertTrue(this.playerSkipGame.getMoves().get(8).isPassed());
 
-    @Test
-    void skipMove__GameNotFoundException() {
-        // Players cannot skip if the game doesn't exist.
-        //assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.skipMove(0L));
+        this.playerSkipGame = this.gameRepository.findById(this.playerSkipGame.getId()).orElse(null);
+        assertNotNull(this.playerSkipGame);
+        assertEquals(9, this.playerSkipGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.playerSkipGame.getMoves().get(8).getGamePlayer().getId());
+        assertTrue(this.playerSkipGame.getMoves().get(8).isPassed());
     }
 
     @Test
     void skipMove__GameOverException() {
         // Players cannot skip if the game is over.
-        //assertThrowsExactly(GameOverException.class, () -> this.gameService.skipMove(this.finishedGame.getId()));
+        assertThrowsExactly(GameOverException.class, () -> this.gameService.skipMove(this.finishedGame.getGamePlayers().get(0)));
     }
 
     @Test
     void skipMove__CannotPassTurnException() {
-        // Players cannot skip if they can play.
-    //    assertThrowsExactly(CannotPassTurnException.class, () -> this.gameService.skipMove(this.playerSkipGame.getId()));
-    }
-
-    @Test
-    void skipMove__InvalidMoveException() {
-        // Players cannot play if it's not their turn
+        // Players cannot skip if there's still a valid move.
+        assertThrowsExactly(CannotPassTurnException.class, () -> this.gameService.skipMove(this.startedGame.getGamePlayers().get(0)));
+        assertThrowsExactly(CannotPassTurnException.class, () -> this.gameService.skipMove(this.advancedGame.getGamePlayers().get(0)));
     }
 
     @Test
     void skipMove__UnknownGamePlayerException() {
-        // The player must be part of the game.
+        // Players cannot skip if it doesn't exist in the game
+        IOthelloGamePlayer unknownGamePlayer = new OthelloGamePlayer();
+        unknownGamePlayer.setId(684960L).setGame(this.advancedGame);
+        assertThrowsExactly(UnknownGamePlayerException.class, () -> this.gameService.skipMove(unknownGamePlayer));
     }
+
 }

@@ -452,11 +452,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame skipMove() throws GameOverException, InvalidMoveException, CannotPassTurnException, UnknownGamePlayerException {
+    public IOthelloGame skipMove() throws GameOverException, InvalidMoveException, CannotPassTurnException {
         IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
         IOthelloMove skipMove = IOthelloMove.create().setGamePlayer(currentPlayer).setPassed(true);
 
-        return this.playMove(skipMove);
+        try {
+            return this.playMove(skipMove);
+        } catch (UnknownGamePlayerException e) {
+            // this should never happen.
+            e.printStackTrace();
+        }
+
+        return this;
     }
 
     protected int calculateMiddleSquareSize() {

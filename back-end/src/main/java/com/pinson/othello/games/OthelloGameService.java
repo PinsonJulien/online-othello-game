@@ -84,4 +84,20 @@ public class OthelloGameService {
 
         return this.gameRepository.save(game);
     }
+
+    public OthelloGame skipMove(IOthelloGamePlayer gamePlayer) throws GameOverException, CannotPassTurnException, UnknownGamePlayerException {
+        OthelloGame game = (OthelloGame) gamePlayer.getGame();
+
+        if (!game.getGamePlayers().contains((OthelloGamePlayer) gamePlayer))
+            throw new UnknownGamePlayerException("The given game player is not part of the game");
+
+        try {
+            game.skipMove();
+        } catch (InvalidMoveException e) {
+            // Should not happen.
+            e.printStackTrace();
+        }
+
+        return this.gameRepository.save(game);
+    }
 }
