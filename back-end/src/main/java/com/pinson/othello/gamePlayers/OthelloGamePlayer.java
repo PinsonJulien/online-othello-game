@@ -28,7 +28,7 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
     private List<OthelloMove> moves;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "player_color", nullable = false)
+    @Column(nullable = false)
     private OthelloGamePlayerColor playerColor;
 
     @ManyToMany(mappedBy = "winners")

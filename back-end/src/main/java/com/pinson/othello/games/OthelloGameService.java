@@ -1,13 +1,18 @@
 package com.pinson.othello.games;
 
+import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
+import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
+import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.GameNotFoundException;
+import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
+import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
-import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.positions.IOthelloPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +71,11 @@ public class OthelloGameService {
         }
     }
 
-    //public OthelloGame playMove
+    public OthelloGame playMove(IOthelloGamePlayer gamePlayer, IOthelloPosition position) throws UnknownGamePlayerException, CannotPassTurnException, GameOverException, InvalidMoveException {
+        OthelloGame game = (OthelloGame) gamePlayer.getGame();
+        IOthelloMove move = IOthelloMove.create().setGamePlayer(gamePlayer).setPosition(position);
+        game.playMove(move);
 
+        return this.gameRepository.save(game);
+    }
 }

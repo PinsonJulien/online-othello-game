@@ -37,10 +37,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @Column(name = "status", nullable = false)
     private OthelloGameStatus status = OthelloGameStatus.IN_PROGRESS;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "othello_game_winners",
         joinColumns = @JoinColumn(name = "othello_game_id"),
@@ -48,7 +48,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     )
     private List<OthelloGamePlayer> winners;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "othello_game_losers",
         joinColumns = @JoinColumn(name = "othello_game_id"),
@@ -56,7 +56,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     )
     private List<OthelloGamePlayer> losers;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OthelloMove> moves = new ArrayList<>();
 
     @CreatedDate
@@ -77,11 +77,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         if (gamePlayers.size() % 2 != 0)
             throw new InvalidNumberOfPlayersException("There must be an even number of players.");
-
-        // set the game of each game player to this game
-        for (OthelloGamePlayer gamePlayer : gamePlayers) {
-            gamePlayer.setGame(this);
-        }
 
         this.setGamePlayers(gamePlayers);
 
@@ -147,7 +142,13 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @Override
     public IOthelloGame setGamePlayers(List<OthelloGamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
+        this.gamePlayers = new ArrayList<>();
+
+        // set the game of each game player.
+        for (OthelloGamePlayer gamePlayer : gamePlayers) {
+            gamePlayer.setGame(this);
+            this.gamePlayers.add(gamePlayer);
+        }
 
         return this;
     }

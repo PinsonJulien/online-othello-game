@@ -9,10 +9,12 @@ import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.games.exceptions.CannotPassTurnException;
+import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.players.OthelloPlayerRepository;
 import com.pinson.othello.positions.IOthelloPosition;
 import com.pinson.othello.positions.exceptions.InvalidStandardNotationException;
 import jakarta.transaction.Transactional;
@@ -37,6 +39,9 @@ class OthelloGameServiceTest {
     @Autowired
     private OthelloGameRepository gameRepository;
 
+    @Autowired
+    private OthelloPlayerRepository playerRepository;
+
     private List<OthelloGame> games = new ArrayList<>();
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
     private List<OthelloPlayer> players = new ArrayList<>();
@@ -48,35 +53,40 @@ class OthelloGameServiceTest {
 
     @BeforeEach
     void setUp() throws GridSizeException, InvalidNumberOfPlayersException, InvalidStandardNotationException, UnknownGamePlayerException, CannotPassTurnException, GameOverException, InvalidMoveException {
-        // Generate game players
-        for (long i = 0L; i < 30L; i++) {
-            IOthelloPlayer player = IOthelloPlayer.create().setId(i).setUsername("player"+i);
-            OthelloGamePlayerColor color = (i%2 == 0) ? OthelloGamePlayerColor.BLACK : OthelloGamePlayerColor.WHITE;
-            this.gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
+        // Generate players
+        for (int i = 0; i < 40; i++) {
+            this.players.add((OthelloPlayer) IOthelloPlayer.create().setUsername("player"+i).setPassword("password"+i));
         }
 
-        // Generate players
-        for (long i = 30L; i < 40L; i++) {
-            this.players.add((OthelloPlayer) IOthelloPlayer.create().setId(i).setUsername("player"+i));
+        this.players = this.playerRepository.saveAll(this.players);
+
+        // Generate game players
+        for (int i = 0; i < 30; i++) {
+            IOthelloPlayer player = this.players.get(i);
+            OthelloGamePlayerColor color = (i%2 == 0) ? OthelloGamePlayerColor.BLACK : OthelloGamePlayerColor.WHITE;
+            this.gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
         }
 
         // Generate games at different states
         // game of 2 players, typical 8x8, just started.
         this.startedGame = (OthelloGame) IOthelloGame.create(gamePlayers.subList(0, 2), 8, 8);
+        this.startedGame = this.gameRepository.save(this.startedGame);
         this.games.add(startedGame);
 
         // game of 4 players, 10x10, two turned passed, have 8 moves in.
         this.advancedGame = (OthelloGame) IOthelloGame.create(gamePlayers.subList(2, 6), 10, 10);
-        // moves : C6 D8 F3 E3 H5 H4 H3 I3
-        // additional moves for testing : C7 G8 C5
+        // moves : C6 D8 F3 E3 H5 H4
+        // additional moves for testing : H3 I3 C7 G8 C5
         this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(2)).setPosition(IOthelloPosition.create("C6")));
         this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(3)).setPosition(IOthelloPosition.create("D8")));
         this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(4)).setPosition(IOthelloPosition.create("F3")));
         this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(5)).setPosition(IOthelloPosition.create("E3")));
         this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(2)).setPosition(IOthelloPosition.create("H5")));
         this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(3)).setPosition(IOthelloPosition.create("H4")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(4)).setPosition(IOthelloPosition.create("H3")));
-        this.advancedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(5)).setPosition(IOthelloPosition.create("I3")));
+
+
+        IOthelloGame save = this.gameRepository.save(this.advancedGame);
+        this.advancedGame.setId(save.getId());
         this.games.add(this.advancedGame);
 
         // game of 2 players, 8x8, one player must pass turn.
@@ -90,7 +100,7 @@ class OthelloGameServiceTest {
         this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(7)).setPosition(IOthelloPosition.create("A5")));
         this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(6)).setPosition(IOthelloPosition.create("C2")));
         this.playerSkipGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(7)).setPosition(IOthelloPosition.create("A3")));
-
+        this.playerSkipGame = this.gameRepository.save(this.playerSkipGame);
         this.games.add(this.playerSkipGame);
 
         // game of 2 players, 8x8, finished.
@@ -105,9 +115,14 @@ class OthelloGameServiceTest {
         this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("D3")));
         this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(25)).setPosition(IOthelloPosition.create("C5")));
         this.finishedGame.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(24)).setPosition(IOthelloPosition.create("B5")));
+        this.finishedGame = this.gameRepository.save(this.finishedGame);
         this.games.add(this.finishedGame);
 
-        this.games = this.gameRepository.saveAll(this.games);
+        this.gamePlayers = new ArrayList<>();
+        this.gamePlayers.addAll(this.startedGame.getGamePlayers());
+        this.gamePlayers.addAll(this.advancedGame.getGamePlayers());
+        this.gamePlayers.addAll(this.playerSkipGame.getGamePlayers());
+        this.gamePlayers.addAll(this.finishedGame.getGamePlayers());
     }
 
     @AfterEach
@@ -141,6 +156,11 @@ class OthelloGameServiceTest {
     }
 
     @Test
+    void getGameById__GameNotFoundException() {
+        assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.getGameById(0L));
+    }
+
+    @Test
     void startClassicGame() throws InvalidNumberOfPlayersException {
         Set<IOthelloPlayer> players = new HashSet<>(this.players.subList(0, 2));
         OthelloGame game = this.gameService.startClassicGame(players);
@@ -165,10 +185,10 @@ class OthelloGameServiceTest {
 
         // check if the correct players are in the game, considering they're shuffled.
         assertTrue(
-                game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
         );
         assertTrue(
-                game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
         );
     }
 
@@ -184,8 +204,114 @@ class OthelloGameServiceTest {
     }
 
     @Test
-    void getGameById__GameNotFoundException() {
-        //assertThrowsExactly(GameNotFoundException.class, () -> this.gameService.getGameById(0L));
+    void playMove() throws InvalidStandardNotationException, UnknownGamePlayerException, CannotPassTurnException, GameOverException, InvalidMoveException {
+        // Play  3 moves on the started game.
+        IOthelloGamePlayer gamePlayer = this.startedGame.getGamePlayers().get(0);
+        IOthelloPosition position = IOthelloPosition.create("F5");
+        this.startedGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(1, this.startedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.startedGame.getMoves().get(0).getGamePlayer().getId());
+        assertEquals(position, this.startedGame.getMoves().get(0).getPosition());
+
+        this.startedGame = this.gameRepository.findById(this.startedGame.getId()).orElse(null);
+        assertNotNull(this.startedGame);
+        assertEquals(1, this.startedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.startedGame.getMoves().get(0).getGamePlayer().getId());
+        assertEquals(position, this.startedGame.getMoves().get(0).getPosition());
+
+        gamePlayer = this.startedGame.getGamePlayers().get(1);
+        position = IOthelloPosition.create("F6");
+        this.startedGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(2, this.startedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.startedGame.getMoves().get(1).getGamePlayer().getId());
+        assertEquals(position, this.startedGame.getMoves().get(1).getPosition());
+
+        this.startedGame = this.gameRepository.findById(this.startedGame.getId()).orElse(null);
+        assertNotNull(this.startedGame);
+        assertEquals(2, this.startedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.startedGame.getMoves().get(1).getGamePlayer().getId());
+        assertEquals(position, this.startedGame.getMoves().get(1).getPosition());
+
+        gamePlayer = this.startedGame.getGamePlayers().get(0);
+        position = IOthelloPosition.create("D3");
+        this.startedGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(3, this.startedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.startedGame.getMoves().get(2).getGamePlayer().getId());
+        assertEquals(position, this.startedGame.getMoves().get(2).getPosition());
+
+        this.startedGame = this.gameRepository.findById(this.startedGame.getId()).orElse(null);
+        assertNotNull(this.startedGame);
+        assertEquals(3, this.startedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.startedGame.getMoves().get(2).getGamePlayer().getId());
+        assertEquals(position, this.startedGame.getMoves().get(2).getPosition());
+
+        // Play 2 moves on the advanced game.
+        // H3 I3
+
+        gamePlayer = this.advancedGame.getGamePlayers().get(2);
+        position = IOthelloPosition.create("H3");
+        this.advancedGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(7, this.advancedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.advancedGame.getMoves().get(6).getGamePlayer().getId());
+        assertEquals(position, this.advancedGame.getMoves().get(6).getPosition());
+
+        this.advancedGame = this.gameRepository.findById(this.advancedGame.getId()).orElse(null);
+        assertNotNull(this.advancedGame);
+        assertEquals(7, this.advancedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.advancedGame.getMoves().get(6).getGamePlayer().getId());
+        assertEquals(position, this.advancedGame.getMoves().get(6).getPosition());
+
+        gamePlayer = this.advancedGame.getGamePlayers().get(3);
+        position = IOthelloPosition.create("I3");
+        this.advancedGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(8, this.advancedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.advancedGame.getMoves().get(7).getGamePlayer().getId());
+        assertEquals(position, this.advancedGame.getMoves().get(7).getPosition());
+
+        this.advancedGame = this.gameRepository.findById(this.advancedGame.getId()).orElse(null);
+        assertNotNull(this.advancedGame);
+        assertEquals(8, this.advancedGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.advancedGame.getMoves().get(7).getGamePlayer().getId());
+        assertEquals(position, this.advancedGame.getMoves().get(7).getPosition());
+
+        // Player skip game, any move played will pass the turn.
+        gamePlayer = this.playerSkipGame.getGamePlayers().get(0);
+        position = IOthelloPosition.create("A1");
+        this.playerSkipGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(9, this.playerSkipGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.playerSkipGame.getMoves().get(8).getGamePlayer().getId());
+        assertEquals(position, this.playerSkipGame.getMoves().get(8).getPosition());
+        assertTrue(this.playerSkipGame.getMoves().get(8).isPassed());
+
+        this.playerSkipGame = this.gameRepository.findById(this.playerSkipGame.getId()).orElse(null);
+        assertNotNull(this.playerSkipGame);
+        assertEquals(9, this.playerSkipGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.playerSkipGame.getMoves().get(8).getGamePlayer().getId());
+        assertEquals(position, this.playerSkipGame.getMoves().get(8).getPosition());
+        assertTrue(this.playerSkipGame.getMoves().get(8).isPassed());
+
+        // plays a valid move in the skip game
+        gamePlayer = this.playerSkipGame.getGamePlayers().get(1);
+        position = IOthelloPosition.create("D2");
+        this.playerSkipGame = this.gameService.playMove(gamePlayer, position);
+
+        assertEquals(10, this.playerSkipGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.playerSkipGame.getMoves().get(9).getGamePlayer().getId());
+        assertEquals(position, this.playerSkipGame.getMoves().get(9).getPosition());
+        assertFalse(this.playerSkipGame.getMoves().get(9).isPassed());
+
+        this.playerSkipGame = this.gameRepository.findById(this.playerSkipGame.getId()).orElse(null);
+        assertNotNull(this.playerSkipGame);
+        assertEquals(10, this.playerSkipGame.getMoves().size());
+        assertEquals(gamePlayer.getId(), this.playerSkipGame.getMoves().get(9).getGamePlayer().getId());
+        assertEquals(position, this.playerSkipGame.getMoves().get(9).getPosition());
+        assertFalse(this.playerSkipGame.getMoves().get(9).isPassed());
     }
 
     @Test
