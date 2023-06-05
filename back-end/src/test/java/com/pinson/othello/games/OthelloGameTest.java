@@ -12,6 +12,7 @@ import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
+import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.positions.IOthelloPosition;
 import com.pinson.othello.positions.exceptions.InvalidStandardNotationException;
 import org.junit.jupiter.api.Test;
@@ -1765,6 +1766,36 @@ class OthelloGameTest {
     }
 
     @Test
+    void getRandomValidMove() throws GridSizeException, InvalidNumberOfPlayersException {
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.BLACK).setId(1L));
+        gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(null, OthelloGamePlayerColor.WHITE).setId(2L));
+
+        IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
+
+        // D3 C4 F5 E6
+        int D3 = 0;
+        int C4 = 0;
+        int F5 = 0;
+        int E6 = 0;
+
+        for (int i = 0; i < 100; i++) {
+            String standardNotation = game.getRandomValidMove().getPosition().getStandardNotation();
+            switch (standardNotation) {
+                case "D3" -> D3++;
+                case "C4" -> C4++;
+                case "F5" -> F5++;
+                case "E6" -> E6++;
+            }
+        }
+
+        assertTrue(D3 >= 15);
+        assertTrue(C4 >= 15);
+        assertTrue(F5 >= 15);
+        assertTrue(E6 >= 15);
+    }
+
+    @Test
     void getId() {
     }
 
@@ -1896,4 +1927,163 @@ class OthelloGameTest {
     @Test
     void getCurrentTurnPlayer() {
     }
+
+    //*********************************************************************************************************************
+    // Methods to help generate boards for testing.
+    //*********************************************************************************************************************
+
+    private void consolePrintSmallestGameMoveGameOverList(int nbPlayers, int gridWidth, int gridHeight) {
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+        List<IOthelloMove> lowSkipList = new ArrayList<>();
+
+        int lowest = 9999;
+
+        // Generate players
+        for (long i = 0L; i < nbPlayers; i++) {
+            IOthelloPlayer player = IOthelloPlayer.create().setId(i).setUsername("player"+i);
+            OthelloGamePlayerColor color = (i%2 == 0) ? OthelloGamePlayerColor.BLACK : OthelloGamePlayerColor.WHITE;
+            gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
+        }
+        for (int i = 0; i < 5000; i++) {
+            System.out.println(i);
+            OthelloGame gamefake = null;
+            try {
+                gamefake = (OthelloGame) IOthelloGame.create(gamePlayers, gridWidth, gridHeight);
+            } catch (GridSizeException | InvalidNumberOfPlayersException e) {
+                throw new RuntimeException(e);
+            }
+            List<IOthelloMove> moves = new ArrayList<>();
+
+            while(true) {
+                if (lowest <= moves.size())
+                    break;
+
+                List<IOthelloMove> playable = gamefake.getValidMoves();
+                if (gamefake.isGameOver()) {
+                    System.out.println("Found better !");
+                    lowest = moves.size();
+                    lowSkipList = moves;
+                    break;
+                }
+
+                IOthelloMove randomMove = gamefake.getRandomValidMove();
+                moves.add(randomMove);
+                try {
+                    gamefake.playMove(randomMove);
+                } catch (Exception e) {
+                    break;
+                }
+            }
+        }
+
+        System.out.println("Lowest : " + lowest);
+        for (IOthelloMove move : lowSkipList) {
+            System.out.println(move.getPosition().getStandardNotation());
+        }
+    }
+
+    private void consolePrintSmallestGameMovePlayerSkipList() {
+        List<IOthelloMove> lowSkipList = new ArrayList<>();
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+
+        int lowest = 9999;
+
+        // Generate players
+        for (long i = 0L; i < 30; i++) {
+            IOthelloPlayer player = IOthelloPlayer.create().setId(i).setUsername("player"+i);
+            OthelloGamePlayerColor color = (i%2 == 0) ? OthelloGamePlayerColor.BLACK : OthelloGamePlayerColor.WHITE;
+            gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
+        }
+
+        for (int i = 0; i < 5000; i++) {
+            System.out.println(i);
+            OthelloGame gamefake = null;
+            try {
+                gamefake = (OthelloGame) IOthelloGame.create(gamePlayers.subList(0, 2), 8, 8);
+            } catch (GridSizeException | InvalidNumberOfPlayersException e) {
+                throw new RuntimeException(e);
+            }
+            List<IOthelloMove> moves = new ArrayList<>();
+
+            while(true) {
+                if (lowest <= moves.size())
+                    break;
+
+                List<IOthelloMove> playable = gamefake.getValidMoves();
+                if (playable.size() == 0 && gamefake.canAnyPlayerPlay()) {
+                    System.out.println("Found better !");
+                    lowest = moves.size();
+                    lowSkipList = moves;
+                    break;
+                }
+
+                IOthelloMove randomMove = gamefake.getRandomValidMove();
+                moves.add(randomMove);
+                try {
+                    gamefake.playMove(randomMove);
+                } catch (Exception e) {
+                    break;
+                }
+            }
+        }
+
+        System.out.println("Lowest : " + lowest);
+        for (IOthelloMove move : lowSkipList) {
+            System.out.println(move.getPosition().getStandardNotation());
+        }
+    }
+
+    // Generate a list of moves for a game that is going on, not game over.
+    private void consolePrintGameMoveOngoingGame(int nbMoves, int nbPlayers, int gridWidth, int gridHeight) {
+        List<IOthelloMove> moveList = new ArrayList<>();
+        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
+
+        int lowest = 9999;
+
+        // Generate players
+        for (long i = 0L; i < nbPlayers; i++) {
+            IOthelloPlayer player = IOthelloPlayer.create().setId(i).setUsername("player"+i);
+            OthelloGamePlayerColor color = (i%2 == 0) ? OthelloGamePlayerColor.BLACK : OthelloGamePlayerColor.WHITE;
+            gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
+        }
+
+        for (int i = 0; i < 10000; i++) {
+            System.out.println(i);
+            OthelloGame gamefake = null;
+            try {
+                gamefake = (OthelloGame) IOthelloGame.create(gamePlayers, gridWidth, gridHeight);
+            } catch (GridSizeException | InvalidNumberOfPlayersException e) {
+                throw new RuntimeException(e);
+            }
+
+            List<IOthelloMove> moves = new ArrayList<>();
+
+            for (int j = 0; j < nbMoves; j++) {
+                if (!gamefake.canAnyPlayerPlay()) {
+                    break;
+                }
+
+                IOthelloMove randomMove = gamefake.getRandomValidMove();
+                moves.add(randomMove);
+                try {
+                    gamefake.playMove(randomMove);
+                } catch (Exception e) {
+                    break;
+                }
+            }
+
+            if (gamefake.canAnyPlayerPlay()) {
+                lowest = moves.size();
+                moveList = moves;
+                break;
+            }
+
+        }
+
+        System.out.println("Lowest : " + lowest);
+        for (IOthelloMove move : moveList) {
+            System.out.println(move.getPosition().getStandardNotation());
+        }
+    }
+
 }

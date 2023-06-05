@@ -37,10 +37,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @Column(name = "status", nullable = false)
     private OthelloGameStatus status = OthelloGameStatus.IN_PROGRESS;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "othello_game_winners",
         joinColumns = @JoinColumn(name = "othello_game_id"),
@@ -48,7 +48,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     )
     private List<OthelloGamePlayer> winners;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "othello_game_losers",
         joinColumns = @JoinColumn(name = "othello_game_id"),
@@ -56,15 +56,13 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     )
     private List<OthelloGamePlayer> losers;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OthelloMove> moves = new ArrayList<>();
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     protected OthelloGame() {
@@ -79,11 +77,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
         if (gamePlayers.size() % 2 != 0)
             throw new InvalidNumberOfPlayersException("There must be an even number of players.");
-
-        // set the game of each game player to this game
-        for (OthelloGamePlayer gamePlayer : gamePlayers) {
-            gamePlayer.setGame(this);
-        }
 
         this.setGamePlayers(gamePlayers);
 
@@ -149,7 +142,13 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @Override
     public IOthelloGame setGamePlayers(List<OthelloGamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
+        this.gamePlayers = new ArrayList<>();
+
+        // set the game of each game player.
+        for (OthelloGamePlayer gamePlayer : gamePlayers) {
+            gamePlayer.setGame(this);
+            this.gamePlayers.add(gamePlayer);
+        }
 
         return this;
     }
@@ -295,6 +294,16 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
+    public IOthelloMove getRandomValidMove() {
+        List<IOthelloMove> validMoves = this.getValidMoves();
+        if (validMoves.size() == 0)
+            return null;
+
+        Collections.shuffle(validMoves);
+        return validMoves.get(0);
+    }
+
+    @Override
     public boolean isMoveValid(IOthelloMove move) {
         try {
             IOthelloTile tile = this.getTileAt(move.getRow(), move.getColumn());
@@ -338,7 +347,7 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame playMove(IOthelloMove move) throws InvalidMoveException, GameOverException, CannotPassTurnException, UnknownGamePlayerException {
+    public IOthelloGame playMove(IOthelloMove move) throws UnknownGamePlayerException, InvalidMoveException, GameOverException, CannotPassTurnException {
         // Check if the game is still in progress.
         if (this.isGameOver())
             throw new GameOverException();
@@ -359,15 +368,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         List<IOthelloMove> validMoves = this.getValidMoves(moveGamePlayer);
         if (validMoves.size() == 0)
             move.setPassed(true);
+        // if there's possible moves, and the given move was passed, we return an error.
         else if (move.isPassed()) {
-            // if there's possible moves, and the given move was passed, we return an error.
             throw new CannotPassTurnException("The move of the player cannot be passed because there's possible moves available.");
         }
+        // Check if the move is valid.
+        else if (!this.isMoveValid(move))
+            throw new InvalidMoveException("The position of the move is not valid.");
 
         return this.playMove(move, true);
     }
 
-    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) throws InvalidMoveException {
+    protected IOthelloGame playMove(IOthelloMove move, boolean addToMoves) {
         IOthelloGamePlayer moveGamePlayer = move.getGamePlayer();
 
         // check if the move is a pass move.
@@ -376,10 +388,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
             return this;
         }
-
-        // Check if the move is valid.
-        if (!this.isMoveValid(move))
-            throw new InvalidMoveException("The position of the move is not valid.");
 
         // Place the disk on the tile.
         IOthelloDisk disk = IOthelloDisk.create(move.getGamePlayer());
@@ -444,11 +452,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     }
 
     @Override
-    public IOthelloGame skipMove() throws GameOverException, InvalidMoveException, CannotPassTurnException, UnknownGamePlayerException {
+    public IOthelloGame skipMove() throws GameOverException, InvalidMoveException, CannotPassTurnException {
         IOthelloGamePlayer currentPlayer = this.getCurrentTurnPlayer();
         IOthelloMove skipMove = IOthelloMove.create().setGamePlayer(currentPlayer).setPassed(true);
 
-        return this.playMove(skipMove);
+        try {
+            return this.playMove(skipMove);
+        } catch (UnknownGamePlayerException e) {
+            // this should never happen.
+            e.printStackTrace();
+        }
+
+        return this;
     }
 
     protected int calculateMiddleSquareSize() {
@@ -606,5 +621,6 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
         this.setWinners(winners);
         this.setLosers(losers);
     }
+
 }
 

@@ -33,12 +33,10 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
     private OthelloLobby lobby;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
     public OthelloPlayer() {
         //
@@ -140,6 +138,22 @@ public class OthelloPlayer extends Player implements IOthelloPlayer {
     @Override
     public IOthelloPlayer copy() {
         return new OthelloPlayer(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OthelloPlayer player))
+            return false;
+
+        return
+            this == player
+            ||
+            this.id == player.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
     }
 
 }

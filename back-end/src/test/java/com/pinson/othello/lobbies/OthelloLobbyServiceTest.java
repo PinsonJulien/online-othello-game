@@ -8,6 +8,7 @@ import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.players.OthelloPlayerRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ public class OthelloLobbyServiceTest {
     @Autowired
     private OthelloLobbyRepository lobbyRepository;
 
+    @Autowired
+    private OthelloPlayerRepository playerRepository;
+
     private List<OthelloLobby> lobbies = new ArrayList<>();
     private List<IOthelloPlayer> players = new ArrayList<>();
 
@@ -47,7 +51,10 @@ public class OthelloLobbyServiceTest {
         int nbPlayers = 30;
         for (int i = 0; i < nbPlayers; i++) {
             players.add(IOthelloPlayer.create().setUsername("player" + i).setPassword("password" + i));
+            this.playerRepository.save((OthelloPlayer) players.get(i));
         }
+
+        this.players = this.playerRepository.findAll().stream().map(p -> (IOthelloPlayer) p).toList();
 
         lobbies.get(0).setPlayers(players.subList(0, 2)); // full
         lobbies.get(1).addPlayer(players.get(2)); // 1 / 2 players

@@ -28,7 +28,7 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
     private List<OthelloMove> moves;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "player_color", nullable = false)
+    @Column(nullable = false)
     private OthelloGamePlayerColor playerColor;
 
     @ManyToMany(mappedBy = "winners")
@@ -136,6 +136,28 @@ public class OthelloGamePlayer implements IOthelloGamePlayer {
         this.gamesLost = gamesLost;
 
         return this;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof OthelloGamePlayer gamePlayer)) {
+            System.out.println("ERROR HERE !!!!!!!!!!");
+            return false;
+        }
+
+        System.out.println("id check !");
+        System.out.println(this.id);
+        System.out.println(gamePlayer.getId());
+
+        return
+            this == gamePlayer
+            ||
+            this.id.equals(gamePlayer.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
     }
 
 }

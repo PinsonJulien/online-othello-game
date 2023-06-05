@@ -4,10 +4,12 @@ import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
-import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
+import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,8 +28,8 @@ public class OthelloLobby implements IOthelloLobby {
     @Column(nullable = false)
     private Integer maxPlayers = 0;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     protected OthelloLobby() {
         //
@@ -55,9 +57,9 @@ public class OthelloLobby implements IOthelloLobby {
     }
 
     @Override
-    public IOthelloLobby removePlayer(IOthelloPlayer player) throws PlayerNotFoundException {
+    public IOthelloLobby removePlayer(IOthelloPlayer player) throws PlayerNotFoundInLobbyException {
         if (!this.hasPlayer(player))
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundInLobbyException();
 
         this.players.remove((OthelloPlayer) player);
 

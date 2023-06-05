@@ -5,7 +5,7 @@ import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
-import com.pinson.othello.lobbies.exceptions.PlayerNotFoundException;
+import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
 import com.pinson.othello.players.OthelloPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,7 +77,7 @@ public class OthelloLobbyService {
 
         try {
             lobby.removePlayer(player);
-        } catch (PlayerNotFoundException e) {
+        } catch (PlayerNotFoundInLobbyException e) {
             // This should never happen because the player helped to find that lobby.
             e.printStackTrace();
         }
