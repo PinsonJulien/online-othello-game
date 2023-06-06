@@ -24,5 +24,8 @@ public class OthelloPlayerService {
         return this.othelloPlayerRepository.findById(id).orElseThrow(() -> new PlayerNotFoundException(id));
     }
 
+    public OthelloPlayer getPlayerByUsername(String username) throws PlayerNotFoundException {
+        return this.othelloPlayerRepository.findByUsername(username).orElseThrow(() -> new PlayerNotFoundException(username));
+    }
 
 }

@@ -10,4 +10,8 @@ public class PlayerNotFoundException extends RuntimeException {
     public PlayerNotFoundException(IOthelloPlayer player) {
         this(player.getId());
     }
+
+    public PlayerNotFoundException(String username) {
+        super("Could not find player with username: " + username);
+    }
 }

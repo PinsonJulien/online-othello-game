@@ -102,4 +102,42 @@ class OthelloPlayerServiceTest {
         this.playerRepository.deleteById(id);
         assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.getPlayerById(id));
     }
+
+    @Test
+    void getPlayerByUsername() {
+        OthelloPlayer player = this.playerService.getPlayerByUsername(this.players.get(0).getUsername());
+        assertEquals(this.players.get(0).getId(), player.getId());
+        assertEquals(this.players.get(0).getUsername(), player.getUsername());
+
+        player = this.playerService.getPlayerByUsername(this.players.get(1).getUsername());
+        assertEquals(this.players.get(1).getId(), player.getId());
+        assertEquals(this.players.get(1).getUsername(), player.getUsername());
+
+        player = this.playerService.getPlayerByUsername(this.players.get(2).getUsername());
+        assertEquals(this.players.get(2).getId(), player.getId());
+        assertEquals(this.players.get(2).getUsername(), player.getUsername());
+
+        player = this.playerService.getPlayerByUsername(this.players.get(3).getUsername());
+        assertEquals(this.players.get(3).getId(), player.getId());
+        assertEquals(this.players.get(3).getUsername(), player.getUsername());
+
+        player = this.playerService.getPlayerByUsername(this.players.get(4).getUsername());
+        assertEquals(this.players.get(4).getId(), player.getId());
+        assertEquals(this.players.get(4).getUsername(), player.getUsername());
+
+        this.playerRepository.save((OthelloPlayer) IOthelloPlayer.create().setUsername("player6").setPassword("pass"));
+        String username = this.playerRepository.findAll().subList(5,6).stream().findFirst().get().getUsername();
+        player = this.playerService.getPlayerByUsername(username);
+        assertEquals("player6", player.getUsername());
+    }
+
+    @Test
+    void getPlayerByUsername__PlayerNotFoundException() {
+        assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.getPlayerByUsername("testUsername"));
+        assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.getPlayerByUsername("testUsername2"));
+        long id = this.players.get(0).getId();
+        String username = this.players.get(0).getUsername();
+        this.playerRepository.deleteById(id);
+        assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.getPlayerByUsername(username));
+    }
 }
