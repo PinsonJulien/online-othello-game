@@ -54,4 +54,11 @@ public class OthelloPlayerService {
         return this.othelloPlayerRepository.save(newPlayer);
     }
 
+    public OthelloPlayer updatePassword(Long id, String newPassword) throws PlayerNotFoundException {
+        OthelloPlayer player = this.getPlayerById(id);
+        player.setPassword(this.passwordEncoder.encode(newPassword));
+
+        return this.othelloPlayerRepository.save(player);
+    }
+
 }

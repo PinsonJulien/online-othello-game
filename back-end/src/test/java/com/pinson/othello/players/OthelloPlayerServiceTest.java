@@ -36,10 +36,8 @@ class OthelloPlayerServiceTest {
     @BeforeEach
     void setUp() {
         for (int i = 0; i < 5; i++) {
-            this.players.add((OthelloPlayer) IOthelloPlayer.create().setUsername("player"+i).setPassword("pass"));
+            this.players.add(this.playerService.create("player"+i, "pass"));
         }
-
-        this.players = this.playerRepository.saveAll(this.players);
     }
 
     @AfterEach
@@ -182,6 +180,34 @@ class OthelloPlayerServiceTest {
         assertThrowsExactly(DuplicateUsernameException.class, () -> this.playerService.create(username2, password));
         assertEquals(6, this.playerRepository.count());
         assertEquals(6, this.playerService.getAllPlayers().size());
+    }
+
+    @Test
+    void updatePassword() {
+        OthelloPlayer player = this.players.get(0);
+        String password = player.getPassword();
+        String newPassword = "newPassword";
+
+        OthelloPlayer updatedPlayer = this.playerService.updatePassword(player.getId(), newPassword);
+        assertEquals(player.getId(), updatedPlayer.getId());
+        assertEquals(player.getUsername(), updatedPlayer.getUsername());
+        assertNotEquals(password, updatedPlayer.getPassword());
+        assertTrue(this.passwordEncoder.matches(newPassword, updatedPlayer.getPassword()));
+
+        OthelloPlayer repositoryPlayer = this.playerRepository.findById(player.getId()).get();
+        assertEquals(player.getId(), repositoryPlayer.getId());
+        assertEquals(player.getUsername(), repositoryPlayer.getUsername());
+        assertEquals(updatedPlayer.getPassword(), repositoryPlayer.getPassword());
+        assertTrue(this.passwordEncoder.matches(newPassword, repositoryPlayer.getPassword()));
+    }
+
+    @Test
+    void updatePassword__PlayerNotFoundException() {
+        assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.updatePassword(0L, "newPassword"));
+        assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.updatePassword(1932129923L, "newPassword"));
+        long id = this.players.get(0).getId();
+        this.playerRepository.deleteById(id);
+        assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.updatePassword(id, "newPassword"));
     }
 
 }
