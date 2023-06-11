@@ -11,13 +11,20 @@ import java.util.List;
 @Service
 public class OthelloPlayerService {
 
+    private final OthelloPlayerFactory othelloPlayerFactory;
+
     private final OthelloPlayerRepository othelloPlayerRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public OthelloPlayerService(OthelloPlayerRepository othelloPlayerRepository, PasswordEncoder passwordEncoder) {
+    public OthelloPlayerService(
+        OthelloPlayerRepository othelloPlayerRepository,
+        PasswordEncoder passwordEncoder,
+        OthelloPlayerFactory othelloPlayerFactory
+    ) {
         this.othelloPlayerRepository = othelloPlayerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.othelloPlayerFactory = othelloPlayerFactory;
     }
 
     public List<OthelloPlayer> getAllPlayers() {
@@ -42,9 +49,7 @@ public class OthelloPlayerService {
         // Encode the password
         String encodedPassword = this.passwordEncoder.encode(password);
 
-        OthelloPlayer newPlayer = (OthelloPlayer) IOthelloPlayer.create()
-                .setUsername(username)
-                .setPassword(encodedPassword);
+        OthelloPlayer newPlayer = this.othelloPlayerFactory.create(username, encodedPassword);
 
         return this.othelloPlayerRepository.save(newPlayer);
     }

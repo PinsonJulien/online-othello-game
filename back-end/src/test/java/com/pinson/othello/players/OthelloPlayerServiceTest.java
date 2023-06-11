@@ -1,6 +1,7 @@
 package com.pinson.othello.players;
 
 import com.pinson.othello.ApplicationTestConfiguration;
+import com.pinson.othello.players.exceptions.DuplicateUsernameException;
 import com.pinson.othello.players.exceptions.PlayerNotFoundException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
@@ -25,6 +27,9 @@ class OthelloPlayerServiceTest {
 
     @Autowired
     private OthelloPlayerService playerService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private List<OthelloPlayer> players = new ArrayList<>();
 
@@ -140,4 +145,43 @@ class OthelloPlayerServiceTest {
         this.playerRepository.deleteById(id);
         assertThrowsExactly(PlayerNotFoundException.class, () -> this.playerService.getPlayerByUsername(username));
     }
+
+    @Test
+    void create() {
+        String username = "player6";
+        String password = "pass";
+
+        OthelloPlayer player = this.playerService.create(username, password);
+        assertEquals(username, player.getUsername());
+        assertEquals(6, this.playerRepository.count());
+        assertEquals(6, this.playerService.getAllPlayers().size());
+        assertNotEquals(password, player.getPassword());
+        assertTrue(this.passwordEncoder.matches(password, player.getPassword()));
+
+        OthelloPlayer repositoryPlayer = this.playerRepository.findById(player.getId()).get();
+        assertEquals(username, repositoryPlayer.getUsername());
+        assertEquals(player.getPassword(), repositoryPlayer.getPassword());
+        assertTrue(this.passwordEncoder.matches(password, repositoryPlayer.getPassword()));
+    }
+
+    @Test
+    void create__DuplicateUsernameException() {
+        String username = this.players.get(0).getUsername();
+        String password = "pass";
+
+        assertEquals(5, this.playerRepository.count());
+        assertEquals(5, this.playerService.getAllPlayers().size());
+        assertThrowsExactly(DuplicateUsernameException.class, () -> this.playerService.create(username, password));
+        assertEquals(5, this.playerRepository.count());
+        assertEquals(5, this.playerService.getAllPlayers().size());
+
+        String username2 = "player6";
+        OthelloPlayer newPlayer = this.playerService.create(username2, password);
+        assertEquals(6, this.playerRepository.count());
+        assertEquals(6, this.playerService.getAllPlayers().size());
+        assertThrowsExactly(DuplicateUsernameException.class, () -> this.playerService.create(username2, password));
+        assertEquals(6, this.playerRepository.count());
+        assertEquals(6, this.playerService.getAllPlayers().size());
+    }
+
 }
