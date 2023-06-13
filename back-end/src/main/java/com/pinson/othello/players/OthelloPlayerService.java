@@ -3,13 +3,16 @@ package com.pinson.othello.players;
 import com.pinson.othello.players.exceptions.DuplicateUsernameException;
 import com.pinson.othello.players.exceptions.PlayerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class OthelloPlayerService {
+public class OthelloPlayerService implements UserDetailsService {
 
     private final OthelloPlayerFactory othelloPlayerFactory;
 
@@ -61,4 +64,10 @@ public class OthelloPlayerService {
         return this.othelloPlayerRepository.save(player);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        OthelloPlayer player = this.othelloPlayerRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+
+        return this.othelloPlayerFactory.create(player);
+    }
 }
