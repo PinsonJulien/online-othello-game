@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tokens.TokenRepository;
+import com.pinson.othello.tokens.TokenRepository;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

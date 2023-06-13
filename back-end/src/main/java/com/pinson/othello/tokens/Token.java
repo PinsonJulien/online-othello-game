@@ -1,7 +1,6 @@
-package tokens;
+package com.pinson.othello.tokens;
 
 import com.pinson.othello.players.OthelloPlayer;
-import org.springframework.data.annotation.Id;
 import jakarta.persistence.*;
 
 @Entity
