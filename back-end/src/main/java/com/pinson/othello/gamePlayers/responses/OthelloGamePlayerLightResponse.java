@@ -1,13 +1,9 @@
 package com.pinson.othello.gamePlayers.responses;
 
-import com.pinson.othello.games.responses.OthelloGameLightResponse;
-import com.pinson.othello.players.responses.OthelloPlayerLightResponse;
+import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 
 public record OthelloGamePlayerLightResponse (
     Long id,
-    String createdAt,
-    String updatedAt,
-
-    OthelloPlayerLightResponse player,
-    OthelloGameLightResponse game
+    Integer score,
+    OthelloGamePlayerColor color
 ) { }

@@ -19,6 +19,7 @@ public class OthelloLobbyController {
         this.othelloLobbyService = othelloLobbyService;
     }
 
+    /*
     @PostMapping("/classic/join")
     public ResponseEntity<> joinClassic(
     ) {
@@ -31,5 +32,6 @@ public class OthelloLobbyController {
     ) {
 
     }
+     */
 
 }

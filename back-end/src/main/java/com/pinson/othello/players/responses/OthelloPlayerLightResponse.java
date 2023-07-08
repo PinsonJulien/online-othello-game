@@ -1,12 +1,10 @@
 package com.pinson.othello.players.responses;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public record OthelloPlayerLightResponse (
     Long id,
     String username,
-    String createdAt,
-    String updatedAt,
-    List<Long> gamePlayers,
-    Long lobby
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) { }

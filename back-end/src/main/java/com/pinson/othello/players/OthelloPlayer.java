@@ -91,8 +91,8 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     }
 
     @Override
-    public List<IOthelloGamePlayer> getGamePlayers() {
-        return this.gamePlayers.stream().map(gamePlayer -> (IOthelloGamePlayer) gamePlayer).toList();
+    public List<OthelloGamePlayer> getGamePlayers() {
+        return this.gamePlayers;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     }
 
     @Override
-    public IOthelloLobby getLobby() {
+    public OthelloLobby getLobby() {
         return this.lobby;
     }
 

@@ -1,43 +1,20 @@
 package com.pinson.othello.games.responses;
 
+import com.pinson.othello.gamePlayers.OthelloGamePlayer;
+import com.pinson.othello.gamePlayers.responses.OthelloGamePlayerLightResponse;
 import com.pinson.othello.games.OthelloGameStatus;
+import com.pinson.othello.grids.responses.GridSizeResponse;
 
-public class OthelloGameResponse {
+import java.time.LocalDateTime;
+import java.util.List;
 
-    private Long id;
-    private int gridWidth;
-    private int gridHeight;
-
-    private OthelloGameStatus
-
-
-    protected class GridSize {
-        private int width;
-        private int height;
-
-        protected GridSize(int width, int height) {
-            this.setWidth(width);
-            this.setHeight(height);
-        }
-
-        public int getWidth() {
-            return this.width;
-        }
-
-        public GridSize setWidth(int width) {
-            this.width = width;
-            return this;
-        }
-
-        public int getHeight() {
-            return this.height;
-        }
-
-        public GridSize setHeight(int height) {
-            this.height = height;
-            return this;
-        }
-
-    }
-
-}
+public record OthelloGameResponse (
+    Long id,
+    GridSizeResponse gridSize,
+    OthelloGameStatus status,
+    List<OthelloGamePlayerLightResponse> players,
+    List<OthelloGamePlayerLightResponse> winners,
+    List<OthelloGamePlayerLightResponse> losers,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
+) {}

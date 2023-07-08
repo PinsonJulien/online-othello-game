@@ -41,7 +41,7 @@ public class OthelloLobbyResponseFactory {
     }
 
     public OthelloLobbyResponse create(OthelloLobby lobby, OthelloGame game) {
-        OthelloLobbyResponse response = new OthelloLobbyResponse(
+        return new OthelloLobbyResponse(
             lobby.getId(),
             lobby.getMaxPlayers(),
             lobby.getCreatedAt(),
@@ -64,19 +64,7 @@ public class OthelloLobbyResponseFactory {
         return new OthelloLobbyLightResponse(
             lobby.getId(),
             lobby.getMaxPlayers(),
-            lobby.getCreatedAt(),
-            this.othelloPlayerResponseFactory.createLightList(lobby.getPlayers()),
-            null
-        );
-    }
-
-    public OthelloLobbyLightResponse createLight(OthelloLobby lobby, OthelloGame game) {
-        return new OthelloLobbyLightResponse(
-            lobby.getId(),
-            lobby.getMaxPlayers(),
-            lobby.getCreatedAt(),
-            this.othelloPlayerResponseFactory.createLightList(lobby.getPlayers()),
-            this.othelloGameResponseFactory.createLight(game)
+            lobby.getCreatedAt()
         );
     }
 
