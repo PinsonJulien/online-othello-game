@@ -1,7 +1,7 @@
-package com.pinson.othello.players.responses;
+package com.pinson.othello.players.dtos.responses;
 
-import com.pinson.othello.gamePlayers.responses.OthelloGamePlayerLightResponse;
-import com.pinson.othello.lobbies.responses.OthelloLobbyLightResponse;
+import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerLightResponse;
+import com.pinson.othello.lobbies.dtos.responses.OthelloLobbyLightResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;

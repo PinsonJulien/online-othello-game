@@ -1,4 +1,4 @@
-package com.pinson.othello.games.responses;
+package com.pinson.othello.games.dtos.responses;
 
 import com.pinson.othello.games.OthelloGameStatus;
 import com.pinson.othello.grids.responses.GridSizeResponse;

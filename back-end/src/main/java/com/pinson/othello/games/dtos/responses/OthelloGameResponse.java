@@ -1,7 +1,6 @@
-package com.pinson.othello.games.responses;
+package com.pinson.othello.games.dtos.responses;
 
-import com.pinson.othello.gamePlayers.OthelloGamePlayer;
-import com.pinson.othello.gamePlayers.responses.OthelloGamePlayerLightResponse;
+import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerLightResponse;
 import com.pinson.othello.games.OthelloGameStatus;
 import com.pinson.othello.grids.responses.GridSizeResponse;
 

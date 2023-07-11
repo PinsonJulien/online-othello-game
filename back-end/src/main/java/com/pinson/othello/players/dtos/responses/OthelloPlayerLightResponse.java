@@ -1,4 +1,4 @@
-package com.pinson.othello.players.responses;
+package com.pinson.othello.players.dtos.responses;
 
 import java.time.LocalDateTime;
 

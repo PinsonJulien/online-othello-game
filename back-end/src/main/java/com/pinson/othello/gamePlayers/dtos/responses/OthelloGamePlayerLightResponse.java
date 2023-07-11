@@ -1,4 +1,4 @@
-package com.pinson.othello.gamePlayers.responses;
+package com.pinson.othello.gamePlayers.dtos.responses;
 
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 

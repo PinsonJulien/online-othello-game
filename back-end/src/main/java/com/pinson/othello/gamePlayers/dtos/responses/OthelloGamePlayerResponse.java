@@ -1,8 +1,8 @@
-package com.pinson.othello.gamePlayers.responses;
+package com.pinson.othello.gamePlayers.dtos.responses;
 
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
-import com.pinson.othello.games.responses.OthelloGameLightResponse;
-import com.pinson.othello.players.responses.OthelloPlayerLightResponse;
+import com.pinson.othello.games.dtos.responses.OthelloGameLightResponse;
+import com.pinson.othello.players.dtos.responses.OthelloPlayerLightResponse;
 
 public record OthelloGamePlayerResponse (
     Long id,
