@@ -31,8 +31,7 @@ public interface IOthelloPlayer extends IPlayer {
     LocalDateTime getUpdatedAt();
     IOthelloPlayer setUpdatedAt(LocalDateTime updatedAt);
 
-    OthelloLobby getLobby();
-    IOthelloPlayer setLobby(IOthelloLobby lobby);
+    List<OthelloLobby> getLobbies();
 
     List<OthelloGamePlayer> getGamePlayers();
     IOthelloPlayer setGamePlayers(List<IOthelloGamePlayer> gamePlayers);

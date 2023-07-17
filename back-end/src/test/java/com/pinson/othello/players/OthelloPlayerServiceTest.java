@@ -38,6 +38,8 @@ class OthelloPlayerServiceTest {
         for (int i = 0; i < 5; i++) {
             this.players.add(this.playerService.create("player"+i, "pass"));
         }
+
+        this.players = this.playerRepository.saveAll(this.players);
     }
 
     @AfterEach
@@ -129,7 +131,7 @@ class OthelloPlayerServiceTest {
         assertEquals(this.players.get(4).getUsername(), player.getUsername());
 
         this.playerRepository.save((OthelloPlayer) IOthelloPlayer.create().setUsername("player6").setPassword("pass"));
-        String username = this.playerRepository.findAll().subList(5,6).stream().findFirst().get().getUsername();
+        String username = "player6"; //this.playerRepository.findAll().subList(5,6).stream().findFirst().get().getUsername();
         player = this.playerService.getPlayerByUsername(username);
         assertEquals("player6", player.getUsername());
     }

@@ -66,20 +66,13 @@ public class OthelloLobbyService {
         return this.othelloLobbyRepository.findAllByMaxPlayers(maxPlayers);
     }
 
-    public OthelloLobby removePlayerFromLobby(OthelloPlayer player) throws LobbyNotFoundException {
-        IOthelloLobby playerLobby = player.getLobby();
-        if (playerLobby == null)
-            return null;
-
-        Long lobbyId = playerLobby.getId();
-
-        OthelloLobby lobby = this.getLobbyById(lobbyId);
+    public OthelloLobby removePlayerFromLobby(Long id, OthelloPlayer player) throws LobbyNotFoundException {
+        OthelloLobby lobby = this.getLobbyById(id);
 
         try {
             lobby.removePlayer(player);
         } catch (PlayerNotFoundInLobbyException e) {
-            // This should never happen because the player helped to find that lobby.
-            e.printStackTrace();
+            return lobby;
         }
 
         return this.othelloLobbyRepository.save(lobby);

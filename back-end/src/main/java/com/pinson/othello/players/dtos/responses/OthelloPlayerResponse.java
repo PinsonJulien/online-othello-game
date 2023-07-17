@@ -12,7 +12,7 @@ public record OthelloPlayerResponse(
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     List<OthelloGamePlayerLightResponse> gamePlayers,
-    OthelloLobbyLightResponse lobby
+    List<OthelloLobbyLightResponse> lobbies
 ) {
 
 }

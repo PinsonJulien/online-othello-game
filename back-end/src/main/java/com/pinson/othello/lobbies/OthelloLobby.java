@@ -21,7 +21,7 @@ public class OthelloLobby implements IOthelloLobby {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "lobbies", cascade = CascadeType.ALL)
     private List<OthelloPlayer> players = new ArrayList<>();
 
     @Column(nullable = false)
@@ -34,12 +34,6 @@ public class OthelloLobby implements IOthelloLobby {
         //
     }
 
-    @PreRemove
-    private void removeLobbyFromPlayers() {
-        for (IOthelloPlayer player : players) {
-            player.setLobby(null);
-        }
-    }
 
     @Override
     public IOthelloLobby addPlayer(IOthelloPlayer player) throws PlayerAlreadyInLobbyException, FullLobbyException {
@@ -49,7 +43,6 @@ public class OthelloLobby implements IOthelloLobby {
         if (this.hasPlayer(player))
             throw new PlayerAlreadyInLobbyException();
 
-        player.setLobby(this);
         this.players.add((OthelloPlayer) player);
 
         return this;

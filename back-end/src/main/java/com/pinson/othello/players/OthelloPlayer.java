@@ -3,7 +3,6 @@ package com.pinson.othello.players;
 import com.pinson.othello.commons.entities.players.Player;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
-import com.pinson.othello.lobbies.IOthelloLobby;
 import com.pinson.othello.lobbies.OthelloLobby;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -31,9 +30,8 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     @OneToMany(mappedBy = "player")
     private List<OthelloGamePlayer> gamePlayers;
 
-    @ManyToOne
-    @JoinColumn(name = "othello_lobby_id")
-    private OthelloLobby lobby;
+    @ManyToMany()
+    private List<OthelloLobby> lobbies;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -127,15 +125,8 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     }
 
     @Override
-    public OthelloLobby getLobby() {
-        return this.lobby;
-    }
-
-    @Override
-    public IOthelloPlayer setLobby(IOthelloLobby lobby) {
-        this.lobby = (OthelloLobby) lobby;
-
-        return this;
+    public List<OthelloLobby> getLobbies() {
+        return this.lobbies;
     }
 
     @Override

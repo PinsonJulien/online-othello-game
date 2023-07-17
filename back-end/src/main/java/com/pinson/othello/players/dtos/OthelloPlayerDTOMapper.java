@@ -20,7 +20,7 @@ public class OthelloPlayerDTOMapper {
     public OthelloPlayerResponse toResponse(
         IOthelloPlayer player,
         List<OthelloGamePlayerLightResponse> gamePlayers,
-        OthelloLobbyLightResponse lobby
+        List<OthelloLobbyLightResponse> lobbies
     ) {
         return new OthelloPlayerResponse(
             player.getId(),
@@ -28,7 +28,7 @@ public class OthelloPlayerDTOMapper {
             player.getCreatedAt(),
             player.getUpdatedAt(),
             gamePlayers,
-            lobby
+            lobbies
         );
     }
 

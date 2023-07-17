@@ -33,7 +33,7 @@ public class OthelloPlayerResponseFactory {
         return this.othelloPlayerDTOMapper.toResponse(
             player,
             this.othelloGamePlayerDTOMapper.toLightResponseList(player.getGamePlayers()),
-            this.othelloLobbyDTOMapper.toLightResponse(player.getLobby())
+            this.othelloLobbyDTOMapper.toLightResponseList(player.getLobbies())
         );
     }
 
