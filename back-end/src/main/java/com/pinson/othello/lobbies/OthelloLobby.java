@@ -2,6 +2,7 @@ package com.pinson.othello.lobbies;
 
 import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
+import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
@@ -27,13 +28,15 @@ public class OthelloLobby implements IOthelloLobby {
     @Column(nullable = false)
     private Integer maxPlayers = 0;
 
+    @OneToOne(mappedBy = "lobby")
+    private OthelloGame game;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     protected OthelloLobby() {
         //
     }
-
 
     @Override
     public IOthelloLobby addPlayer(IOthelloPlayer player) throws PlayerAlreadyInLobbyException, FullLobbyException {
@@ -93,6 +96,17 @@ public class OthelloLobby implements IOthelloLobby {
             this.addPlayer(player);
         }
 
+        return this;
+    }
+
+    @Override
+    public OthelloGame getGame() {
+        return this.game;
+    }
+
+    @Override
+    public IOthelloLobby setGame(OthelloGame game) {
+        this.game = game;
         return this;
     }
 

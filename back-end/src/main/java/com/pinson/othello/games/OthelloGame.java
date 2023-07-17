@@ -13,6 +13,7 @@ import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.grids.IOthelloGrid;
+import com.pinson.othello.lobbies.OthelloLobby;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.positions.IOthelloPosition;
@@ -58,6 +59,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OthelloMove> moves = new ArrayList<>();
+
+    @OneToOne()
+    private OthelloLobby lobby;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -182,6 +186,18 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     @Override
     public IOthelloGame setMoves(List<OthelloMove> moves) {
         this.moves = moves;
+
+        return this;
+    }
+
+    @Override
+    public OthelloLobby getLobby() {
+        return this.lobby;
+    }
+
+    @Override
+    public IOthelloGame setLobby(OthelloLobby lobby) {
+        this.lobby = lobby;
 
         return this;
     }

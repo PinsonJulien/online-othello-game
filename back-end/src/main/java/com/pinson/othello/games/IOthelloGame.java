@@ -12,6 +12,7 @@ import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.grids.IOthelloGrid;
+import com.pinson.othello.lobbies.OthelloLobby;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.tiles.IOthelloTile;
@@ -63,6 +64,9 @@ public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthello
 
     List<OthelloMove> getMoves();
     IOthelloGame setMoves(List<OthelloMove> moves);
+
+    OthelloLobby getLobby();
+    IOthelloGame setLobby(OthelloLobby lobby);
 
     LocalDateTime getCreatedAt();
     IOthelloGame setCreatedAt(LocalDateTime createdAt);
