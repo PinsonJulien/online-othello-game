@@ -6,28 +6,32 @@ import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
-import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
 import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
+import com.pinson.othello.lobbies.OthelloLobby;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.positions.IOthelloPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class OthelloGameService {
     private final OthelloGameRepository gameRepository;
+    private final OthelloGameFactory gameFactory;
 
     @Autowired
-    public OthelloGameService(OthelloGameRepository gameRepository) {
+    public OthelloGameService(
+        OthelloGameRepository gameRepository,
+        OthelloGameFactory gameFactory
+    ) {
         this.gameRepository = gameRepository;
+        this.gameFactory = gameFactory;
     }
 
     public List<OthelloGame> getAllGames() {
@@ -43,32 +47,15 @@ public class OthelloGameService {
         return this.gameRepository.save(game);
     }
 
-    public OthelloGame startClassicGame(Set<IOthelloPlayer> players) throws InvalidNumberOfPlayersException {
-        int size = players.size();
+    public OthelloGame startClassicGame(Set<? extends IOthelloPlayer> players) throws InvalidNumberOfPlayersException {
+        OthelloGame game = this.gameFactory.createClassic(players);
+        return this.gameRepository.save(game);
+    }
 
-        if (size != 2)
-            throw new InvalidNumberOfPlayersException("Invalid number of players for a classic game (2 expected, " + size + " given)");
-
-        // Copy and shuffle players
-        List<IOthelloPlayer> playersCopy = new ArrayList<>(players);
-        Collections.shuffle(playersCopy);
-
-        // Generate game players
-        List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            IOthelloPlayer player = playersCopy.get(i);
-            OthelloGamePlayerColor color = (i%2 == 0)
-                ? OthelloGamePlayerColor.BLACK
-                : OthelloGamePlayerColor.WHITE;
-            gamePlayers.add((OthelloGamePlayer) IOthelloGamePlayer.create(player, color));
-        }
-
-        try {
-            return this.startGame(gamePlayers, 8, 8);
-        } catch (GridSizeException | InvalidNumberOfPlayersException e) {
-            throw new RuntimeException(e);
-        }
+    public OthelloGame startClassicGame(OthelloLobby lobby) throws InvalidNumberOfPlayersException {
+        OthelloGame game = this.gameFactory.createClassic(new HashSet(lobby.getPlayers()));
+        game.setLobby(lobby);
+        return this.gameRepository.save(game);
     }
 
     public OthelloGame playMove(IOthelloGamePlayer gamePlayer, IOthelloPosition position) throws UnknownGamePlayerException, InvalidMoveException, GameOverException {
