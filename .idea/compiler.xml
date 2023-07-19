@@ -11,7 +11,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="online-othello-backend" target="17" />
       <module name="othello" target="17" />
     </bytecodeTargetLevel>
   </component>

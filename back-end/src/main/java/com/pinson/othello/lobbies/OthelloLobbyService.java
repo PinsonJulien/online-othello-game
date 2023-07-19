@@ -33,7 +33,7 @@ public class OthelloLobbyService {
         this.othelloLobbyRepository.deleteById(id);
     }
 
-    public OthelloLobby addPlayerToRandomLobby(OthelloPlayer player, int maxPlayers) throws FullLobbyException, PlayerAlreadyInLobbyException, NonPositiveValueException, NonEvenNumberException {
+    public OthelloLobby addPlayerToRandomLobby(OthelloPlayer player, int maxPlayers) throws NonPositiveValueException, NonEvenNumberException {
         if (maxPlayers <= 0)
             throw new NonPositiveValueException("Max players must be positive");
         if (maxPlayers % 2 != 0)
@@ -57,9 +57,24 @@ public class OthelloLobbyService {
                 return newLobby;
             });
 
-        lobby.addPlayer(player);
+        try {
+            lobby.addPlayer(player);
+        } catch (PlayerAlreadyInLobbyException | FullLobbyException e) {
+            // This should never happen.
+            throw new RuntimeException(e);
+        }
 
         return othelloLobbyRepository.save(lobby);
+    }
+
+    public OthelloLobby addPlayerToRandomClassicLobby(OthelloPlayer player) {
+        try {
+            return this.addPlayerToRandomLobby(player, 2);
+        } catch (NonPositiveValueException | NonEvenNumberException e) {
+            // This should never happen.
+        }
+
+        return null;
     }
 
     public List<OthelloLobby> getAllLobbiesByMaxPlayers(Integer maxPlayers) {
