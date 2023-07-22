@@ -42,7 +42,7 @@ public class OthelloLobbyController {
         }
     }
 
-    @PostMapping("/classic/join")
+    @PostMapping("/join/classic")
     public ResponseEntity<OthelloLobbyResponse> joinClassic() {
         // must be tested :
         OthelloPlayer player = (OthelloPlayer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -64,7 +64,7 @@ public class OthelloLobbyController {
         );
     }
 
-    @PostMapping("/leave/{id}")
+    @PostMapping("/{id}/leave")
     public ResponseEntity<Void> leave(@PathVariable Long id) {
         // get user
         OthelloPlayer player = null;
