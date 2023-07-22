@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class OthelloPlayerFactory {
 
-    public OthelloPlayer create(String name, String password) {
+    public OthelloPlayer create(String username, String password) {
         OthelloPlayer player = new OthelloPlayer();
-        player.setUsername(name);
+        player.setUsername(username);
         player.setPassword(password);
         return player;
     }
