@@ -163,39 +163,44 @@ public class OthelloLobbyServiceTest {
 
     @Test
     public void removePlayerFromLobby() {
-        OthelloLobby result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(29));
-        assertNull(result);
+        OthelloLobby lobby = this.lobbies.get(0);
+        OthelloPlayer player = (OthelloPlayer) this.players.get(29);
+        OthelloLobby result = this.lobbyService.removePlayerFromLobby(lobby.getId(), player);
+        assertEquals(lobby.getPlayers().size(), result.getPlayers().size());
 
-        result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(0));
-        assertEquals(this.lobbies.get(0).getId(), result.getId());
+        lobby = this.lobbies.get(0);
+        player = (OthelloPlayer) this.players.get(0);
+        result = this.lobbyService.removePlayerFromLobby(lobby.getId(), player);
+        assertEquals(lobby.getId(), result.getId());
         assertEquals(1, result.getPlayers().size());
-        for (OthelloPlayer player : result.getPlayers()) {
-            assertNotEquals(player.getId(), this.players.get(0).getId());
+        for (OthelloPlayer p : result.getPlayers()) {
+            assertNotEquals(p.getId(), this.players.get(0).getId());
         }
 
-        result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(1));
-        assertEquals(this.lobbies.get(0).getId(), result.getId());
+        lobby = this.lobbies.get(0);
+        player = (OthelloPlayer) this.players.get(1);
+        result = this.lobbyService.removePlayerFromLobby(lobby.getId(), player);
+        assertEquals(lobby.getId(), result.getId());
         assertEquals(0, result.getPlayers().size());
 
-        //lobbies.get(5).setPlayers(players.subList(9, 13));
-        result = this.lobbyService.removePlayerFromLobby((OthelloPlayer) this.players.get(11));
-        assertEquals(this.lobbies.get(5).getId(), result.getId());
+        lobby = this.lobbies.get(5);
+        player = (OthelloPlayer) this.players.get(11);
+        result = this.lobbyService.removePlayerFromLobby(lobby.getId(), player);
+        assertEquals(lobby.getId(), result.getId());
         assertEquals(3, result.getPlayers().size());
-        for (OthelloPlayer player : result.getPlayers()) {
-            assertNotEquals(player.getId(), this.players.get(11).getId());
+        for (OthelloPlayer p : result.getPlayers()) {
+            assertNotEquals(p.getId(), this.players.get(11).getId());
         }
     }
 
     @Test
     public void removePlayerFromLobby__LobbyNotFoundException() throws NonPositiveValueException, NonEvenNumberException {
         this.lobbyRepository.deleteById(100L);
-        OthelloPlayer player = (OthelloPlayer) IOthelloPlayer.create().setLobby(IOthelloLobby.create(8).setId(100L));
-
-        assertThrows(LobbyNotFoundException.class, () -> this.lobbyService.removePlayerFromLobby(player));
+        OthelloPlayer player = (OthelloPlayer) this.players.get(0);
+        assertThrows(LobbyNotFoundException.class, () -> this.lobbyService.removePlayerFromLobby(100L, player));
 
         this.lobbyRepository.deleteById(151L);
-        OthelloPlayer player2 = (OthelloPlayer) IOthelloPlayer.create().setLobby(IOthelloLobby.create(4).setId(151L));
-        assertThrows(LobbyNotFoundException.class, () -> this.lobbyService.removePlayerFromLobby(player2));
+        assertThrows(LobbyNotFoundException.class, () -> this.lobbyService.removePlayerFromLobby(151L, player));
     }
 
 }

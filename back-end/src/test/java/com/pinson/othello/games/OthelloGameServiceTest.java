@@ -5,6 +5,8 @@ import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.entities.grids.exceptions.GridSizeException;
 import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.commons.exceptions.InvalidNumberOfPlayersException;
+import com.pinson.othello.commons.exceptions.NonEvenNumberException;
+import com.pinson.othello.commons.exceptions.NonPositiveValueException;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayerColor;
@@ -12,6 +14,11 @@ import com.pinson.othello.gamePlayers.OthelloGamePlayerRepository;
 import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
+import com.pinson.othello.lobbies.OthelloLobby;
+import com.pinson.othello.lobbies.OthelloLobbyRepository;
+import com.pinson.othello.lobbies.OthelloLobbyService;
+import com.pinson.othello.lobbies.exceptions.FullLobbyException;
+import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.moves.IOthelloMove;
 import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
@@ -42,6 +49,12 @@ class OthelloGameServiceTest {
 
     @Autowired
     private OthelloPlayerRepository playerRepository;
+
+    @Autowired
+    private OthelloLobbyRepository lobbyRepository;
+
+    @Autowired
+    private OthelloLobbyService lobbyService;
 
     private List<OthelloGame> games = new ArrayList<>();
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
@@ -164,7 +177,7 @@ class OthelloGameServiceTest {
     }
 
     @Test
-    void startClassicGame() throws InvalidNumberOfPlayersException {
+    void startClassicGame__players() throws InvalidNumberOfPlayersException {
         Set<IOthelloPlayer> players = new HashSet<>(this.players.subList(0, 2));
         OthelloGame game = this.gameService.startClassicGame(players);
         assertEquals(8, game.getGridWidth());
@@ -190,6 +203,47 @@ class OthelloGameServiceTest {
         assertTrue(
             game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
         );
+        assertTrue(
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
+        );
+    }
+
+    @Test
+    void startClassicGame__lobby() throws InvalidNumberOfPlayersException, NonPositiveValueException, NonEvenNumberException, FullLobbyException, PlayerAlreadyInLobbyException {
+        this.lobbyService.addPlayerToRandomLobby(this.players.get(0), 2);
+        OthelloLobby lobby = this.lobbyService.addPlayerToRandomLobby(this.players.get(1), 2);
+
+        OthelloGame game = this.gameService.startClassicGame(lobby);
+
+        assertEquals(8, game.getGridWidth());
+        assertEquals(8, game.getGridHeight());
+        assertEquals(2, game.getGamePlayers().size());
+
+        assertEquals(lobby.getId(), game.getLobby().getId());
+
+        // check if the correct players are in the game, considering they're shuffled.
+        assertTrue(
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
+        );
+
+        assertTrue(
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
+        );
+
+        // check if the game is in the repository.
+        game = this.gameRepository.findById(game.getId()).orElse(null);
+        assertNotNull(game);
+        assertEquals(8, game.getGridWidth());
+        assertEquals(8, game.getGridHeight());
+        assertEquals(2, game.getGamePlayers().size());
+
+        assertEquals(lobby.getId(), game.getLobby().getId());
+
+        // check if the correct players are in the game, considering they're shuffled.
+        assertTrue(
+            game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(0).getId()))
+        );
+
         assertTrue(
             game.getGamePlayers().stream().anyMatch(gamePlayer -> Objects.equals(gamePlayer.getPlayer().getId(), this.players.get(1).getId()))
         );

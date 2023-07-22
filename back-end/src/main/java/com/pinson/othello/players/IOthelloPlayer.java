@@ -2,7 +2,9 @@ package com.pinson.othello.players;
 
 import com.pinson.othello.commons.entities.players.IPlayer;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
+import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.lobbies.IOthelloLobby;
+import com.pinson.othello.lobbies.OthelloLobby;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,10 +31,9 @@ public interface IOthelloPlayer extends IPlayer {
     LocalDateTime getUpdatedAt();
     IOthelloPlayer setUpdatedAt(LocalDateTime updatedAt);
 
-    IOthelloLobby getLobby();
-    IOthelloPlayer setLobby(IOthelloLobby lobby);
+    List<OthelloLobby> getLobbies();
 
-    List<IOthelloGamePlayer> getGamePlayers();
+    List<OthelloGamePlayer> getGamePlayers();
     IOthelloPlayer setGamePlayers(List<IOthelloGamePlayer> gamePlayers);
 
 }

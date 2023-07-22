@@ -3,6 +3,7 @@ package com.pinson.othello.lobbies;
 
 import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
+import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
@@ -51,6 +52,8 @@ public interface IOthelloLobby {
     IOthelloLobby setId(Long id);
     List<OthelloPlayer> getPlayers();
     IOthelloLobby setPlayers(List<IOthelloPlayer> players) throws PlayerAlreadyInLobbyException, FullLobbyException;
+    OthelloGame getGame();
+    IOthelloLobby setGame(OthelloGame game);
     LocalDateTime getCreatedAt();
     IOthelloLobby setCreatedAt(LocalDateTime createdAt);
     Integer getMaxPlayers();

@@ -2,6 +2,7 @@ package com.pinson.othello.lobbies;
 
 import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
+import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
 import com.pinson.othello.lobbies.exceptions.PlayerNotFoundInLobbyException;
@@ -9,7 +10,6 @@ import com.pinson.othello.players.IOthelloPlayer;
 import com.pinson.othello.players.OthelloPlayer;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,24 +22,20 @@ public class OthelloLobby implements IOthelloLobby {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "lobbies", cascade = CascadeType.ALL)
     private List<OthelloPlayer> players = new ArrayList<>();
 
     @Column(nullable = false)
     private Integer maxPlayers = 0;
+
+    @OneToOne(mappedBy = "lobby")
+    private OthelloGame game;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     protected OthelloLobby() {
         //
-    }
-
-    @PreRemove
-    private void removeLobbyFromPlayers() {
-        for (IOthelloPlayer player : players) {
-            player.setLobby(null);
-        }
     }
 
     @Override
@@ -50,7 +46,6 @@ public class OthelloLobby implements IOthelloLobby {
         if (this.hasPlayer(player))
             throw new PlayerAlreadyInLobbyException();
 
-        player.setLobby(this);
         this.players.add((OthelloPlayer) player);
 
         return this;
@@ -101,6 +96,17 @@ public class OthelloLobby implements IOthelloLobby {
             this.addPlayer(player);
         }
 
+        return this;
+    }
+
+    @Override
+    public OthelloGame getGame() {
+        return this.game;
+    }
+
+    @Override
+    public IOthelloLobby setGame(OthelloGame game) {
+        this.game = game;
         return this;
     }
 
