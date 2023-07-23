@@ -21,7 +21,7 @@ public class JwtService {
     private static final Duration JWT_TOKEN_VALIDITY = Duration.ofHours(24);
 
 
-    @Value("{$token.signing.key}")
+    @Value("${token.signing.key}")
     private String signingKey;
 
     public String extractUsername(String token) {

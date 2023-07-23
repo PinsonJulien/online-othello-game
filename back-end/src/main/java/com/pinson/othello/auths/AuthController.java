@@ -49,13 +49,10 @@ public class AuthController {
         @RequestBody final SignUpRequest signUpRequest
     ) {
         try {
-            System.out.println(signUpRequest.username() + " " + signUpRequest.password());
             OthelloPlayer player = this.playerService.create(
                 signUpRequest.username(),
                 this.passwordEncoder.encode(signUpRequest.password())
             );
-
-            System.out.println(player.getUsername() + " " + player.getPassword());
 
             String jwt = this.jwtService.generateToken(player);
 
@@ -63,7 +60,6 @@ public class AuthController {
                 this.authenticationResponseFactory.create(jwt)
             );
         } catch (final Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
@@ -72,12 +68,16 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(
         @RequestBody final LoginRequest loginRequest
     ) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.username(),
-                this.passwordEncoder.encode(loginRequest.password())
-            )
-        );
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.username(),
+                    loginRequest.password()
+                )
+            );
+        } catch (final BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         try {
             OthelloPlayer player = this.playerService.getPlayerByUsername(loginRequest.username());
