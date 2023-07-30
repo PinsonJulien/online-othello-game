@@ -30,7 +30,7 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     @OneToMany(mappedBy = "player")
     private List<OthelloGamePlayer> gamePlayers;
 
-    @ManyToMany()
+    @ManyToMany(mappedBy = "players", cascade = CascadeType.ALL)
     private List<OthelloLobby> lobbies;
 
     @CreatedDate

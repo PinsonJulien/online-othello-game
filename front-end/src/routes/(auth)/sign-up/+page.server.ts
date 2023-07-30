@@ -26,7 +26,7 @@ export const actions = {
 
         if (res.status === 200) {
             const resData = await res.json();
-            const token = resData.token;
+            const token = resData.accessToken;
     
             // set cookie with 24h expiration
             cookies.set('token', token, {

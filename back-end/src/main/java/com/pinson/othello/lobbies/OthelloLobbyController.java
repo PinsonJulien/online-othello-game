@@ -7,6 +7,7 @@ import com.pinson.othello.lobbies.dtos.responses.OthelloLobbyResponse;
 import com.pinson.othello.lobbies.dtos.responses.OthelloLobbyResponseFactory;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.players.OthelloPlayer;
+import com.pinson.othello.players.OthelloPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,16 +18,19 @@ import org.springframework.web.bind.annotation.*;
 public class OthelloLobbyController {
     private final OthelloLobbyService othelloLobbyService;
     private final OthelloGameService othelloGameService;
+    private final OthelloPlayerService othelloPlayerService;
     private final OthelloLobbyResponseFactory othelloLobbyResponseFactory;
 
     @Autowired
     public OthelloLobbyController(
         OthelloLobbyService othelloLobbyService,
         OthelloGameService othelloGameService,
+        OthelloPlayerService othelloPlayerService,
         OthelloLobbyResponseFactory othelloLobbyResponseFactory
     ) {
         this.othelloLobbyService = othelloLobbyService;
         this.othelloGameService = othelloGameService;
+        this.othelloPlayerService = othelloPlayerService;
         this.othelloLobbyResponseFactory = othelloLobbyResponseFactory;
     }
 
@@ -44,8 +48,8 @@ public class OthelloLobbyController {
 
     @PostMapping("/join/classic")
     public ResponseEntity<OthelloLobbyResponse> joinClassic() {
-        // must be tested :
         OthelloPlayer player = (OthelloPlayer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        player = this.othelloPlayerService.getPlayerById(player.getId());
 
         OthelloLobby lobby = this.othelloLobbyService.addPlayerToRandomClassicLobby(player);
 
@@ -66,8 +70,9 @@ public class OthelloLobbyController {
 
     @PostMapping("/{id}/leave")
     public ResponseEntity<Void> leave(@PathVariable Long id) {
-        // get user
-        OthelloPlayer player = null;
+        OthelloPlayer player = (OthelloPlayer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        player = this.othelloPlayerService.getPlayerById(player.getId());
+
         this.othelloLobbyService.removePlayerFromLobby(id, player);
 
         return ResponseEntity.ok().build();

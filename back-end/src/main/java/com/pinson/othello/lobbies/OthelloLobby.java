@@ -22,7 +22,7 @@ public class OthelloLobby implements IOthelloLobby {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(mappedBy = "lobbies", cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = OthelloPlayer.class, cascade = CascadeType.ALL)
     private List<OthelloPlayer> players = new ArrayList<>();
 
     @Column(nullable = false)
