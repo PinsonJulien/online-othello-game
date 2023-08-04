@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/api/v1/lobbies")
@@ -21,17 +22,21 @@ public class OthelloLobbyController {
     private final OthelloPlayerService othelloPlayerService;
     private final OthelloLobbyResponseFactory othelloLobbyResponseFactory;
 
+    private final OthelloLobbyServerSentEventService othelloLobbyServerSentEventService;
+
     @Autowired
     public OthelloLobbyController(
         OthelloLobbyService othelloLobbyService,
         OthelloGameService othelloGameService,
         OthelloPlayerService othelloPlayerService,
-        OthelloLobbyResponseFactory othelloLobbyResponseFactory
+        OthelloLobbyResponseFactory othelloLobbyResponseFactory,
+        OthelloLobbyServerSentEventService othelloLobbyServerSentEventService
     ) {
         this.othelloLobbyService = othelloLobbyService;
         this.othelloGameService = othelloGameService;
         this.othelloPlayerService = othelloPlayerService;
         this.othelloLobbyResponseFactory = othelloLobbyResponseFactory;
+        this.othelloLobbyServerSentEventService = othelloLobbyServerSentEventService;
     }
 
     @GetMapping("/{id}")
@@ -44,6 +49,15 @@ public class OthelloLobbyController {
         } catch (LobbyNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{id}/sse")
+    public SseEmitter streamLobbyIdEvents(@PathVariable Long id) {
+        // -1L is for infinite timeout.
+        SseEmitter emitter = new SseEmitter(-1L);
+        this.othelloLobbyServerSentEventService.add(emitter, id);
+
+        return emitter;
     }
 
     @PostMapping("/join/classic")
@@ -63,9 +77,12 @@ public class OthelloLobbyController {
             }
         }
 
-        return ResponseEntity.ok(
-            this.othelloLobbyResponseFactory.create(lobby)
-        );
+        OthelloLobbyResponse response = this.othelloLobbyResponseFactory.create(lobby);
+
+        // send response to all players in lobby
+        this.othelloLobbyServerSentEventService.send(response, lobby.getId());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/leave")
@@ -73,7 +90,12 @@ public class OthelloLobbyController {
         OthelloPlayer player = (OthelloPlayer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         player = this.othelloPlayerService.getPlayerById(player.getId());
 
-        this.othelloLobbyService.removePlayerFromLobby(id, player);
+        OthelloLobby lobby = this.othelloLobbyService.removePlayerFromLobby(id, player);
+
+        OthelloLobbyResponse response = this.othelloLobbyResponseFactory.create(lobby);
+
+        // send response to all players in lobby
+        this.othelloLobbyServerSentEventService.send(response, lobby.getId());
 
         return ResponseEntity.ok().build();
     }
