@@ -1,5 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import type { Lobby } from '$lib/types/lobby';
 
 export const POST: RequestHandler = async ({ params, request, cookies, fetch }) => {
     const token = cookies.get('token');
@@ -13,7 +14,8 @@ export const POST: RequestHandler = async ({ params, request, cookies, fetch }) 
     });
 
     if (response.status === 200) {
-        return json(await response.json());
+        const data: Lobby = await response.json();
+        return json(data);
     }
 
     throw error(response.status, await response.text());    

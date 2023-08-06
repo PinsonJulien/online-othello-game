@@ -1,7 +1,13 @@
 <script lang="ts">
+    import { goto } from '$app/navigation';
+    import type { Lobby } from '$lib/types/lobby';
     import type { PageData } from './$types';
+    import MatchmakingDialog from './MatchmakingDialog.svelte';
     
     export let data: PageData;
+
+    let lobby: Lobby;
+    let showMatchmakingDialog = false;
 
     const joinMatchmaking = async () => {
         const response = await fetch('/api/lobbies/join/classic', {
@@ -11,37 +17,69 @@
             },
         });
 
-        const json = await response.json();
+        if (response.ok) {
+            const data: Lobby = await response.json();
 
-        console.log(json);
-    }
+            if (data.game) {
+                goto(`/games/${data.game.id}`);
+                return;
+            }
 
-    const testSSE = async () => {
-        
-        const eventSource = new EventSource('/api/lobbies/216/sse');
+            // subscribe to sse
+            const sse = new EventSource(`/api/lobbies/${data.id}/sse`);
 
-        eventSource.onmessage = (event) => {
-            console.log(event);
+            sse.onmessage = (event) => {
+                const data: Lobby = JSON.parse(event.data);
+                
+                if (data.game) {
+                    sse.close();
+                    goto(`/games/${data.game.id}`);
+                    return;
+                }
+
+                // update lobby
+                lobby = data;
+            }
+            
+            showModal();
+            lobby = data;
         }
-
-        /*eventSource.onopen = () => {
-            console.log('Connection opened');
-        };
-
-        eventSource.onerror = (error) => {
-            console.log(error);
-        };*/
     }
 
+    const leaveMatchmaking = async () => {
+        const response = await fetch(`/api/lobbies/${lobby.id}/leave`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            hideModal();
+        }
+    }
+
+    const showModal = () => {
+        showMatchmakingDialog = true;
+    }
+
+    const hideModal = () => {
+        showMatchmakingDialog = false;
+    }
 </script>
 
 <div>
 
     <button type="submit" on:click={joinMatchmaking}>Matchmaking</button>
 
-    <button on:click={testSSE}>Test sse</button>
-
     <form action="?/sign-out" method="POST">
         <button type="submit">Sign out</button>
     </form>
+
+    <MatchmakingDialog 
+        lobby={lobby}
+        show={showMatchmakingDialog}
+        leaveButtonClick={leaveMatchmaking}
+    />
+
 </div>

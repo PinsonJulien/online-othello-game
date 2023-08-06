@@ -13,8 +13,8 @@ export const POST: RequestHandler = async ({ params, request, cookies, fetch }) 
         },
     });
 
-    if (response.status === 200) {
-        return json(await response.json());
+    if (response.ok) {
+        return json(null);
     }
 
     throw error(response.status, await response.text());    

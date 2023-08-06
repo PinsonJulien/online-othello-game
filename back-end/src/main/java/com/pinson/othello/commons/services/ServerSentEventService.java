@@ -59,6 +59,8 @@ public class ServerSentEventService<T> {
     public void send(T data, Long index) {
         List<SseEmitter> emitters = this.indexedEmitters.get(index);
 
+        if (emitters == null) return;
+
         emitters.forEach(emitter -> {
             try {
                 emitter.send(data);
