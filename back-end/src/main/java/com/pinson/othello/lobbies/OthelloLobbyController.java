@@ -90,7 +90,20 @@ public class OthelloLobbyController {
         OthelloPlayer player = (OthelloPlayer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         player = this.othelloPlayerService.getPlayerById(player.getId());
 
-        OthelloLobby lobby = this.othelloLobbyService.removePlayerFromLobby(id, player);
+        OthelloLobby lobby;
+
+        try {
+            lobby = this.othelloLobbyService.getLobbyById(id);
+        } catch (LobbyNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Cannot leave a lobby that has a game started.
+        if (lobby.getGame() != null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        lobby = this.othelloLobbyService.removePlayerFromLobby(id, player);
 
         OthelloLobbyResponse response = this.othelloLobbyResponseFactory.create(lobby);
 

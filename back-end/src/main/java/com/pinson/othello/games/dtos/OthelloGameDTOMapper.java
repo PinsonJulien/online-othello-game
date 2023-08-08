@@ -4,7 +4,7 @@ import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerLightRespo
 import com.pinson.othello.games.IOthelloGame;
 import com.pinson.othello.games.dtos.responses.OthelloGameLightResponse;
 import com.pinson.othello.games.dtos.responses.OthelloGameResponse;
-import com.pinson.othello.grids.responses.GridSizeResponse;
+import com.pinson.othello.grids.dtos.responses.OthelloGridResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,24 +21,26 @@ public class OthelloGameDTOMapper {
         IOthelloGame game,
         List<OthelloGamePlayerLightResponse> players,
         List<OthelloGamePlayerLightResponse> winners,
-        List<OthelloGamePlayerLightResponse> losers
+        List<OthelloGamePlayerLightResponse> losers,
+        OthelloGridResponse grid,
+        OthelloGamePlayerLightResponse currentPlayer
     ) {
         return new OthelloGameResponse(
             game.getId(),
-            this.createGridSize(game),
             game.getStatus(),
             players,
             winners,
             losers,
             game.getCreatedAt(),
-            game.getUpdatedAt()
+            game.getUpdatedAt(),
+            grid,
+            currentPlayer
         );
     }
 
     public OthelloGameLightResponse toLightResponse(IOthelloGame game) {
         return new OthelloGameLightResponse(
             game.getId(),
-            this.createGridSize(game),
             game.getStatus(),
             game.getCreatedAt(),
             game.getUpdatedAt()
@@ -53,13 +55,6 @@ public class OthelloGameDTOMapper {
         }
 
         return response;
-    }
-
-    protected GridSizeResponse createGridSize(IOthelloGame game) {
-        return new GridSizeResponse(
-                game.getGridWidth(),
-                game.getGridHeight()
-        );
     }
 
 }
