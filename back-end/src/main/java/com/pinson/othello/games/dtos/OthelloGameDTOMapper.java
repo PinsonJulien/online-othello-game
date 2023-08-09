@@ -1,6 +1,6 @@
 package com.pinson.othello.games.dtos;
 
-import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerLightResponse;
+import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerResponse;
 import com.pinson.othello.games.IOthelloGame;
 import com.pinson.othello.games.dtos.responses.OthelloGameLightResponse;
 import com.pinson.othello.games.dtos.responses.OthelloGameResponse;
@@ -19,11 +19,11 @@ public class OthelloGameDTOMapper {
 
     public OthelloGameResponse toResponse(
         IOthelloGame game,
-        List<OthelloGamePlayerLightResponse> players,
-        List<OthelloGamePlayerLightResponse> winners,
-        List<OthelloGamePlayerLightResponse> losers,
+        List<OthelloGamePlayerResponse> players,
+        List<OthelloGamePlayerResponse> winners,
+        List<OthelloGamePlayerResponse> losers,
         OthelloGridResponse grid,
-        OthelloGamePlayerLightResponse currentPlayer
+        OthelloGamePlayerResponse currentPlayer
     ) {
         return new OthelloGameResponse(
             game.getId(),

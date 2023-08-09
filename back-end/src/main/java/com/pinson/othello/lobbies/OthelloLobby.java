@@ -32,7 +32,7 @@ public class OthelloLobby implements IOthelloLobby {
     private OthelloGame game;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     protected OthelloLobby() {
         //

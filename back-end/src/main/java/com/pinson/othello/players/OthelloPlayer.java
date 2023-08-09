@@ -34,10 +34,10 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     private List<OthelloLobby> lobbies;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public OthelloPlayer() {
         //
