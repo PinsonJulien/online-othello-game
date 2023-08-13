@@ -1,17 +1,18 @@
-import type { GamePlayer } from "./game-players"
+import type { GamePlayer, GamePlayerLight } from "./game-players"
 
 export interface Game extends GameLight {
   players: GamePlayer[],
   winners: GamePlayer[],
   losers: GamePlayer[],
+  grid: Grid,
+  currentPlayer: GamePlayer
 };
 
 export interface GameLight {
   id: number,
-  gridSize: GridSize,
   status: GameStatus,
   createdAt: Date,
-  updatedAt: Date
+  updatedAt: Date,
 };
 
 export enum GameStatus {
@@ -19,7 +20,25 @@ export enum GameStatus {
   FINISHED
 };
 
-export interface GridSize {
-  width: number,
-  height: number,
+export interface Grid {
+  size: {
+    width: number,
+    height: number,
+  },
+  tiles: Tile[],
+};
+
+export interface Tile {
+  position: Position,
+  disk?: Disk,
+  playable: boolean,
+};
+
+export interface Position {
+  row: number,
+  column: number,
+};
+
+export interface Disk {
+  gamePlayer: GamePlayerLight,
 };

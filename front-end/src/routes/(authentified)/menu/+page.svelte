@@ -21,8 +21,7 @@
             const data: Lobby = await response.json();
 
             if (data.game) {
-                goto(`/games/${data.game.id}`);
-                return;
+                return goto(`/games/${data.game.id}`);
             }
 
             // subscribe to sse
@@ -33,8 +32,7 @@
                 
                 if (data.game) {
                     sse.close();
-                    goto(`/games/${data.game.id}`);
-                    return;
+                    return goto(`/games/${data.game.id}`);
                 }
 
                 // update lobby

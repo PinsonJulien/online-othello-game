@@ -5,19 +5,19 @@ import com.pinson.othello.auths.dtos.requests.LoginRequest;
 import com.pinson.othello.auths.dtos.responses.AuthResponseFactory;
 import com.pinson.othello.auths.dtos.responses.AuthenticationResponse;
 import com.pinson.othello.auths.jwts.JwtService;
+import com.pinson.othello.errors.ErrorResponseFactory;
 import com.pinson.othello.players.OthelloPlayer;
 import com.pinson.othello.players.OthelloPlayerService;
+import com.pinson.othello.players.dtos.responses.OthelloPlayerResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -28,6 +28,8 @@ public class AuthController {
     private final AuthResponseFactory authenticationResponseFactory;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final OthelloPlayerResponseFactory playerResponseFactory;
+    private final ErrorResponseFactory errorResponseFactory;
 
     @Autowired
     public AuthController(
@@ -35,13 +37,31 @@ public class AuthController {
         final JwtService jwtService,
         final AuthResponseFactory authenticationResponseFactory,
         final AuthenticationManager authenticationManager,
-        final PasswordEncoder passwordEncoder
+        final PasswordEncoder passwordEncoder,
+        final OthelloPlayerResponseFactory playerResponseFactory,
+        final ErrorResponseFactory errorResponseFactory
     ) {
         this.playerService = playerService;
         this.jwtService = jwtService;
         this.authenticationResponseFactory = authenticationResponseFactory;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+        this.playerResponseFactory = playerResponseFactory;
+        this.errorResponseFactory = errorResponseFactory;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Object> getMe() {
+        try {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            OthelloPlayer player = this.playerService.getPlayerByUsername(username);
+
+            return ResponseEntity.ok(
+                this.playerResponseFactory.create(player)
+            );
+        } catch (final Exception e) {
+            return this.errorResponseFactory.createResponse(HttpStatus.UNAUTHORIZED, "You are not logged in.");
+        }
     }
 
     @PostMapping("/signup")

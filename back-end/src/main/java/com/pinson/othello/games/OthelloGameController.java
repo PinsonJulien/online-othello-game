@@ -4,6 +4,7 @@ import com.pinson.othello.commons.entities.games.exceptions.GameOverException;
 import com.pinson.othello.commons.exceptions.InvalidMoveException;
 import com.pinson.othello.errors.ErrorResponseFactory;
 import com.pinson.othello.games.dtos.requests.OthelloGamePlayMoveRequest;
+import com.pinson.othello.games.dtos.responses.OthelloGameResponse;
 import com.pinson.othello.games.dtos.responses.OthelloGameResponseFactory;
 import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
@@ -57,7 +58,6 @@ public class OthelloGameController {
     @GetMapping("/{id}/sse")
     public SseEmitter streamGameIdEvents(@PathVariable Long id) {
         // -1L for infinite timeout.
-
         SseEmitter emitter = new SseEmitter(-1L);
 
         this.gameServerSentEventService.add(emitter, id);
@@ -98,8 +98,10 @@ public class OthelloGameController {
             return this.errorResponseFactory.createResponse(HttpStatus.BAD_REQUEST, "The game is over.");
         }
 
-        return ResponseEntity.ok(
-            this.gameResponseFactory.create(game)
-        );
+        final OthelloGameResponse gameResponse = this.gameResponseFactory.create(game);
+
+        this.gameServerSentEventService.send(gameResponse, id);
+
+        return ResponseEntity.ok(gameResponse);
     }
 }
