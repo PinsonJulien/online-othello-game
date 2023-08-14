@@ -1,26 +1,18 @@
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import ResponseFactory from '$lib/responses/response.factory';
+import GameOthelloGameApiService from '$lib/services/othello-game-api/game-othello-game-api.service';
 
 export const GET: RequestHandler = async ({ params, cookies, fetch }) => {
-    
-    const token = cookies.get('token');
-    const response = await fetch(`http://127.0.0.1:8080/api/v1/games/${params.id}/sse`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'text/event-stream',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+    const gameService = new GameOthelloGameApiService(fetch, cookies);
+    const responseFactory = new ResponseFactory();
 
-    if (response.ok) {
-        return new Response(response.body, {
-            headers: {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-            },
-        });
-    }
+    const id = params.id;
+
+    const response = await gameService.getGameSSE(id);
+
+    if (response.ok)
+        return responseFactory.createServerSentEvent(response);
 
     throw error(response.status, await response.text());
 };

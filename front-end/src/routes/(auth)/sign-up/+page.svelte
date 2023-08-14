@@ -11,23 +11,6 @@
             password = value.password;
         }
     };
-
-    /*export const passwordSnapshot: Snapshot = {
-        capture: () => password,
-        restore: (value) => { 
-            password = value
-        }
-    };*/
-
-    /*export const snapshot: Snapshot = {
-        capture: () => ({ username, password }),
-        restore: (data) => {
-            console.log(data);
-            username = data.username;
-            password = data.password;
-        },
-    }*/
-
     
 </script>
 

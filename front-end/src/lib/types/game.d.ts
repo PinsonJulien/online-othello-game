@@ -16,8 +16,8 @@ export interface GameLight {
 };
 
 export enum GameStatus {
-  IN_PROGRESS,
-  FINISHED
+  IN_PROGRESS = 'IN_PROGRESS',
+  FINISHED = 'FINISHED',
 };
 
 export interface Grid {

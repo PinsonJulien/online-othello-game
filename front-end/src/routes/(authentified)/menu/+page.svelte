@@ -1,21 +1,26 @@
 <script lang="ts">
-    import { goto } from '$app/navigation';
+    import { beforeNavigate, goto } from '$app/navigation';
+    import LobbyApiService from '$lib/services/api/lobby-api.service';
     import type { Lobby } from '$lib/types/lobby';
     import type { PageData } from './$types';
     import MatchmakingDialog from './MatchmakingDialog.svelte';
     
     export let data: PageData;
 
+    const lobbyApiService = new LobbyApiService();
+
     let lobby: Lobby;
     let showMatchmakingDialog = false;
 
+    beforeNavigate(async ({to, cancel}) => {
+        if (lobby && to?.route.id !== '/(authentified)/games/[id]') {
+            // if user is in matchmaking, leave matchmaking
+            await lobbyApiService.leaveLobby(lobby.id);
+        }
+    });
+
     const joinMatchmaking = async () => {
-        const response = await fetch('/api/lobbies/join/classic', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await lobbyApiService.joinClassicMatchmaking();
 
         if (response.ok) {
             const data: Lobby = await response.json();
@@ -25,7 +30,7 @@
             }
 
             // subscribe to sse
-            const sse = new EventSource(`/api/lobbies/${data.id}/sse`);
+            const sse = lobbyApiService.getLobbySSE(data.id);
 
             sse.onmessage = (event) => {
                 const data: Lobby = JSON.parse(event.data);
@@ -45,12 +50,7 @@
     }
 
     const leaveMatchmaking = async () => {
-        const response = await fetch(`/api/lobbies/${lobby.id}/leave`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await lobbyApiService.leaveLobby(lobby.id);
 
         if (response.ok) {
             hideModal();

@@ -1,24 +1,15 @@
 import type { Game } from '$lib/types/game';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import GameOthelloGameApiService from '$lib/services/othello-game-api/game-othello-game-api.service';
 
-export const POST: RequestHandler = async ({ request, params, cookies}) => {
+export const POST: RequestHandler = async ({ request, params, cookies, fetch }) => {
+    const gameService = new GameOthelloGameApiService(fetch, cookies);
     const id = params.id;
-    const token = cookies.get('token');
 
     const { position } = await request.json();
 
-    const response = await fetch(`http://127.0.0.1:8080/api/v1/games/${id}/playMove`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-            "row": position.row,
-            "column": position.column,
-        }),
-    });
+    const response = await gameService.playMove(id, position);
 
     if (response.ok) {
         const game: Game = await response.json();

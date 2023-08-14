@@ -4,8 +4,11 @@
     import type { PageData } from './$types';
     import { player } from '$lib/stores/player';
     import type { Player } from '$lib/types/player';
+    import GameApiService from '$lib/services/api/game-api.service';
     
     export let data: PageData;
+
+    const gameApiService = new GameApiService();
 
     let loggedPlayer: Player | null = $player;
     
@@ -13,14 +16,19 @@
 
     onMount(() => {
         // subscribe to sse
-        const sse = new EventSource(`/api/games/${game.id}/sse`);
+        const sse = gameApiService.getGameSSE(game.id);
         sse.onmessage = (event) => {
             const data: Game = JSON.parse(event.data);
             
             // update game
             game = data;
         }
-    })
+
+        return () => {
+            // unsubscribe from sse
+            sse.close();
+        }
+    });
 
     $: isPlayerTurn = game.currentPlayer.player.id === loggedPlayer!.id;
 
@@ -48,13 +56,7 @@
     })();
     
     const playMove = async (position: Position) => {
-        const response = await fetch(`/api/games/${game.id}/playMove`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ position }),
-        });
+        const response = await gameApiService.playMove(game.id, position);
 
         if (response.ok) {
             const data: Game = await response.json();

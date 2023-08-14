@@ -1,17 +1,12 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import type { Lobby } from '$lib/types/lobby';
+import LobbyOthelloGameApiService from '$lib/services/othello-game-api/lobby-othello-game-api.service';
 
-export const POST: RequestHandler = async ({ params, request, cookies, fetch }) => {
-    const token = cookies.get('token');
+export const POST: RequestHandler = async ({ cookies, fetch }) => {
+    const lobbyOthelloGameApiService = new LobbyOthelloGameApiService(fetch, cookies);
 
-    const response = await fetch(`http://127.0.0.1:8080/api/v1/lobbies/join/classic`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+    const response = await lobbyOthelloGameApiService.joinClassicMatchmaking();
 
     if (response.status === 200) {
         const data: Lobby = await response.json();
