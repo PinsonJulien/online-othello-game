@@ -5,7 +5,10 @@
     import { player } from '$lib/stores/player';
     import type { Player } from '$lib/types/player';
     import GameApiService from '$lib/services/api/game-api.service';
-    
+    import DiskComponent from './DiskComponent.svelte';
+    import ValidMove from './ValidMove.svelte';
+    import PlayerCard from './PlayerCard.svelte';
+
     export let data: PageData;
 
     const gameApiService = new GameApiService();
@@ -29,6 +32,16 @@
             sse.close();
         }
     });
+
+    const loggedPlayerProps = {
+        username: loggedPlayer!.username,
+        color: game.players.find((gamePlayer) => gamePlayer.player.id === loggedPlayer!.id)!.color,
+    }
+
+    const opponentPlayerProps = {
+        username: game.players.find((gamePlayer) => gamePlayer.player.id !== loggedPlayer!.id)!.player.username,
+        color: game.players.find((gamePlayer) => gamePlayer.player.id !== loggedPlayer!.id)!.color,
+    }
 
     $: isPlayerTurn = game.currentPlayer.player.id === loggedPlayer!.id;
 
@@ -67,48 +80,35 @@
 </script>
 
 <div>
+    <div class="flex">
+        <PlayerCard 
+            username={loggedPlayerProps.username}
+            color={loggedPlayerProps.color}
+            isCurrentTurnPlayer={isPlayerTurn}
+        />
 
-    <h1>Game</h1>
+        <PlayerCard 
+            username={opponentPlayerProps.username}
+            color={opponentPlayerProps.color}
+            isCurrentTurnPlayer={!isPlayerTurn}
+        />
+    </div>
 
-    <p>Game id: {game.id}</p>
-    <p>Game status: {game.status}</p>
-
-    <p>Logged player: { loggedPlayer?.username } </p>
-    <p>Current player: { game.currentPlayer.player.username}</p>
-
-    <p>Players:</p>
-    <ul>
-        {#each game.players as gamePlayer}
-            <li>{gamePlayer.player.username}</li>
-        {/each}
-    </ul>
 
     <p>Board:</p>
-    <table>
-        {#each board as row}
-            <tr>
-                {#each row as tile}
-                    <td>
-                        {#if tile.disk}
-                            <div>
-                                {tile.disk.gamePlayer.color}
-                            </div>
-                        {/if}
-                        {#if tile.playable && isPlayerTurn }
-                            <div>
-                                <button
-                                    on:click={() => playMove(tile.position) }
-                                >
-                                    X
-                                </button>
-                            </div>
-                        {/if}
-                    </td>
-                {/each}
-            </tr>
+
+    <div class="grid grid-cols-{boardWidth} gap-1 bg-green-400">
+        {#each tiles as tile}
+            <div class="aspect-square bg-green-200">
+                {#if tile.disk}
+                    <DiskComponent diskColor={tile.disk.gamePlayer.color}/>
+                {:else if tile.playable && isPlayerTurn }
+                    <ValidMove on:click={() => playMove(tile.position) }/>
+                {:else}
+                    <div></div>
+                {/if}
+            </div>
         {/each}
-    </table>
-
-
+    </div>
 
 </div>
