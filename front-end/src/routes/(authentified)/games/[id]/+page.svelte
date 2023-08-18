@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Game, Position, Tile } from '$lib/types/game';
+    import { GameStatus, type Game, type Position, type Tile } from '$lib/types/game.d';
     import { onMount } from 'svelte';
     import type { PageData } from './$types';
     import { player } from '$lib/stores/player';
@@ -8,6 +8,7 @@
     import DiskComponent from './DiskComponent.svelte';
     import ValidMove from './ValidMove.svelte';
     import PlayerCard from './PlayerCard.svelte';
+    import { goto } from '$app/navigation';
 
     export let data: PageData;
 
@@ -22,9 +23,11 @@
         const sse = gameApiService.getGameSSE(game.id);
         sse.onmessage = (event) => {
             const data: Game = JSON.parse(event.data);
+
+            if (data.status === GameStatus.FINISHED)
+                sse.close();
             
-            // update game
-            game = data;
+            return updateGame(data);
         }
 
         return () => {
@@ -51,64 +54,77 @@
     const boardWidth = boardSize.width;
     const boardHeight = boardSize.height;
 
-    // create grid based on board width and height
-    $: board = (() => {
-        const board: Array<Array<Tile>> = [];
+    // Determine if the turn can be skipped
+    // No tile should be playable.
+    $: isTurnSkippable = !tiles.some((tile) => tile.playable);
 
-        for (let i = 0; i < boardHeight; i++) {
-            const row: Array<Tile> = [];
-
-            for (let j = 0; j < boardWidth; j++) {
-                row.push(tiles[i * boardWidth + j]);
-            }
-
-            board.push(row);
-        }
-
-        return board;
-    })();
-    
     const playMove = async (position: Position) => {
         const response = await gameApiService.playMove(game.id, position);
 
         if (response.ok) {
             const data: Game = await response.json();
-            game = data;
+            return updateGame(data);
         }
+    }
+
+    const skipMove = async () => {
+        const response = await gameApiService.skipMove(game.id);
+
+        if (response.ok) {
+            const data: Game = await response.json();
+            return updateGame(data);
+        }
+    }
+
+    const updateGame = (newGame: Game) => {        
+        if (newGame.status === GameStatus.FINISHED)
+            return goto(`/games/${game.id}/results`)
+
+        game = newGame;
     }
 
 </script>
 
-<div>
-    <div class="flex">
+<div class="h-full w-full grid grid-cols-7">
+    <div class="flex flex-col col-span-1">
         <PlayerCard 
             username={loggedPlayerProps.username}
             color={loggedPlayerProps.color}
             isCurrentTurnPlayer={isPlayerTurn}
         />
 
+        {#if isTurnSkippable && isPlayerTurn}
+            <button
+                class="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded"
+                on:click={skipMove}
+            >
+                Skip turn
+            </button>
+        {/if}
+    </div>
+
+    <div class="col-span-5 w-full h-full mx-auto">
+        <div class="grid bg-green-400 p-3 gap-1 grid-cols-[repeat(8,1fr)]">
+            {#each tiles as tile}
+                <div class="aspect-square bg-green-200">
+                    {#if tile.disk}
+                        <DiskComponent diskColor={tile.disk.gamePlayer.color}/>
+                    {:else if tile.playable && isPlayerTurn }
+                        <ValidMove on:click={() => playMove(tile.position) }/>
+                    {:else}
+                        <div></div>
+                    {/if}
+                </div>
+            {/each}
+        </div>
+    </div>
+
+    <div class="flex col-span-1">
         <PlayerCard 
             username={opponentPlayerProps.username}
             color={opponentPlayerProps.color}
             isCurrentTurnPlayer={!isPlayerTurn}
         />
-    </div>
-
-
-    <p>Board:</p>
-
-    <div class="grid grid-cols-{boardWidth} gap-1 bg-green-400">
-        {#each tiles as tile}
-            <div class="aspect-square bg-green-200">
-                {#if tile.disk}
-                    <DiskComponent diskColor={tile.disk.gamePlayer.color}/>
-                {:else if tile.playable && isPlayerTurn }
-                    <ValidMove on:click={() => playMove(tile.position) }/>
-                {:else}
-                    <div></div>
-                {/if}
-            </div>
-        {/each}
     </div>
 
 </div>

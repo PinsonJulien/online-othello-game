@@ -4,6 +4,6 @@
     export let data: LayoutData;
 </script>
 
-<main>
+<div class="w-full h-full flex flex-col">
     <slot />
-</main>
+</div>

@@ -16,6 +16,10 @@ export default class GameApiService extends ApiService {
     return this.post(`/${id}/playMove`, { position });
   }
 
+  public async skipMove(id: Index): Promise<Response> {
+    return this.post(`/${id}/skipMove`);
+  }
+
   public getGameSSE(id: Index): EventSource {
     return this.getServerSentEvents(`/${id}/sse`);
   }

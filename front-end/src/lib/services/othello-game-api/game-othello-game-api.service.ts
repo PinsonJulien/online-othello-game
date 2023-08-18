@@ -27,6 +27,10 @@ export default class GameOthelloGameApiService extends OthelloGameApiService {
     });
   }
 
+  public async skipMove(id: Index): Promise<Response> {
+    return this.post(`/${id}/skipMove`);
+  }
+
   public async getGameSSE(id: Index): Promise<Response> {
     return this.getServerSentEvents(`/${id}/sse`);
   }

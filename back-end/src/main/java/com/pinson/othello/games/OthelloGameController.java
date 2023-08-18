@@ -6,6 +6,7 @@ import com.pinson.othello.errors.ErrorResponseFactory;
 import com.pinson.othello.games.dtos.requests.OthelloGamePlayMoveRequest;
 import com.pinson.othello.games.dtos.responses.OthelloGameResponse;
 import com.pinson.othello.games.dtos.responses.OthelloGameResponseFactory;
+import com.pinson.othello.games.exceptions.CannotPassTurnException;
 import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.players.OthelloPlayer;
@@ -104,4 +105,39 @@ public class OthelloGameController {
 
         return ResponseEntity.ok(gameResponse);
     }
+
+    @PostMapping("/{id}/skipMove")
+    public ResponseEntity<Object> skipMove(
+        @PathVariable Long id
+    ) {
+        OthelloPlayer player = (OthelloPlayer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        player = this.playerService.getPlayerById(player.getId());
+
+        OthelloGame game = null;
+
+        try {
+            game = this.gameService.getGameById(id);
+        } catch (GameNotFoundException e) {
+            return this.errorResponseFactory.createResponse(HttpStatus.NOT_FOUND, "The requested game doesn't exist.");
+        }
+
+        try {
+            game = this.gameService.skipMove(game, player);
+        } catch (GameOverException e) {
+            return this.errorResponseFactory.createResponse(HttpStatus.BAD_REQUEST, "The game is over.");
+        } catch (CannotPassTurnException e) {
+            return this.errorResponseFactory.createResponse(HttpStatus.BAD_REQUEST, "The player cannot pass their turn.");
+        } catch (UnknownGamePlayerException e) {
+            return this.errorResponseFactory.createResponse(HttpStatus.BAD_REQUEST, "The player isn't part of the game.");
+        } catch (InvalidMoveException e) {
+            return this.errorResponseFactory.createResponse(HttpStatus.BAD_REQUEST, "The player cannot play when its not their turn.");
+        }
+
+        final OthelloGameResponse gameResponse = this.gameResponseFactory.create(game);
+
+        this.gameServerSentEventService.send(gameResponse, id);
+
+        return ResponseEntity.ok(gameResponse);
+    }
+
 }
