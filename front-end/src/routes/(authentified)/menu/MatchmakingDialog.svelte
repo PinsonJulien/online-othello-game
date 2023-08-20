@@ -26,9 +26,19 @@
 </script>
 
 <dialog class="modal" bind:this={dialog} on:cancel={leaveButtonClick}>
-  <div class="modal-content">
-    <h1>Matchmaking</h1>
-    <p>Waiting for other players...</p>
-    <button on:click={leaveButtonClick}>Leave</button>
+  <div class="modal-content bg-neutral-600 rounded-2xl p-4">
+    <div class="flex flex-col gap-5">
+      <p class="text-2xl text-center">
+        Waiting for an opponent
+      </p>
+      <span class="loading loading-spinner loading-lg mx-auto"></span>
+
+      <button 
+        on:click={leaveButtonClick}
+        class="btn"
+      >
+        Leave matchmaking
+      </button>
+    </div>
   </div>
 </dialog>

@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { Game } from '$lib/types/game';
+import { GameStatus, type Game } from '$lib/types/game.d';
 import GameOthelloGameApiService from '$lib/services/othello-game-api/game-othello-game-api.service';
 
 export const load = (async ({ fetch, params, cookies }) => {
@@ -14,6 +14,10 @@ export const load = (async ({ fetch, params, cookies }) => {
     }
 
     const game: Game = await response.json();
+
+    // If game is done, redirect to the game result page
+    if (game.status === GameStatus.FINISHED)
+        throw redirect(307, `/games/${id}/results`);
 
     return {
         game

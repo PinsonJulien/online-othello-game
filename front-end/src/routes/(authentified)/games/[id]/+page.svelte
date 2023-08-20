@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { GameStatus, type Game, type Position, type Tile } from '$lib/types/game.d';
+    import { GameStatus, type Game, type Position } from '$lib/types/game.d';
     import { onMount } from 'svelte';
     import type { PageData } from './$types';
     import { player } from '$lib/stores/player';
@@ -51,8 +51,6 @@
     // Build board
     $: tiles = game.grid.tiles;
     const boardSize = game.grid.size;
-    const boardWidth = boardSize.width;
-    const boardHeight = boardSize.height;
 
     // Determine if the turn can be skipped
     // No tile should be playable.

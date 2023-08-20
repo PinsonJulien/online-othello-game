@@ -66,13 +66,31 @@
     }
 </script>
 
-<div>
+<div class="h-full w-full">
+    <div class="h-full w-full flex justify-center ">
+        <div class="w-1/2 sm:w-1/4 lg:w-1/6 flex flex-col rounded-box justify-center gap-6">
+            <h1 class="font-sans text-4xl text-center">
+                Othello
+            </h1>
+            <button 
+                type="submit" 
+                on:click={joinMatchmaking}
+                class="btn"
+            > 
+                Join Matchmaking
+            </button>
 
-    <button type="submit" on:click={joinMatchmaking}>Matchmaking</button>
+            <form action="?/sign-out" method="POST" class="w-full">
+                <button 
+                    type="submit"
+                    class="btn w-full"
+                >
+                    Sign out
+                </button>
+            </form>
+        </div>
+    </div>
 
-    <form action="?/sign-out" method="POST">
-        <button type="submit">Sign out</button>
-    </form>
 
     <MatchmakingDialog 
         lobby={lobby}
