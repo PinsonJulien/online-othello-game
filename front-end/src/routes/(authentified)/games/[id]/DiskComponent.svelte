@@ -6,9 +6,9 @@
   const determineColorStyle = (diskColor: GamePlayerColor): string  => {
     switch(diskColor) {
       case GamePlayerColor.BLACK:
-        return 'bg-green-600';
+        return 'bg-neutral-900';
       case GamePlayerColor.WHITE:
-        return 'bg-green-400';
+        return 'bg-neutral-100';
     }
   }
 
@@ -17,6 +17,6 @@
 </script>
 
 <div class="w-full h-full flex items-center justify-center">
-  <div class="w-3/4 h-3/4 rounded-full {color}">
+  <div class="w-3/4 h-3/4 rounded-full shadow-md {color}">
   </div>
 </div>

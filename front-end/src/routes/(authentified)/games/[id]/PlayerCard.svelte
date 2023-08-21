@@ -1,28 +1,33 @@
 <script lang="ts">
-    import type { GamePlayer, GamePlayerColor } from "$lib/types/game-players.d";
-    import DiskComponent from "./DiskComponent.svelte";
+  import { player } from "$lib/stores/player";
+  import { GamePlayerColor, type GamePlayer } from "$lib/types/game-players.d";
+  import DiskComponent from "./DiskComponent.svelte";
 
   export let username: String;
   export let color: GamePlayerColor;
   export let isCurrentTurnPlayer: boolean;
 
   $: border = isCurrentTurnPlayer 
-    ? 'border-4 border-green-400' 
+    ? 'ring-4 ring-rose-400' 
     : '';
+
+  const cardBackgroundStyle = ((color: GamePlayerColor): string => {
+    switch(color) {
+      case GamePlayerColor.BLACK:
+        return 'bg-neutral-900 text-neutral-100';
+      case GamePlayerColor.WHITE:
+        return 'bg-neutral-100 text-neutral-900';
+    }
+  })(color);
 
 </script>
 
-<!-- player name and Disk -->
-
-<div class="flex flex-col items-center {border} w-fit p-10">
-  <div class="">
-    <div class="ml-2 text-xl font-bold">
+<div class="{cardBackgroundStyle} my-auto flex rounded-xl p-3 min-w-[10em] {border}">
+  <div class="m-auto">
+    <span
+      class="font-bold"
+    >
       {username}
-    </div>
+    </span>
   </div>
-
-  <div class="w-10 h-10 ml-2">
-    <DiskComponent diskColor={color} />
-  </div>
-
 </div>
