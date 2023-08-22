@@ -4,7 +4,7 @@
     export let data: LayoutData;
 </script>
 
-<div>
+<div class="flex flex-col ">
     <div class="tabs tabs-boxed">
         <a class="tab" href="/sign-up">
             Sign-up

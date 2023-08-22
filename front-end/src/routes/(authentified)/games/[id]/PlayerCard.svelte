@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { player } from "$lib/stores/player";
-  import { GamePlayerColor, type GamePlayer } from "$lib/types/game-players.d";
-  import DiskComponent from "./DiskComponent.svelte";
+  import { GamePlayerColor } from "$lib/types/game-players.d";
 
   export let username: String;
   export let color: GamePlayerColor;
@@ -16,7 +14,7 @@
       case GamePlayerColor.BLACK:
         return 'bg-neutral-900 text-neutral-100';
       case GamePlayerColor.WHITE:
-        return 'bg-neutral-100 text-neutral-900';
+        return 'bg-neutral-50 text-neutral-900';
     }
   })(color);
 
