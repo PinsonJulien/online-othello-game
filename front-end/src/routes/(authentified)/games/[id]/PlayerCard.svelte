@@ -6,7 +6,7 @@
   export let isCurrentTurnPlayer: boolean;
 
   $: border = isCurrentTurnPlayer 
-    ? 'ring-4 ring-rose-400' 
+    ? 'ring-4 ring-accent' 
     : '';
 
   const cardBackgroundStyle = ((color: GamePlayerColor): string => {

@@ -66,6 +66,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>Menu</title>
+</svelte:head>
+
 <div class="h-full w-full">
     <div class="h-full w-full flex justify-center ">
         <div class="w-1/2 sm:w-1/4 lg:w-1/6 flex flex-col rounded-box justify-center gap-6">
@@ -75,7 +79,7 @@
             <button 
                 type="submit" 
                 on:click={joinMatchmaking}
-                class="btn"
+                class="btn btn-primary"
             > 
                 Join Matchmaking
             </button>
@@ -83,7 +87,7 @@
             <form action="?/sign-out" method="POST" class="w-full">
                 <button 
                     type="submit"
-                    class="btn w-full"
+                    class="btn btn-secondary w-full"
                 >
                     Sign out
                 </button>

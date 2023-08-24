@@ -2,8 +2,14 @@ import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import AuthOthelloGameApiService from '$lib/services/othello-game-api/auth-othello-game-api.service';
 
-export const load = (async () => {
-    return {};
+export const load = (async ({ url }) => {
+
+    // get the redirect url
+    const redirectTo = url.searchParams.get('redirectTo');
+
+    return {
+        redirectTo
+    };
 }) satisfies PageServerLoad;
 
 export const actions = {
@@ -21,7 +27,7 @@ export const actions = {
             const token = resData.accessToken;
 
             authOthelloGameApiService.setToken(token);
-
+            
             const redirectTo = url.searchParams.get('redirectTo');
 
             throw redirect(

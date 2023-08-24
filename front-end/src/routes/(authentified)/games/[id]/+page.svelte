@@ -83,6 +83,10 @@
 
 </script>
 
+<svelte:head>
+    <title>Game n°{game.id}</title>
+</svelte:head>
+
 <div class="drawer lg:drawer-open">
     <input type="checkbox" id="drawer-toggle" class="drawer-toggle" />
     <div class="drawer-content">
@@ -95,7 +99,7 @@
 
             <div class="navbar-center">
                 <button
-                    class="btn m-auto bg-blue-400 hover:bg-blue-500 text-white {isTurnSkippable && isPlayerTurn ? '' : 'invisible'}"
+                    class="btn btn-primary m-auto {isTurnSkippable && isPlayerTurn ? '' : 'invisible'}"
                     on:click={skipMove}
                 >
                     Pass turn

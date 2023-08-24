@@ -26,7 +26,7 @@
 </script>
 
 <dialog class="modal" bind:this={dialog} on:cancel={leaveButtonClick}>
-  <div class="modal-content bg-neutral-600 rounded-2xl p-4">
+  <div class="modal-content bg-neutral rounded-2xl p-4">
     <div class="flex flex-col gap-5">
       <p class="text-2xl text-center">
         Waiting for an opponent
@@ -35,7 +35,7 @@
 
       <button 
         on:click={leaveButtonClick}
-        class="btn"
+        class="btn btn-primary"
       >
         Leave matchmaking
       </button>
