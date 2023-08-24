@@ -2,6 +2,8 @@ package com.pinson.othello.lobbies;
 
 import com.pinson.othello.commons.exceptions.NonEvenNumberException;
 import com.pinson.othello.commons.exceptions.NonPositiveValueException;
+import com.pinson.othello.games.OthelloGameFactory;
+import com.pinson.othello.games.OthelloGameRepository;
 import com.pinson.othello.lobbies.exceptions.FullLobbyException;
 import com.pinson.othello.lobbies.exceptions.LobbyNotFoundException;
 import com.pinson.othello.lobbies.exceptions.PlayerAlreadyInLobbyException;
@@ -15,10 +17,18 @@ import java.util.List;
 @Service
 public class OthelloLobbyService {
     private final OthelloLobbyRepository othelloLobbyRepository;
+    private final OthelloGameRepository othelloGameRepository;
+    private final OthelloGameFactory othelloGameFactory;
 
     @Autowired
-    public OthelloLobbyService(OthelloLobbyRepository othelloLobbyRepository) {
+    public OthelloLobbyService(
+        final OthelloLobbyRepository othelloLobbyRepository,
+        final OthelloGameRepository othelloGameRepository,
+        final OthelloGameFactory othelloGameFactory
+    ) {
         this.othelloLobbyRepository = othelloLobbyRepository;
+        this.othelloGameRepository = othelloGameRepository;
+        this.othelloGameFactory = othelloGameFactory;
     }
 
     public List<OthelloLobby> getAllLobbies() {
@@ -43,11 +53,9 @@ public class OthelloLobbyService {
         // Note : The filter could be removed if there was a working option using the repository, alas none seems to work accurately.
         OthelloLobby lobby = this.getAllLobbiesByMaxPlayers(maxPlayers)
             .stream()
-            .filter((OthelloLobby l) -> l.getPlayers().size() < maxPlayers)
             .findFirst()
             .orElseGet(() -> {
                 OthelloLobby newLobby;
-
                 try {
                     newLobby = (OthelloLobby) IOthelloLobby.create(maxPlayers);
                 } catch (NonPositiveValueException | NonEvenNumberException e) {
@@ -78,7 +86,7 @@ public class OthelloLobbyService {
     }
 
     public List<OthelloLobby> getAllLobbiesByMaxPlayers(Integer maxPlayers) {
-        return this.othelloLobbyRepository.findAllByMaxPlayers(maxPlayers);
+        return this.othelloLobbyRepository.findAllByMaxPlayersAndGameIsNull(maxPlayers);
     }
 
     public OthelloLobby removePlayerFromLobby(Long id, OthelloPlayer player) throws LobbyNotFoundException {

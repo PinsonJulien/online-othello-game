@@ -35,7 +35,7 @@ public class OthelloMove implements IOthelloMove {
     private Boolean passed = false;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public OthelloMove() {
         //

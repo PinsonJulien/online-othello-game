@@ -11,7 +11,9 @@ import com.pinson.othello.games.exceptions.GameNotFoundException;
 import com.pinson.othello.games.exceptions.UnknownGamePlayerException;
 import com.pinson.othello.lobbies.OthelloLobby;
 import com.pinson.othello.moves.IOthelloMove;
+import com.pinson.othello.moves.OthelloMoveFactory;
 import com.pinson.othello.players.IOthelloPlayer;
+import com.pinson.othello.players.OthelloPlayer;
 import com.pinson.othello.positions.IOthelloPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +26,17 @@ import java.util.Set;
 public class OthelloGameService {
     private final OthelloGameRepository gameRepository;
     private final OthelloGameFactory gameFactory;
+    private final OthelloMoveFactory moveFactory;
 
     @Autowired
     public OthelloGameService(
-        OthelloGameRepository gameRepository,
-        OthelloGameFactory gameFactory
+        final OthelloGameRepository gameRepository,
+        final OthelloGameFactory gameFactory,
+        final OthelloMoveFactory moveFactory
     ) {
         this.gameRepository = gameRepository;
         this.gameFactory = gameFactory;
+        this.moveFactory = moveFactory;
     }
 
     public List<OthelloGame> getAllGames() {
@@ -53,8 +58,32 @@ public class OthelloGameService {
     }
 
     public OthelloGame startClassicGame(OthelloLobby lobby) throws InvalidNumberOfPlayersException {
-        OthelloGame game = this.gameFactory.createClassic(new HashSet(lobby.getPlayers()));
+        Set<? extends IOthelloPlayer> players = new HashSet<>(lobby.getPlayers());
+        OthelloGame game = this.gameFactory.createClassic(players);
+        lobby.setGame(game);
         game.setLobby(lobby);
+
+        return this.gameRepository.save(game);
+    }
+
+    public OthelloGame playMove(OthelloGame game, OthelloPlayer player, IOthelloPosition position) throws UnknownGamePlayerException, InvalidMoveException, GameOverException {
+        // Get the GamePlayer from the game.
+        OthelloGamePlayer gamePlayer = game.getGamePlayers().stream()
+            .filter(gp -> gp.getPlayer().equals(player))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("The given player is not part of the game"));
+
+        // Create move
+        IOthelloMove move = this.moveFactory.create(gamePlayer, position);
+
+        // Play move
+        try {
+            game.playMove(move);
+        } catch (CannotPassTurnException e) {
+            // Should not happen.
+            e.printStackTrace();
+        }
+
         return this.gameRepository.save(game);
     }
 
@@ -68,6 +97,22 @@ public class OthelloGameService {
             // Should not happen.
             e.printStackTrace();
         }
+
+        return this.gameRepository.save(game);
+    }
+
+    public OthelloGame skipMove(OthelloGame game, OthelloPlayer player) throws GameOverException, CannotPassTurnException, UnknownGamePlayerException, InvalidMoveException {
+        // Get the GamePlayer from the game.
+        OthelloGamePlayer gamePlayer = game.getGamePlayers().stream()
+            .filter(gp -> gp.getPlayer().equals(player))
+            .findFirst()
+            .orElseThrow(() -> new UnknownGamePlayerException("The given player is not part of the game"));
+
+        // Must be the player's turn.
+        if (!gamePlayer.getId().equals(game.getCurrentTurnPlayer().getId()))
+            throw new InvalidMoveException("It's not the given player's turn.");
+
+        game.skipMove();
 
         return this.gameRepository.save(game);
     }

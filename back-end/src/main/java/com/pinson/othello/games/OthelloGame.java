@@ -64,10 +64,10 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
     private OthelloLobby lobby;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     protected OthelloGame() {
         super();
@@ -92,6 +92,9 @@ public class OthelloGame extends Game<IOthelloTile, IOthelloGrid, IOthelloDisk> 
 
     @PostLoad
     private void postLoad() throws GridSizeException {
+        // Sort the moves by their creation date.
+        this.moves.sort(Comparator.comparing(OthelloMove::getCreatedAt));
+
         // Set the status back to in progress, this will be updated by the replay of the moves.
         this.status = OthelloGameStatus.IN_PROGRESS;
 

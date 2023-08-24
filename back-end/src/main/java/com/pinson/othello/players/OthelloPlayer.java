@@ -30,14 +30,14 @@ public class OthelloPlayer extends Player implements IOthelloPlayer, UserDetails
     @OneToMany(mappedBy = "player")
     private List<OthelloGamePlayer> gamePlayers;
 
-    @ManyToMany()
+    @ManyToMany(mappedBy = "players", cascade = CascadeType.ALL)
     private List<OthelloLobby> lobbies;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public OthelloPlayer() {
         //

@@ -31,7 +31,7 @@ public class OthelloLobbyResponseFactory {
     }
 
     public OthelloLobbyResponse create(IOthelloLobby lobby) {
-        return this.create(lobby, null);
+        return this.create(lobby, lobby.getGame());
     }
 
     public OthelloLobbyResponse create(IOthelloLobby lobby, IOthelloGame game) {
