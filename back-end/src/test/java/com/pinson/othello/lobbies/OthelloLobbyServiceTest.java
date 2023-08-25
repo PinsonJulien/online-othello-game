@@ -57,11 +57,8 @@ public class OthelloLobbyServiceTest {
         this.players = this.playerRepository.findAll().stream().map(p -> (IOthelloPlayer) p).toList();
 
         lobbies.get(0).setPlayers(players.subList(0, 2)); // full
-        System.out.println(lobbies.get(0).getPlayers().size());
         lobbies.get(1).addPlayer(players.get(2)); // 1 / 2 players
-        System.out.println(lobbies.get(1).getPlayers().size());
         lobbies.get(2).addPlayer(players.get(3)); // 1 / 2 players
-        System.out.println(lobbies.get(2).getPlayers().size());
         lobbies.get(3).setPlayers(players.subList(3, 7)); // full
         lobbies.get(4).setPlayers(players.subList(7, 9)); // 2 / 4 players
         lobbies.get(5).setPlayers(players.subList(9, 13)); // 4/6 players

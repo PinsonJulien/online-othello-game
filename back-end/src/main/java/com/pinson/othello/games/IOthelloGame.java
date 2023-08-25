@@ -18,7 +18,6 @@ import com.pinson.othello.moves.OthelloMove;
 import com.pinson.othello.tiles.IOthelloTile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IOthelloGame extends IGame<IOthelloTile, IOthelloGrid, IOthelloDisk> {

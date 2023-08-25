@@ -7,7 +7,6 @@ import com.pinson.othello.games.OthelloGame;
 import com.pinson.othello.positions.IOthelloPosition;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 

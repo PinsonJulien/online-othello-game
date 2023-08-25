@@ -5,8 +5,6 @@ import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 import com.pinson.othello.commons.entities.positions.MatrixPositions.IMatrixPosition;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**

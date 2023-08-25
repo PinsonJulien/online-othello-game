@@ -3,7 +3,6 @@ package com.pinson.othello.players;
 import com.pinson.othello.commons.entities.players.IPlayer;
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
 import com.pinson.othello.gamePlayers.OthelloGamePlayer;
-import com.pinson.othello.lobbies.IOthelloLobby;
 import com.pinson.othello.lobbies.OthelloLobby;
 
 import java.time.LocalDateTime;

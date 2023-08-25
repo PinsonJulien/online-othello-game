@@ -17,18 +17,12 @@ import java.util.List;
 @Service
 public class OthelloLobbyService {
     private final OthelloLobbyRepository othelloLobbyRepository;
-    private final OthelloGameRepository othelloGameRepository;
-    private final OthelloGameFactory othelloGameFactory;
 
     @Autowired
     public OthelloLobbyService(
-        final OthelloLobbyRepository othelloLobbyRepository,
-        final OthelloGameRepository othelloGameRepository,
-        final OthelloGameFactory othelloGameFactory
+        final OthelloLobbyRepository othelloLobbyRepository
     ) {
         this.othelloLobbyRepository = othelloLobbyRepository;
-        this.othelloGameRepository = othelloGameRepository;
-        this.othelloGameFactory = othelloGameFactory;
     }
 
     public List<OthelloLobby> getAllLobbies() {

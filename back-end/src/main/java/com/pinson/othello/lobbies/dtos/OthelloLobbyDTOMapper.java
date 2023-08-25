@@ -49,8 +49,4 @@ public class OthelloLobbyDTOMapper {
         return response;
     }
 
-    /*public OthelloLobby toEntity(OthelloLobbyRequest request) {
-
-    }*/
-
 }

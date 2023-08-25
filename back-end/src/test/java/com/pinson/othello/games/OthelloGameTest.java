@@ -1337,11 +1337,6 @@ class OthelloGameTest {
         List<IOthelloMove> moves = game.getValidMoves();
         assertEquals(4, moves.size());
 
-        // print all moves
-        for (IOthelloMove move : moves) {
-            System.out.println(move);
-        }
-
         // D3 C4 F5 E6
         var anonymous = new Object() {
             IOthelloPosition position = IOthelloPosition.create("D3");
