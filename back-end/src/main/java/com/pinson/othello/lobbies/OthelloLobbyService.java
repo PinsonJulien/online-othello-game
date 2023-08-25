@@ -50,9 +50,10 @@ public class OthelloLobbyService {
             throw new NonEvenNumberException("Max players must be even");
 
         // Try to find a lobby that is not full, if not found, create a new one.
-        // Note : The filter could be removed if there was a working option using the repository, alas none seems to work accurately.
         OthelloLobby lobby = this.getAllLobbiesByMaxPlayers(maxPlayers)
             .stream()
+            .filter(l -> l.getPlayers().size() != l.getMaxPlayers())
+            .sorted((a, b) -> (int) (Math.random() * 3) - 1) // shuffle
             .findFirst()
             .orElseGet(() -> {
                 OthelloLobby newLobby;

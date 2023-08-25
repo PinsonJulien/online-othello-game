@@ -1336,87 +1336,130 @@ class OthelloGameTest {
         IOthelloGame game = IOthelloGame.create(gamePlayers, 8, 8);
         List<IOthelloMove> moves = game.getValidMoves();
         assertEquals(4, moves.size());
+
+        // print all moves
+        for (IOthelloMove move : moves) {
+            System.out.println(move);
+        }
+
         // D3 C4 F5 E6
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
+        var anonymous = new Object() {
+            IOthelloPosition position = IOthelloPosition.create("D3");
+        };
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
 
         // D3
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D3")));
         moves = game.getValidMoves();
         assertEquals(3, moves.size());
         // C3 C5 E3
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E3"))));
+        anonymous.position = IOthelloPosition.create("C3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // E3
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setRow(2).setColumn(4));
         moves = game.getValidMoves();
         assertEquals(5, moves.size());
         // F2 F3 F4 F5 F6
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
 
         // F3
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F3")));
         moves = game.getValidMoves();
         assertEquals(3, moves.size());
         // E2 C3 C5
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C5"))));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // C5
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C5")));
         moves = game.getValidMoves();
         assertEquals(5, moves.size());
         // B6 C6 D6 E6 F6
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
+        anonymous.position = IOthelloPosition.create("B6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // D6
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D6")));
         moves = game.getValidMoves();
         assertEquals(5, moves.size());
         // E2 F2 C3 C7 E7
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E7"))));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
 
         // C3
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C3")));
         moves = game.getValidMoves();
         assertEquals(8, moves.size());
         // B3 B4 C4 F4 B5 F5 B6 E6
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
+        anonymous.position = IOthelloPosition.create("B3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // C4
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C4")));
         moves = game.getValidMoves();
         assertEquals(5, moves.size());
         // E2 F2 G3 C7 E7
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E7"))));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // C7
         // That one contains at white space at C8 that must be handled properly.
@@ -1424,281 +1467,442 @@ class OthelloGameTest {
         moves = game.getValidMoves();
         assertEquals(10, moves.size());
         // B2 C2 B3 B5 F5 B6 C6 E6 F6 D7
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D7"))));
+        anonymous.position = IOthelloPosition.create("B2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // C6
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C6")));
         moves = game.getValidMoves();
         assertEquals(6, moves.size());
         // D2 E2 G3 B4 B5 B6
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B6"))));
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // B6
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B6")));
         moves = game.getValidMoves();
         assertEquals(11, moves.size());
         // B2 C2 B3 F5 E6 F6 A7 B7 D7 E7 C8
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("A7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C8"))));
+        anonymous.position = IOthelloPosition.create("B2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // A7
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("A7")));
         moves = game.getValidMoves();
-        // D2 E2 G2 G3 B4 A5 B5 A6
         assertEquals(8, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A6"))));
+        // D2 E2 G2 G3 B4 A5 B5 A6
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // A6
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A6")));
         moves = game.getValidMoves();
-        // B2 C2 B3 A5 F5 E6 F6 B7 D7 E7 C8
         assertEquals(11, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("A5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C8"))));
+        // B2 C2 B3 A5 F5 E6 F6 B7 D7 E7 C8
+        anonymous.position = IOthelloPosition.create("B2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // D7
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D7")));
         moves = game.getValidMoves();
-        // E2 F2 G2 G3 B5 E6 E7 A8 E8
         assertEquals(9, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E8"))));
+        // E2 F2 G2 G3 B5 E6 E7 A8 E8
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // E8
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E8")));
         moves = game.getValidMoves();
-        // B2 C2 B3 F4 A5 F5 E6 F6 B7 B8 C8 D8
         assertEquals(12, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("A5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8"))));
+        // B2 C2 B3 F4 A5 F5 E6 F6 B7 B8 C8 D8
+        anonymous.position = IOthelloPosition.create("B2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // F5
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F5")));
         moves = game.getValidMoves();
-        // D2 F2 G2 G3 F4 E6 F6 A8
         assertEquals(8, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A8"))));
+        // D2 F2 G2 G3 F4 E6 F6 A8
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // A8
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A8")));
         moves = game.getValidMoves();
-        // B2 C2 B3 B7 B8 C8 D8
         assertEquals(7, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8"))));
+        // B2 C2 B3 B7 B8 C8 D8
+        anonymous.position = IOthelloPosition.create("B2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B3");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // B3
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B3")));
         moves = game.getValidMoves();
-        // C2 D2 F2 G2 F4 E6
         assertEquals(6, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E6"))));
+        // C2 D2 F2 G2 F4 E6
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // E6
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E6")));
         moves = game.getValidMoves();
-        // B7 E7 F7 B8 C8 D8
         assertEquals(6, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8"))));
+        // B7 E7 F7 B8 C8 D8
+        anonymous.position = IOthelloPosition.create("B7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // B8
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B8")));
         moves = game.getValidMoves();
-        // A2 C2 D2 E2 F2 G2 G4 B7 C8 D8
         assertEquals(10, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D8"))));
+        // A2 C2 D2 E2 F2 G2 G4 B7 C8 D8
+        anonymous.position = IOthelloPosition.create("A2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // B7
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B7")));
         moves = game.getValidMoves();
-        // B5 F6 E7 F7 C8 D8
         assertEquals(6, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("C8"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8"))));
+        // B5 F6 E7 F7 C8 D8
+        anonymous.position = IOthelloPosition.create("B5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // B5
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("B5")));
         moves = game.getValidMoves();
-        // A2 C2 D2 E2 F2 G2 A4 F4 G4 A5 C8
         assertEquals(11, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C8"))));
+        // A2 C2 D2 E2 F2 G2 A4 F4 G4 A5 C8
+        anonymous.position = IOthelloPosition.create("A2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // C8
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C8")));
         moves = game.getValidMoves();
-        // F6 E7 F7 D8
         assertEquals(4, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8"))));
+        // F6 E7 F7 D8
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // F7
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F7")));
         moves = game.getValidMoves();
-        // C2 D2 E2 F2 G2 A4 B4 F4 G4 A5 F6 G6
         assertEquals(12, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G6"))));
+        // C2 D2 E2 F2 G2 A4 B4 F4 G4 A5 F6 G6
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // A5
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A5")));
         moves = game.getValidMoves();
-        // D8
         assertEquals(1, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8"))));
+        // D8
+        anonymous.position = IOthelloPosition.create("D8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // D8
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("D8")));
         moves = game.getValidMoves();
-        // C2 E2 F2 G2 A4 B4 F4 G4 G5 F6 G6 E7
         assertEquals(12, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("B4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E7"))));
+        // C2 E2 F2 G2 A4 B4 F4 G4 G5 F6 G6 E7
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("A4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("B4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // A4
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A4")));
         moves = game.getValidMoves();
-        // F8
         assertEquals(1, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F8"))));
+        // F8
+        anonymous.position = IOthelloPosition.create("F8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // F8
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("F8")));
         moves = game.getValidMoves();
-        // C2 E2 F2 G2 F4 G4 G5 F6 E7 G8
         assertEquals(10, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E7"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G8"))));
+        // C2 E2 F2 G2 F4 G4 G5 F6 E7 G8
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G8");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // G8
         // Black will not be able to play after this move.
@@ -1709,20 +1913,32 @@ class OthelloGameTest {
         // the next move is a skip because black has no valid moves.
         game.playMove(IOthelloMove.create().setGamePlayer(gamePlayers.get(0)).setPosition(IOthelloPosition.create("A2")));
         moves = game.getValidMoves();
-        // A2 C2 D2 E2 F2 G2 F4 G4 G5 F6 G6 E7
         assertEquals(12, moves.size());
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("A2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("C2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("D2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G2"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G4"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G5"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("F6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("G6"))));
-        assertTrue(moves.contains(IOthelloMove.create().setGamePlayer(gamePlayers.get(1)).setPosition(IOthelloPosition.create("E7"))));
+        // A2 C2 D2 E2 F2 G2 F4 G4 G5 F6 G6 E7
+        anonymous.position = IOthelloPosition.create("A2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("C2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("D2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G2");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G4");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G5");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("F6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("G6");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
+        anonymous.position = IOthelloPosition.create("E7");
+        assertTrue(moves.stream().anyMatch(m -> m.getPosition().equals(anonymous.position)));
 
         // continue the game till the end.
 
