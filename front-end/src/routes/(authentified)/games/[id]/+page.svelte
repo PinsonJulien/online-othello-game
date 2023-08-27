@@ -20,7 +20,16 @@
 
     onMount(() => {
         // subscribe to sse
-        const sse = gameApiService.getGameSSE(game.id);
+        const sse = startSSE();
+
+        return () => {
+            // unsubscribe from sse
+            sse.close();
+        }
+    });
+
+    const startSSE = (): EventSource => {
+        let sse = gameApiService.getGameSSE(game.id);
         sse.onmessage = (event) => {
             const data: Game = JSON.parse(event.data);
 
@@ -30,11 +39,13 @@
             return updateGame(data);
         }
 
-        return () => {
-            // unsubscribe from sse
-            sse.close();
+        sse.onerror = (error) => {
+            // If the sse timeout, refresh it.
+            sse = startSSE();
         }
-    });
+
+        return sse;
+    }
 
     const loggedPlayerProps = {
         username: loggedPlayer!.username,

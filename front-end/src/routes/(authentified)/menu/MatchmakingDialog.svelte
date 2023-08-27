@@ -25,7 +25,7 @@
 
 </script>
 
-<dialog class="modal" bind:this={dialog} on:cancel={leaveButtonClick}>
+<dialog class="modal p-3" bind:this={dialog} on:cancel={leaveButtonClick}>
   <div class="modal-content bg-neutral rounded-2xl p-4">
     <div class="flex flex-col gap-5">
       <p class="text-2xl text-center">

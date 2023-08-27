@@ -19,6 +19,29 @@
         }
     });
 
+    const startLobbySSE = (id: number): EventSource => {
+        let sse = lobbyApiService.getLobbySSE(id);
+
+        sse.onmessage = (event) => {
+            const data: Lobby = JSON.parse(event.data);
+            
+            if (data.game) {
+                sse.close();
+                return goto(`/games/${data.game.id}`);
+            }
+
+            // update lobby
+            lobby = data;
+        }
+
+        sse.onerror = (error) => {
+            // If the sse timeout, refresh it.
+            sse = startLobbySSE(id);
+        }
+
+        return sse;
+    }
+
     const joinMatchmaking = async () => {
         const response = await lobbyApiService.joinClassicMatchmaking();
 
@@ -30,19 +53,7 @@
             }
 
             // subscribe to sse
-            const sse = lobbyApiService.getLobbySSE(data.id);
-
-            sse.onmessage = (event) => {
-                const data: Lobby = JSON.parse(event.data);
-                
-                if (data.game) {
-                    sse.close();
-                    return goto(`/games/${data.game.id}`);
-                }
-
-                // update lobby
-                lobby = data;
-            }
+            const sse = startLobbySSE(data.id);
             
             showModal();
             lobby = data;

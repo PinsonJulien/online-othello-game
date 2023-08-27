@@ -105,7 +105,6 @@ public class OthelloLobbyServiceTest {
         // Try to add a player to the first lobby, this will make it full.
         OthelloLobby result = lobbyService.addPlayerToRandomLobby((OthelloPlayer) players.get(14), 2);
         assertEquals(2, result.getPlayers().size());
-        assertEquals(lobbies.get(1).getId(), result.getId());
         assertEquals(players.get(14).getUsername(), result.getPlayers().get(1).getUsername());
         assertTrue(result.isFull());
 
@@ -113,7 +112,6 @@ public class OthelloLobbyServiceTest {
         result = lobbyService.addPlayerToRandomLobby((OthelloPlayer) players.get(15), 2);
 
         assertEquals(2, result.getPlayers().size());
-        assertEquals(lobbies.get(2).getId(), result.getId());
         assertEquals(players.get(15).getUsername(), result.getPlayers().get(1).getUsername());
         assertTrue(result.isFull());
 
@@ -128,14 +126,12 @@ public class OthelloLobbyServiceTest {
 
         // Try to add a player to another max 4 lobby, this will make it almost full.
         result = lobbyService.addPlayerToRandomLobby((OthelloPlayer) players.get(17), 4);
-        assertEquals(lobbies.get(4).getId(), result.getId());
         assertEquals(3, result.getPlayers().size());
         assertEquals(players.get(17).getUsername(), result.getPlayers().get(2).getUsername());
         assertFalse(result.isFull());
 
         // Try to add a player to another max 4 lobby, this will make it full.
         result = lobbyService.addPlayerToRandomLobby((OthelloPlayer) players.get(18), 4);
-        assertEquals(lobbies.get(4).getId(), result.getId());
         assertEquals(4, result.getPlayers().size());
         assertEquals(players.get(18).getUsername(), result.getPlayers().get(3).getUsername());
         assertTrue(result.isFull());

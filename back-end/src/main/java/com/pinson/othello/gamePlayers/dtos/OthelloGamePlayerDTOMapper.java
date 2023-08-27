@@ -1,7 +1,6 @@
 package com.pinson.othello.gamePlayers.dtos;
 
 import com.pinson.othello.gamePlayers.IOthelloGamePlayer;
-import com.pinson.othello.gamePlayers.OthelloGamePlayer;
 import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerLightResponse;
 import com.pinson.othello.gamePlayers.dtos.responses.OthelloGamePlayerResponse;
 import com.pinson.othello.games.dtos.responses.OthelloGameLightResponse;

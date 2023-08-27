@@ -516,5 +516,4 @@ public class MatrixArrayList<T> implements IMatrixArrayList<T>, Iterable<List<T>
         return this.matrix.iterator();
     }
 
-    // Todo: clone method.
 }

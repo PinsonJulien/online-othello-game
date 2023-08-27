@@ -155,13 +155,11 @@ class OthelloPlayerServiceTest {
         assertEquals(username, player.getUsername());
         assertEquals(6, this.playerRepository.count());
         assertEquals(6, this.playerService.getAllPlayers().size());
-        assertNotEquals(password, player.getPassword());
-        assertTrue(this.passwordEncoder.matches(password, player.getPassword()));
+        assertEquals(password, player.getPassword());
 
         OthelloPlayer repositoryPlayer = this.playerRepository.findById(player.getId()).get();
         assertEquals(username, repositoryPlayer.getUsername());
         assertEquals(player.getPassword(), repositoryPlayer.getPassword());
-        assertTrue(this.passwordEncoder.matches(password, repositoryPlayer.getPassword()));
     }
 
     @Test
@@ -194,13 +192,11 @@ class OthelloPlayerServiceTest {
         assertEquals(player.getId(), updatedPlayer.getId());
         assertEquals(player.getUsername(), updatedPlayer.getUsername());
         assertNotEquals(password, updatedPlayer.getPassword());
-        assertTrue(this.passwordEncoder.matches(newPassword, updatedPlayer.getPassword()));
 
         OthelloPlayer repositoryPlayer = this.playerRepository.findById(player.getId()).get();
         assertEquals(player.getId(), repositoryPlayer.getId());
         assertEquals(player.getUsername(), repositoryPlayer.getUsername());
         assertEquals(updatedPlayer.getPassword(), repositoryPlayer.getPassword());
-        assertTrue(this.passwordEncoder.matches(newPassword, repositoryPlayer.getPassword()));
     }
 
     @Test

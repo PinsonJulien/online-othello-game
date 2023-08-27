@@ -6,7 +6,6 @@ import com.pinson.othello.commons.exceptions.NotFoundException;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.IMatrixArrayList;
 import com.pinson.othello.commons.helpers.collections.matrixArrayLists.exceptions.MatrixIndexOutOfBoundsException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IGrid<T extends ITile<?, ?>> {

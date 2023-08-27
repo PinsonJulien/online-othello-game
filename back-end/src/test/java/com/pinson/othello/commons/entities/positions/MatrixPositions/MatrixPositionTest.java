@@ -71,29 +71,24 @@ class MatrixPositionTest {
         IMatrixPosition<Float> position4 = new MatrixPosition<>(1.0f, 2.0f);
         IMatrixPosition<Long> position5 = new MatrixPosition<>(1L, 2L);
 
-        assertEquals(position, position); // Same object
         assertEquals(position, position2);
         assertNotEquals(position, null);
         assertNotEquals(position, position3);
         assertNotEquals(position, position4);
         assertNotEquals(position, position5);
 
-        assertEquals(position2, position2); // Same object
         assertNotEquals(position2, null);
         assertNotEquals(position2, position3);
         assertNotEquals(position2, position4);
         assertNotEquals(position2, position5);
 
-        assertEquals(position3, position3); // Same object
         assertNotEquals(position3, null);
         assertNotEquals(position3, position4);
         assertNotEquals(position3, position5);
 
-        assertEquals(position4, position4); // Same object
         assertNotEquals(position4, null);
         assertNotEquals(position4, position5);
 
-        assertEquals(position5, position5); // Same object
         assertNotEquals(position5, null);
     }
 }

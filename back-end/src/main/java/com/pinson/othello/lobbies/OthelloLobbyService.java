@@ -17,18 +17,12 @@ import java.util.List;
 @Service
 public class OthelloLobbyService {
     private final OthelloLobbyRepository othelloLobbyRepository;
-    private final OthelloGameRepository othelloGameRepository;
-    private final OthelloGameFactory othelloGameFactory;
 
     @Autowired
     public OthelloLobbyService(
-        final OthelloLobbyRepository othelloLobbyRepository,
-        final OthelloGameRepository othelloGameRepository,
-        final OthelloGameFactory othelloGameFactory
+        final OthelloLobbyRepository othelloLobbyRepository
     ) {
         this.othelloLobbyRepository = othelloLobbyRepository;
-        this.othelloGameRepository = othelloGameRepository;
-        this.othelloGameFactory = othelloGameFactory;
     }
 
     public List<OthelloLobby> getAllLobbies() {
@@ -50,9 +44,10 @@ public class OthelloLobbyService {
             throw new NonEvenNumberException("Max players must be even");
 
         // Try to find a lobby that is not full, if not found, create a new one.
-        // Note : The filter could be removed if there was a working option using the repository, alas none seems to work accurately.
         OthelloLobby lobby = this.getAllLobbiesByMaxPlayers(maxPlayers)
             .stream()
+            .filter(l -> l.getPlayers().size() != l.getMaxPlayers())
+            .sorted((a, b) -> (int) (Math.random() * 3) - 1) // shuffle
             .findFirst()
             .orElseGet(() -> {
                 OthelloLobby newLobby;

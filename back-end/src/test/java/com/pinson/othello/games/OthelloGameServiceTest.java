@@ -56,7 +56,7 @@ class OthelloGameServiceTest {
     @Autowired
     private OthelloLobbyService lobbyService;
 
-    private List<OthelloGame> games = new ArrayList<>();
+    private final List<OthelloGame> games = new ArrayList<>();
     private List<OthelloGamePlayer> gamePlayers = new ArrayList<>();
     private List<OthelloPlayer> players = new ArrayList<>();
 
