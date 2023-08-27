@@ -1,20 +1,31 @@
-# online-game-of-life
+# Online Othello Game
 
-setx /m JAVA_HOME "C:\Users\Dinkertons\.jdks\corretto-17.0.7"
+## Description
 
-cd back-end
-./mvnw spring-boot:run
+This is an online othello game. It is built using SvelteKit and Spring Boot.
 
-docker-compose up -d
+## Requirements
 
-base account: test / test
-Can be changed in 
-src/main/resources/application.properties
+- Java 17
+- Maven 3.8.1
+- PostgreSQL 13.1.1
+- Node.js 18.17.0
+- npm 9.6.7
 
+## Installation
 
-Idea: after the end of the match : show "review the game using this ID" and the ID is the one of the game.
-Create a route to get a history of every moves of a game, it will return all the tiles of the match
-like : 
+1. Clone the repository.
+2. Navigate to the back-end directory.
+3. Run `mvn install` to install the dependencies.
+4. Fill the `application.properties` file with the correct values.
+5. Navigate to the front-end directory.
+6. Run `npm install` to install the dependencies.
+7. Copy the `.env.example` file to `.env` and fill in the values.
 
-1: [ ..., ..., ...]
-2: [ ..., ..., ...]
+## Running for production
+
+1. Navigate to the back-end directory.
+2. Run `mvn package` to create a production version of the back end.
+3. Run `java -jar target/online-othello-back-end-0.0.1-SNAPSHOT.jar` to start the back end.
+4. Navigate to the front-end directory.
+5. Run `npm run build` to create a production version of the front end.
